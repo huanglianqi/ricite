@@ -1,10 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+// import axios from 'axios'
+import auth from './modules/auth'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store(
+  {
+    modules: {
+      auth
+    }
+  }
+  /*
   {
     state: {
       status: '',
@@ -90,8 +97,8 @@ export default new Vuex.Store(
       }
     },
     getters: {
-      // isLoggedIn: state => !!state.token,
       authStatus: state => state.status
     }
   }
+  */
 )

@@ -19,7 +19,7 @@ export default new Router({
       component: Home,
       beforeEnter: (to, from, next) => {
         if (
-          to.name !== 'Login' && store.getters.authStatus !== 'success'
+          to.name !== 'Login' && store.state.auth.status !== 'success'
         ) next({name: 'Login'})
         else next()
       }

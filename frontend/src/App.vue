@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     isAuth () {
-      if (this.$store.getters.authStatus === 'success') {
+      if (this.$store.state.auth.status === 'success') {
         return true
       } else {
         return false
@@ -147,7 +147,7 @@ export default {
     },
     logout () {
       this.$store
-        .dispatch('logout')
+        .dispatch('auth/logout')
         .then(
           this.$router.push('/login')
         )

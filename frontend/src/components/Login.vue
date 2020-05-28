@@ -138,7 +138,7 @@ export default {
     loginSubmit () {
       this.$store
         .dispatch(
-          'login',
+          'auth/login',
           {
             username: this.username,
             password: this.password
@@ -155,10 +155,9 @@ export default {
           }
         )
         .catch(
-          // location.reload()
           err => {
             console.log(err)
-            location.reload()
+            // location.reload()
           }
         )
     },
