@@ -2,6 +2,24 @@
 # ricite
 
 >管理平台搭建记录：结合Vuejs和Django，并且通过REST API调用其他网站应用的数据
+也记录负责的工具使用方法
+
+### Git
+
+在github建好repo之后，上传git将本地文件
+
+```bash
+git add ...
+git commit -m "some comment"
+git push
+```
+将github上的repo下载到本地
+
+```bash
+git add ...
+git commit -m "some comment"
+git pull
+```
 
 ### Fontend init
 
