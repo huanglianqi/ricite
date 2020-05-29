@@ -19,3 +19,9 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = [
         'username'
     ]
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+    def perform_create(self, serializer):
+        pass

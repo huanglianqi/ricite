@@ -18,7 +18,7 @@
         active-nav-item-class="font-weight-bold bg-success"
         nav-class="bg-light">
         <b-tab
-          title="账号密码登入">
+          title="验证登入">
           <b-form
             class="mt-5"
             align="left"
@@ -26,11 +26,15 @@
             @reset="loginReset">
             <b-input-group
               class="mt-3 mb-3">
-              <b-icon
-                icon="person-fill"
-                font-scale="1.5"
-                class="mr-2 mt-2">
-              </b-icon>
+              <template
+                  v-slot:prepend>
+                  <b-input-group-text>
+                    <b-icon
+                      icon="person-fill"
+                      font-scale="1.25">
+                    </b-icon>
+                  </b-input-group-text>
+                </template>
               <b-form-input
                 id="login-username"
                 v-model="username"
@@ -42,11 +46,15 @@
             </b-input-group>
             <b-input-group
               class="mt-3 mb-3">
-              <b-icon
-                  icon="lock-fill"
-                  font-scale="1.5"
-                  class="mr-2 mt-2">
-              </b-icon>
+              <template
+                v-slot:prepend>
+                <b-input-group-text>
+                  <b-icon
+                    icon="lock-fill"
+                    font-scale="1.25">
+                  </b-icon>
+                </b-input-group-text>
+              </template>
               <b-form-input
                   id="login-password"
                   v-model="password"
@@ -81,7 +89,7 @@
           </b-form>
         </b-tab>
           <b-tab
-            title="获取账号/忘记密码">
+            title="账号注册">
             <b-jumbotron
               bg-variant="white">
               <h5>
@@ -157,7 +165,6 @@ export default {
         .catch(
           err => {
             console.log(err)
-            // location.reload()
           }
         )
     },

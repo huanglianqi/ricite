@@ -36,18 +36,232 @@
         title="账户信息"
         shadow
         backdrop>
-        <b-button
-          variant="outline-danger"
-          v-on:click="logout"
-          v-if="isAuth">
-          退出登入
-        </b-button>
-        <b-button
-          variant="outline-success"
-          v-on:click="login"
-          v-else>
-          登入验证
-        </b-button>
+        <b-jumbotron>
+          <p>
+            {{id}}
+            {{email}}
+            {{fullname}}
+          </p>
+          <b-alert
+            variant="success"
+            dismissble
+            fade
+            :show="dismissSuccessAlert"
+            @dismiss-count-down="changeSuccessAlert">
+            操作成功
+          </b-alert>
+          <b-alert
+            variant="danger"
+            dismissble
+            fade
+            :show="dismissFailAlert"
+            @dismiss-count-down="changeFailAlert">
+            操作失败
+          </b-alert>
+          <b-button
+            v-if="isAuth"
+            v-b-toggle.modifyInfo
+            block
+            class="mt-3"
+            variant="outline-info">
+            <b-icon
+              icon="gear-fill"
+              animation="null"
+              class="when-closed"></b-icon>
+            <b-icon
+              icon="gear-fill"
+              animation="spin"
+              class="when-open">
+            </b-icon>
+            修改个人信息
+            <b-icon
+              icon="caret-left-fill"
+              shift-v="1.25"
+              class="when-closed">
+            </b-icon>
+            <b-icon
+              icon="caret-down-fill"
+              shift-v="1.25"
+              class="when-open">
+            </b-icon>
+          </b-button>
+          <b-collapse
+            id="modifyInfo">
+            <b-form
+              class="mb-5"
+              align="left"
+              @submit="modifyInfoSubmit"
+              @reset="modifyReset">
+              <b-input-group
+                class="mt-3 mb-3">
+                <template
+                  v-slot:prepend>
+                  <b-input-group-text>
+                    姓
+                  </b-input-group-text>
+                </template>
+                <b-form-input
+                  id="modifyLastname"
+                  v-model="lastname"
+                  required
+                  trim>
+                </b-form-input>
+              </b-input-group>
+              <b-input-group>
+                <template
+                  v-slot:prepend>
+                  <b-input-group-text>
+                    名
+                  </b-input-group-text>
+                </template>
+                <b-form-input
+                  id="modifyFirstname"
+                  v-model="firstname"
+                  required
+                  trim>
+                </b-form-input>
+              </b-input-group>
+              <b-input-group
+                class="mt-3 mb-3">
+                <template
+                  v-slot:prepend>
+                  <b-input-group-text>
+                    <b-icon
+                      icon="envelope-fill"
+                      font-scale="1.25">
+                    </b-icon>
+                  </b-input-group-text>
+                </template>
+                <b-form-input
+                  id="modifyEmail"
+                  v-model="email"
+                  required
+                  trim>
+                </b-form-input>
+              </b-input-group>
+              <b-button
+                type="submit"
+                variant="outline-success"
+                block
+                class="mt-4"
+                v-b-toggle.modifyInfo>
+                <b-icon
+                  icon="box-arrow-in-right"
+                  class="mr-2">
+                </b-icon>
+                确定修改
+              </b-button>
+              <b-button
+                type="reset"
+                variant="outline-danger"
+                block>
+                <b-icon
+                  icon="arrow-clockwise"
+                  class="mr-2">
+                </b-icon>
+                重置输入
+              </b-button>
+            </b-form>
+          </b-collapse>
+          <b-button
+            v-if="isAuth"
+            v-b-toggle.modifyPasswd
+            block
+            class="mt-3"
+            variant="outline-dark">
+            <b-icon
+              icon="gear-fill"
+              animation="null"
+              class="when-closed"></b-icon>
+            <b-icon
+              icon="gear-fill"
+              animation="spin"
+              class="when-open">
+            </b-icon>
+            修改账号密码
+            <b-icon
+              icon="caret-left-fill"
+              shift-v="1.25"
+              class="when-closed">
+            </b-icon>
+            <b-icon
+              icon="caret-down-fill"
+              shift-v="1.25"
+              class="when-open">
+            </b-icon>
+          </b-button>
+          <b-collapse
+            id="modifyPasswd">
+            <b-form
+              class="mb-5"
+              align="left"
+              @submit="modifyPasswdSubmit"
+              @reset="modifyPasswdReset">
+              <b-input-group
+                class="mt-3 mb-3">
+                <template
+                  v-slot:prepend>
+                  <b-input-group-text>
+                    <b-icon
+                      icon="lock-fill"
+                      font-scale="1.25">
+                    </b-icon>
+                  </b-input-group-text>
+                </template>
+                <b-form-input
+                  id="newPasswd"
+                  v-model="newPasswd"
+                  required
+                  trim
+                  placeholder="输入新密码">
+                </b-form-input>
+              </b-input-group>
+              <b-input-group
+                class="mt-3 mb-3">
+                <template
+                  v-slot:prepend>
+                  <b-input-group-text>
+                    <b-icon
+                      icon="lock-fill"
+                      font-scale="1.25">
+                    </b-icon>
+                  </b-input-group-text>
+                </template>
+                <b-form-input
+                  id="newPasswdAgain"
+                  v-model="newPasswdAgain"
+                  required
+                  trim
+                  placeholder="再次输入新密码">
+                </b-form-input>
+              </b-input-group>
+              <b-button
+                type="submit"
+                variant="outline-success"
+                block
+                class="mt-4"
+                v-b-toggle.modifyPasswd>
+                确认修改密码
+              </b-button>
+            </b-form>
+          </b-collapse>
+          <b-button
+            variant="outline-danger"
+            v-on:click="logout"
+            v-if="isAuth"
+            block
+            class="mt-3">
+            退出/切换账号
+          </b-button>
+          <b-button
+            variant="outline-success"
+            v-on:click="login"
+            v-else
+            block
+            class="mt-3">
+            登入验证
+          </b-button>
+        </b-jumbotron>
       </b-sidebar>
     </div>
     <router-view/>
@@ -91,7 +305,16 @@ export default {
       username: 'Unknown',
       lastname: '',
       firstname: '',
-      email: ''
+      email: '',
+      id: '',
+      fullname: '',
+      newPasswd: '',
+      newPasswdAgain: '',
+      dismissSecs: 2,
+      dismissFailAlert: 0,
+      dismissSuccessAlert: 0,
+      successAlert: false,
+      failAlert: false
     }
   },
   computed: {
@@ -104,32 +327,43 @@ export default {
     }
   },
   watch: {
-    isAuth (val, old) {
+    isAuth (val) {
       if (val) {
         this.getAccount()
         this.authOrNotCrl = 'success'
       } else {
-        this.username = 'Unknown'
+        this.strechAccount()
         this.authOrNotCrl = 'dark'
       }
+    },
+    firstname (val) {
+      this.fullname = this.lastname + val
+    },
+    lastname (val) {
+      this.fullname = val + this.firstname
     }
   },
   methods: {
+    strechAccount () {
+      this.username = this.$store.state.auth.username
+      this.firstname = this.$store.state.auth.firstname
+      this.lastname = this.$store.state.auth.lastname
+      this.id = this.$store.state.auth.id
+      this.email = this.$store.state.auth.email
+    },
     getAccount () {
-      axios.get(
-        'users/?search=',
-        {
-          params: {
-            username: sessionStorage.username
-          }
-        }
-      )
+      this.$store
+        .dispatch(
+          'auth/getAccount',
+          sessionStorage.username
+        )
         .then(
-          res => {
-            this.username = res.data[0].username
-            this.firstname = res.data[0].firstname
-            this.lastname = res.data[0].lastname
-            this.email = res.data[0].email
+          () => {
+            this.username = this.$store.state.auth.username
+            this.firstname = this.$store.state.auth.firstname
+            this.lastname = this.$store.state.auth.lastname
+            this.id = this.$store.state.auth.id
+            this.email = this.$store.state.auth.email
           }
         )
         .catch(
@@ -154,6 +388,69 @@ export default {
         .catch(
           err => (console.log(err))
         )
+    },
+    modifyInfoSubmit () {
+      axios
+        .patch(
+          `users/${this.id}/`,
+          {
+            first_name: this.firstname,
+            last_name: this.lastname,
+            email: this.email
+          }
+        )
+        .then(
+          () => {
+            this.successAlert = true
+            this.showSuccessAlert()
+          }
+        )
+        .catch(
+          () => {
+            this.failAlert = true
+            this.showFailAlert()
+          }
+        )
+    },
+    modifyReset () {
+      this.username = this.$store.state.auth.username
+    },
+    modifyPasswdSubmit () {
+      if (this.newPasswd === this.newPasswdAgain) {
+        axios
+          .patch(
+            `users/${this.id}/`,
+            {
+              password: this.newPasswd,
+              username: this.username
+            }
+          )
+          .then(
+            console.log('ok')
+          )
+          .catch(
+            err => {
+              console.log(err)
+            }
+          )
+      } else {
+        console.log('not ok')
+      }
+    },
+    modifyPasswdReset () {
+      console.log(this.newPasswd)
+    },
+    changeFailAlert (dismissCountDown) {
+      this.dismissFailAlert = dismissCountDown
+    },
+    changeSuccessAlert (dismissCountDown) {
+      this.dismissSuccessAlert = dismissCountDown
+    },
+    showFailAlert () {
+      this.dismissFailAlert = this.dismissSecs
+    },
+    showSuccessAlert () {
+      this.dismissSuccessAlert = this.dismissSecs
     }
   }
 }
@@ -195,4 +492,10 @@ export default {
 #nav-top a.router-link-exact-active {
   color: #42b983;
 }
+
+.collapsed > .when-open,
+.not-collapsed > .when-closed {
+  display: none;
+}
+
 </style>
