@@ -390,15 +390,20 @@ export default {
         )
     },
     modifyInfoSubmit () {
-      axios
-        .post(
-          `users/${this.username}/`,
-          {
+      axios(
+        {
+          method: 'patch',
+          url: `users/${this.username}/`,
+          data: {
             first_name: this.firstname,
             last_name: this.lastname,
             email: this.email
+          },
+          headers: {
+            'content-type': 'application/json'
           }
-        )
+        }
+      )
         .then(
           () => {
             this.successAlert = true

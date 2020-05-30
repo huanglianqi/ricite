@@ -25,7 +25,7 @@ class UserRetrieveUpdateAPIView(
     ]
     lookup_field = 'username'
 
-    def post(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
