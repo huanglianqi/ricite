@@ -125,28 +125,28 @@ const actions = {
     return new Promise(
       (resolve, reject) => {
         axios
-          .get(`users/?search=${username}`)
+          .get(`users/${username}`)
           .then(
             res => {
               commit(
                 'username',
-                res.data[0].username
+                res.data.username
               )
               commit(
                 'id',
-                res.data[0].id
+                res.data.id
               )
               commit(
                 'emial',
-                res.data[0].email
+                res.data.email
               )
               commit(
                 'firstname',
-                res.data[0].first_name
+                res.data.first_name
               )
               commit(
                 'lastname',
-                res.data[0].last_name
+                res.data.last_name
               )
               resolve(res)
             }
@@ -161,27 +161,7 @@ const actions = {
   }
 }
 
-const getters = {
-  account: () => {
-    axios
-      .get(
-        'users/',
-        {
-          username: sessionStorage.username
-        }
-      )
-      .then(
-        res => {
-          console.log(res.data[0].id)
-        }
-      )
-      .catch(
-        err => {
-          console.log(err)
-        }
-      )
-  }
-}
+const getters = {}
 
 export default {
   namespaced: true,

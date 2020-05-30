@@ -9,7 +9,7 @@ import About from '@/components/About'
 
 Vue.use(Router)
 
-axios.defaults.baseURL = 'http://localhost:8000/api/'
+axios.defaults.baseURL = 'http://localhost:8000/'
 
 export default new Router({
   routes: [

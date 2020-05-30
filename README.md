@@ -4,6 +4,10 @@
 >管理平台搭建记录：结合Vuejs和Django，并且通过REST API调用其他网站应用的数据
 也记录负责的工具使用方法
 
+### PATCH METHOD DOES NOT WORK IN DJANGO
+
+Need to REwrite the view.py and serializers.py for this.
+
 ### Git
 
 在github建好repo之后，上传git将本地文件

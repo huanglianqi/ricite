@@ -20,23 +20,13 @@ from django.urls import (
 )
 from django.views.generic import TemplateView
 
-from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token
-
-from users.views import UserViewSet
-
-router = routers.DefaultRouter()
-
-router.register(
-    'users',
-    UserViewSet
-)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/token_auth/', obtain_jwt_token),
     path('', TemplateView.as_view(
         template_name='index.html'
     )),
+    path('token_auth/', obtain_jwt_token),
+    path('users/', include('users.urls')),
 ]

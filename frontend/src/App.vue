@@ -392,7 +392,7 @@ export default {
     modifyInfoSubmit () {
       axios
         .patch(
-          `users/${this.id}/`,
+          `users/${this.username}/`,
           {
             first_name: this.firstname,
             last_name: this.lastname,
@@ -457,6 +457,11 @@ export default {
 </script>
 
 <style>
+.collapsed > .when-open,
+.not-collapsed > .when-closed {
+  display: none;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -492,10 +497,4 @@ export default {
 #nav-top a.router-link-exact-active {
   color: #42b983;
 }
-
-.collapsed > .when-open,
-.not-collapsed > .when-closed {
-  display: none;
-}
-
 </style>
