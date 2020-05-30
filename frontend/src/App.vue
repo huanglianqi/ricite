@@ -391,7 +391,7 @@ export default {
     },
     modifyInfoSubmit () {
       axios
-        .patch(
+        .post(
           `users/${this.username}/`,
           {
             first_name: this.firstname,
