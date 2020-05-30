@@ -390,20 +390,15 @@ export default {
         )
     },
     modifyInfoSubmit () {
-      axios(
-        {
-          method: 'patch',
-          url: `users/${this.username}/`,
-          data: {
+      axios
+        .patch(
+          `users/${this.username}/`,
+          {
             first_name: this.firstname,
             last_name: this.lastname,
             email: this.email
-          },
-          headers: {
-            'content-type': 'application/json'
           }
-        }
-      )
+        )
         .then(
           () => {
             this.successAlert = true
@@ -424,7 +419,7 @@ export default {
       if (this.newPasswd === this.newPasswdAgain) {
         axios
           .patch(
-            `users/${this.id}/`,
+            `users/${this.username}/`,
             {
               password: this.newPasswd,
               username: this.username
