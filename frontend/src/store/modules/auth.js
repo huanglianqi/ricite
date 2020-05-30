@@ -125,7 +125,7 @@ const actions = {
     return new Promise(
       (resolve, reject) => {
         axios
-          .get(`users/${username}`)
+          .get(`users/${username}/`)
           .then(
             res => {
               commit(
