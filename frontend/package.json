@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "huanglianqi <huanglianqi@users.noreply.github.com>",
+  "author": "huanglianqi <lienchi.huang96@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -19,6 +19,7 @@
     "bootstrap-vue": "^2.15.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
+    "vuedraggable": "^2.23.2",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
@@ -75,8 +76,8 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",
-    "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "^2.9.1",
+    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-dev-server": "^2.11.5",
     "webpack-merge": "^4.1.0"
   },
   "engines": {

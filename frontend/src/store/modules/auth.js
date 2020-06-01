@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const state = {
   status: '',
-  token: localStorage.getItem('token') || '',
+  token: sessionStorage.getItem('token') || '',
   user: {},
   username: 'Unknown',
   firstname: '',
@@ -75,7 +75,7 @@ const actions = {
           .then(
             res => {
               const token = 'JWT' + ' ' + res.data.token
-              localStorage.setItem(
+              sessionStorage.setItem(
                 'token',
                 token
               )
@@ -97,7 +97,7 @@ const actions = {
           .catch(
             err => {
               commit('auth_error')
-              localStorage.removeItem('token')
+              sessionStorage.removeItem('token')
               sessionStorage.removeItem('username')
               reject(err)
             }
@@ -114,7 +114,7 @@ const actions = {
         commit('emailOut')
         commit('firstnameOut')
         commit('lastnameOut')
-        localStorage.removeItem('token')
+        sessionStorage.removeItem('token')
         sessionStorage.removeItem('username')
         delete axios.defaults.headers.common['Authorization']
         resolve()

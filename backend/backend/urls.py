@@ -24,9 +24,13 @@ from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(
-        template_name='index.html'
-    )),
+    path(
+        '',
+        TemplateView.as_view(
+            template_name='index.html'
+        )
+    ),
     path('token_auth/', obtain_jwt_token),
+    path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('users/', include('users.urls')),
 ]

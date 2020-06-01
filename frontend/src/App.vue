@@ -33,15 +33,25 @@
       </b-badge>
       <b-sidebar
         id="profile"
-        title="账户信息"
+        :title="username"
         shadow
         backdrop>
         <b-jumbotron>
-          <p>
-            {{id}}
-            {{email}}
-            {{fullname}}
-          </p>
+          <b-list-group
+            flush
+            v-if="isAuth">
+            <b-list-group-item>
+              <b-icon
+                icon="person-fill"
+                font-scale="1.25">
+              </b-icon>
+              {{fullname}}
+            </b-list-group-item>
+            <b-list-group-item
+              variant="success">
+              {{email}}
+            </b-list-group-item>
+          </b-list-group>
           <b-alert
             variant="success"
             dismissble
@@ -64,26 +74,30 @@
             block
             class="mt-3"
             variant="outline-info">
-            <b-icon
-              icon="gear-fill"
-              animation="null"
-              class="when-closed"></b-icon>
-            <b-icon
-              icon="gear-fill"
-              animation="spin"
-              class="when-open">
-            </b-icon>
-            修改个人信息
-            <b-icon
-              icon="caret-left-fill"
-              shift-v="1.25"
-              class="when-closed">
-            </b-icon>
-            <b-icon
-              icon="caret-down-fill"
-              shift-v="1.25"
-              class="when-open">
-            </b-icon>
+            <div
+              v-on:click="close=!close">
+              <b-icon
+                icon="gear-fill"
+                animation="null"
+                v-show="close">
+              </b-icon>
+              <b-icon
+                icon="gear-fill"
+                animation="spin"
+                v-show="!close">
+              </b-icon>
+              修改个人账户信息
+              <b-icon
+                icon="caret-left-fill"
+                shift-v="1.25"
+                v-show="close">
+              </b-icon>
+              <b-icon
+                icon="caret-down-fill"
+                shift-v="1.25"
+                v-show="!close">
+              </b-icon>
+            </div>
           </b-button>
           <b-collapse
             id="modifyInfo">
@@ -145,11 +159,14 @@
                 block
                 class="mt-4"
                 v-b-toggle.modifyInfo>
-                <b-icon
-                  icon="box-arrow-in-right"
-                  class="mr-2">
-                </b-icon>
-                确定修改
+                <div
+                  v-on:click="close=!close">
+                  <b-icon
+                    icon="box-arrow-in-right"
+                    class="mr-2">
+                  </b-icon>
+                  确定修改
+                </div>
               </b-button>
               <b-button
                 type="reset"
@@ -165,92 +182,41 @@
           </b-collapse>
           <b-button
             v-if="isAuth"
-            v-b-toggle.modifyPasswd
             block
             class="mt-3"
-            variant="outline-dark">
+            variant="outline-dark"
+            v-on:click="resetPassword"
+            v-show="waitTime"
+            disabled>
             <b-icon
-              icon="gear-fill"
-              animation="null"
-              class="when-closed"></b-icon>
-            <b-icon
-              icon="gear-fill"
-              animation="spin"
-              class="when-open">
+              icon="unlock-fill"
+              shift-v="1.25">
             </b-icon>
-            修改账号密码
-            <b-icon
-              icon="caret-left-fill"
-              shift-v="1.25"
-              class="when-closed">
-            </b-icon>
-            <b-icon
-              icon="caret-down-fill"
-              shift-v="1.25"
-              class="when-open">
-            </b-icon>
+            请前往邮箱（重新发送 {{waitTime}}）
           </b-button>
-          <b-collapse
-            id="modifyPasswd">
-            <b-form
-              class="mb-5"
-              align="left"
-              @submit="modifyPasswdSubmit"
-              @reset="modifyPasswdReset">
-              <b-input-group
-                class="mt-3 mb-3">
-                <template
-                  v-slot:prepend>
-                  <b-input-group-text>
-                    <b-icon
-                      icon="lock-fill"
-                      font-scale="1.25">
-                    </b-icon>
-                  </b-input-group-text>
-                </template>
-                <b-form-input
-                  id="newPasswd"
-                  v-model="newPasswd"
-                  required
-                  trim
-                  placeholder="输入新密码">
-                </b-form-input>
-              </b-input-group>
-              <b-input-group
-                class="mt-3 mb-3">
-                <template
-                  v-slot:prepend>
-                  <b-input-group-text>
-                    <b-icon
-                      icon="lock-fill"
-                      font-scale="1.25">
-                    </b-icon>
-                  </b-input-group-text>
-                </template>
-                <b-form-input
-                  id="newPasswdAgain"
-                  v-model="newPasswdAgain"
-                  required
-                  trim
-                  placeholder="再次输入新密码">
-                </b-form-input>
-              </b-input-group>
-              <b-button
-                type="submit"
-                variant="outline-success"
-                block
-                class="mt-4"
-                v-b-toggle.modifyPasswd>
-                确认修改密码
-              </b-button>
-            </b-form>
-          </b-collapse>
+          <b-button
+            v-if="isAuth"
+            block
+            class="mt-3"
+            variant="outline-dark"
+            v-on:click="resetPassword"
+            v-show="afterWait">
+            <b-icon
+              icon="lock-fill"
+              shift-v="1.25">
+            </b-icon>
+            通过邮箱重置密码
+          </b-button>
           <b-button
             variant="outline-danger"
             v-on:click="logout"
-            v-if="isAuth"
             block
-            class="mt-3">
+            class="mt-3"
+            v-if="isAuth">
+            <b-icon
+              icon="box-arrow-left"
+              shift-v="1.25">
+            </b-icon>
             退出/切换账号
           </b-button>
           <b-button
@@ -259,9 +225,23 @@
             v-else
             block
             class="mt-3">
+            <b-icon
+              icon="box-arrow-in-right"
+              shift-v="1.25">
+            </b-icon>
             登入验证
           </b-button>
         </b-jumbotron>
+        <template
+          v-if="isAuth"
+          v-slot:footer="{hide}">
+          <b-button
+            variant="outline-danger"
+            block
+            v-on:click="hide">
+            关闭
+          </b-button>
+        </template>
       </b-sidebar>
     </div>
     <router-view/>
@@ -308,13 +288,13 @@ export default {
       email: '',
       id: '',
       fullname: '',
-      newPasswd: '',
-      newPasswdAgain: '',
       dismissSecs: 2,
       dismissFailAlert: 0,
       dismissSuccessAlert: 0,
-      successAlert: false,
-      failAlert: false
+      waitTime: 0,
+      afterWait: true,
+      oneMin: 60,
+      close: true
     }
   },
   computed: {
@@ -341,6 +321,13 @@ export default {
     },
     lastname (val) {
       this.fullname = val + this.firstname
+    },
+    waitTime (val) {
+      if (val === 0) {
+        this.afterWait = true
+      } else {
+        this.afterWait = false
+      }
     }
   },
   methods: {
@@ -401,13 +388,11 @@ export default {
         )
         .then(
           () => {
-            this.successAlert = true
             this.showSuccessAlert()
           }
         )
         .catch(
           () => {
-            this.failAlert = true
             this.showFailAlert()
           }
         )
@@ -419,10 +404,10 @@ export default {
       if (this.newPasswd === this.newPasswdAgain) {
         axios
           .patch(
-            `users/${this.username}/`,
+            `users/${this.username}/password_reset/`,
             {
               password: this.newPasswd,
-              username: this.username
+              token: localStorage.token
             }
           )
           .then(
@@ -437,8 +422,26 @@ export default {
         console.log('not ok')
       }
     },
-    modifyPasswdReset () {
-      console.log(this.newPasswd)
+    resetPassword () {
+      axios
+        .post(
+          'password_reset/',
+          {
+            email: this.email
+          }
+        )
+        .then(
+          () => {
+            this.showSuccessAlert()
+            this.showWait()
+            this.timeCountDown()
+          }
+        )
+        .catch(
+          () => {
+            this.showFailAlert()
+          }
+        )
     },
     changeFailAlert (dismissCountDown) {
       this.dismissFailAlert = dismissCountDown
@@ -451,17 +454,26 @@ export default {
     },
     showSuccessAlert () {
       this.dismissSuccessAlert = this.dismissSecs
+    },
+    showWait () {
+      this.waitTime = this.oneMin
+    },
+    timeCountDown () {
+      let count = setInterval(
+        () => {
+          this.waitTime -= 1
+          if (this.waitTime === 0) {
+            clearInterval(count)
+          }
+        },
+        1000
+      )
     }
   }
 }
 </script>
 
 <style>
-.collapsed > .when-open,
-.not-collapsed > .when-closed {
-  display: none;
-}
-
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

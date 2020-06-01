@@ -6,6 +6,7 @@ import axios from 'axios'
 import Home from '@/components/Home'
 import Login from '@/components/Login'
 import About from '@/components/About'
+import ResetPassword from '@/components/ResetPassword'
 
 Vue.use(Router)
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/about',
       name: 'About',
       component: About
+    },
+    {
+      path: '/resetPassword',
+      name: 'ResetPassword',
+      component: ResetPassword
     }
   ]
 })
