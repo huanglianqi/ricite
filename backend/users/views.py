@@ -2,7 +2,10 @@ from django.contrib.auth.forms import User
 
 from django.dispatch import receiver
 from django.urls import reverse
-from django_rest_passwordreset.signals import reset_password_token_created
+from django_rest_passwordreset.signals import (
+    reset_password_token_created,
+    post_password_reset,
+)
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
@@ -54,7 +57,7 @@ class UserPasswordResetAPIView(GenericAPIView):
             'email': reset_password_token.user.email,
             'firstname': reset_password_token.user.first_name,
             'lastname': reset_password_token.user.last_name,
-            'reset_password_url': "https://admin.ricoundation.com/#/resetPassword?token={}".format(reset_password_token.key),
+            'reset_password_url': "https://admin.ricifoundation.com/#/resetPassword?token={}".format(reset_password_token.key),
             'title': '密码重置',
         }
 
@@ -64,7 +67,7 @@ class UserPasswordResetAPIView(GenericAPIView):
 
         msg = EmailMultiAlternatives(
             # title:
-            "日慈信息管理平台 - 密码重置",
+            "日慈信息管理平台 | 密码重置",
             # message:
             # email_plaintext_message,
             "Reset Password",
@@ -72,6 +75,30 @@ class UserPasswordResetAPIView(GenericAPIView):
             "admin@ricifoundation.com",
             # to:
             [reset_password_token.user.email]
+        )
+        msg.attach_alternative(email_html_message, "text/html")
+        msg.send()
+
+    @receiver(post_password_reset)
+    def post_password_reset(sender, user, *args, **kwargs):
+        """
+          post notions about resetting password successfully
+        """
+        content = {
+            'username': user.username,
+            'lastname': user.last_name,
+            'firstname': user.first_name,
+            'email': user.email,
+            'title': '密码重置成功',
+        }
+
+        email_html_message = render_to_string('user_reset_password_success.html', content)
+
+        msg = EmailMultiAlternatives(
+            '日慈信息管理平台 | 密码重置成功',
+            'Reset Password Successfully',
+            'admin@ricifoundation.com',
+            [user.email]
         )
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
