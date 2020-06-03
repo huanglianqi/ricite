@@ -20,13 +20,6 @@ from rest_framework.permissions import (
 
 from django.contrib.auth import update_session_auth_hash
 
-# from django.dispatch import receiver
-# from django.core.mail import EmailMultiAlternatives
-
-#from django_rest_passwordreset.signals import (
-#    reset_password_token_created,
-#)
-
 
 class UserRetrieveUpdateAPIView(
     GenericAPIView,
@@ -61,7 +54,8 @@ class UserPasswordResetAPIView(GenericAPIView):
             'email': reset_password_token.user.email,
             'firstname': reset_password_token.user.first_name,
             'lastname': reset_password_token.user.last_name,
-            'reset_password_url': "http://localhost:8080/#/resetPassword?token={}".format(reset_password_token.key),
+            'reset_password_url': "https://admin.ricoundation.com/#/resetPassword?token={}".format(reset_password_token.key),
+            'title': '密码重置',
         }
 
         # render email text
@@ -70,15 +64,14 @@ class UserPasswordResetAPIView(GenericAPIView):
 
         msg = EmailMultiAlternatives(
             # title:
-            "Password Reset",
+            "日慈信息管理平台 - 密码重置",
             # message:
             # email_plaintext_message,
-            "test",
+            "Reset Password",
             # from:
-            "huanglianqi@ricifoundation.com",
+            "admin@ricifoundation.com",
             # to:
             [reset_password_token.user.email]
         )
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
-

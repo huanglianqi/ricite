@@ -7,7 +7,8 @@
             icon="house-fill"
             scale="1.25"
             shift-v="1.25"
-            aria-hidden="true"></b-icon>
+            aria-hidden="true">
+          </b-icon>
           home
       </router-link>
       |
@@ -17,7 +18,8 @@
           icon="info-circle-fill"
           scale="1.25"
           shift-v="1.25"
-          aria-hidden="true"></b-icon>
+          aria-hidden="true">
+        </b-icon>
         about
       </router-link>
       |
@@ -28,7 +30,8 @@
           icon="people-fill"
           scale="1.25"
           shift-v="1.25"
-          aria-hidden="true"></b-icon>
+          aria-hidden="true">
+        </b-icon>
         {{username}}
       </b-badge>
       <b-sidebar
@@ -36,22 +39,24 @@
         :title="username"
         shadow
         backdrop>
-        <b-jumbotron>
-          <b-list-group
-            flush
+        <b-jumbotron
+          bg-variant="light">
+          <p
+            class="text-left mb-3 text-break"
             v-if="isAuth">
-            <b-list-group-item>
-              <b-icon
-                icon="person-fill"
-                font-scale="1.25">
-              </b-icon>
-              {{fullname}}
-            </b-list-group-item>
-            <b-list-group-item
-              variant="success">
-              {{email}}
-            </b-list-group-item>
-          </b-list-group>
+            <b-icon
+              icon="person-fill">
+            </b-icon>
+            {{fullname}}
+          </p>
+          <p
+            class="text-left mb-5 text-break"
+            v-if="isAuth">
+            <b-icon
+              icon="envelope-fill">
+            </b-icon>
+            {{email}}
+          </p>
           <b-alert
             variant="success"
             dismissble
@@ -104,8 +109,7 @@
             <b-form
               class="mb-5"
               align="left"
-              @submit="modifyInfoSubmit"
-              @reset="modifyReset">
+              @submit="modifyInfoSubmit">
               <b-input-group
                 class="mt-3 mb-3">
                 <template
@@ -169,7 +173,7 @@
                 </div>
               </b-button>
               <b-button
-                type="reset"
+                v-on:click="modifyReset"
                 variant="outline-danger"
                 block>
                 <b-icon
@@ -398,29 +402,7 @@ export default {
         )
     },
     modifyReset () {
-      this.username = this.$store.state.auth.username
-    },
-    modifyPasswdSubmit () {
-      if (this.newPasswd === this.newPasswdAgain) {
-        axios
-          .patch(
-            `users/${this.username}/password_reset/`,
-            {
-              password: this.newPasswd,
-              token: localStorage.token
-            }
-          )
-          .then(
-            console.log('ok')
-          )
-          .catch(
-            err => {
-              console.log(err)
-            }
-          )
-      } else {
-        console.log('not ok')
-      }
+      this.getAccount()
     },
     resetPassword () {
       axios
