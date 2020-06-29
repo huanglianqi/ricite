@@ -32,5 +32,6 @@ urlpatterns = [
     ),
     path('token_auth/', obtain_jwt_token),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    path('users/', include('users.urls')),
+    path('user/', include('users.urls')),
+    path('flourish/', include('flourish.urls')),
 ]

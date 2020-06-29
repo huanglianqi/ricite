@@ -2,12 +2,17 @@ from django.urls import path, include
 
 from .views import (
     UserRetrieveUpdateAPIView,
-    UserPasswordResetAPIView
+    UserPasswordResetAPIView,
+    SubscribeEmailRetrieveUpdateAPIView,
 )
 
 urlpatterns = [
     path(
-        '<str:username>/',
+        'account/<str:username>/',
         UserRetrieveUpdateAPIView.as_view()
-    )
+    ),
+    path(
+        'subscribeEmail/<str:name>/',
+        SubscribeEmailRetrieveUpdateAPIView.as_view()
+    ),
 ]

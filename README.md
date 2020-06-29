@@ -4,6 +4,10 @@
 >管理平台搭建记录：结合Vuejs和Django，并且通过REST API调用其他网站应用的数据
 也记录负责的工具使用方法
 
+### chmod setting
+
+backend/ db media/ 664 :www-data
+
 ### PATCH METHOD DOES NOT WORK IN DJANGO
 
 Need to REwrite the view.py and serializers.py for this.

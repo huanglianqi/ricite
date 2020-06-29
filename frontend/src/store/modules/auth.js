@@ -4,11 +4,12 @@ const state = {
   status: '',
   token: sessionStorage.getItem('token') || '',
   user: {},
-  username: 'Unknown',
+  username: '登入账号',
   firstname: '',
   lastname: '',
   id: '',
-  email: ''
+  email: '',
+  subscribeEmails: []
 }
 
 const mutations = {
@@ -43,11 +44,14 @@ const mutations = {
   lastname (state, lastname) {
     state.lastname = lastname
   },
+  subscribeEmails (state, subscribeEmails) {
+    state.subscribeEmails = subscribeEmails
+  },
   idOut (state) {
     state.id = ''
   },
   usernameOut (state) {
-    state.username = 'Unknown'
+    state.username = '登入账号'
   },
   emailOut (state) {
     state.email = ''
@@ -57,6 +61,9 @@ const mutations = {
   },
   lastnameOut (state) {
     state.lastname = ''
+  },
+  subscribeEmailsOut (state) {
+    state.subscribeEmails = []
   }
 }
 
@@ -83,6 +90,10 @@ const actions = {
                 'username',
                 user.username
               )
+              sessionStorage.setItem(
+                'password',
+                user.password
+              )
               axios.defaults.headers.common = {
                 'Authorization': token
               }
@@ -99,6 +110,7 @@ const actions = {
               commit('auth_error')
               sessionStorage.removeItem('token')
               sessionStorage.removeItem('username')
+              sessionStorage.removeItem('password')
               reject(err)
             }
           )
@@ -114,8 +126,10 @@ const actions = {
         commit('emailOut')
         commit('firstnameOut')
         commit('lastnameOut')
+        commit('subscribeEmailsOut')
         sessionStorage.removeItem('token')
         sessionStorage.removeItem('username')
+        sessionStorage.removeItem('password')
         delete axios.defaults.headers.common['Authorization']
         resolve()
       }
@@ -125,7 +139,7 @@ const actions = {
     return new Promise(
       (resolve, reject) => {
         axios
-          .get(`users/${username}/`)
+          .get(`user/account/${username}/`)
           .then(
             res => {
               commit(
@@ -147,6 +161,10 @@ const actions = {
               commit(
                 'lastname',
                 res.data.last_name
+              )
+              commit(
+                'subscribeEmails',
+                res.data.subscribeEmails
               )
               resolve(res)
             }

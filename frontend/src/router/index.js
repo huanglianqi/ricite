@@ -7,6 +7,8 @@ import Home from '@/components/Home'
 import Login from '@/components/Login'
 import About from '@/components/About'
 import ResetPassword from '@/components/ResetPassword'
+import FeedbackCheck from '@/components/FeedbackCheck'
+import VolunteerManagement from '@/components/VolunteerManagement'
 
 Vue.use(Router)
 
@@ -17,13 +19,7 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home,
-      beforeEnter: (to, from, next) => {
-        if (
-          to.name !== 'Login' && store.state.auth.status !== 'success'
-        ) next({name: 'Login'})
-        else next()
-      }
+      component: Home
     },
     {
       path: '/login',
@@ -39,6 +35,28 @@ export default new Router({
       path: '/resetPassword',
       name: 'ResetPassword',
       component: ResetPassword
+    },
+    {
+      path: '/feedbackCheck',
+      name: 'FeedbackCheck',
+      component: FeedbackCheck,
+      beforeEnter: (to, from, next) => {
+        if (
+          to.name !== 'Login' && store.state.auth.status !== 'success'
+        ) next({name: 'Login'})
+        else next()
+      }
+    },
+    {
+      path: '/volunteerManagement',
+      name: 'VolunteerManagement',
+      component: VolunteerManagement,
+      beforeEnter: (to, from, next) => {
+        if (
+          to.name !== 'Login' && store.state.auth.status !== 'success'
+        ) next({name: 'Login'})
+        else next()
+      }
     }
   ]
 })

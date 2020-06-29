@@ -1,0 +1,62 @@
+from django.urls import path, include
+
+from .views import (
+    TeacherListAPIView,
+    TeacherRetrieveUpdateAPIView,
+    InfoFormListAPIView,
+    UserCourseListAPIView,
+    ApplyCourseListAPIView,
+    FeedbackFormListAPIView,
+    FeedbackFormRetrieveAPIView,
+    FeedbackUnitListAPIView,
+    FeedbackUnitRetrieveAPIView,
+    FeedbackPicAPIListView,
+    FeedbackPicRetrieveAPIView,
+)
+
+urlpatterns = [
+    path(
+        'list/',
+        TeacherListAPIView.as_view()
+    ),
+    path(
+        'detail/<int:pk>/',
+        TeacherRetrieveUpdateAPIView.as_view()
+    ),
+    path(
+        'info_form/',
+        InfoFormListAPIView.as_view()
+    ),
+    path(
+        'user_course/',
+        UserCourseListAPIView.as_view()
+    ),
+    path(
+        'apply_course/',
+        ApplyCourseListAPIView.as_view()
+    ),
+    path(
+        'feedback_form/',
+        FeedbackFormListAPIView.as_view()
+    ),
+    path(
+        'feedback_form_detail/<int:pk>',
+        FeedbackFormRetrieveAPIView.as_view()
+    ),
+    path(
+        'feedback_unit/',
+        FeedbackUnitListAPIView.as_view()
+    ),
+    path(
+        'feedback_unit_detail/<int:pk>',
+        FeedbackUnitRetrieveAPIView.as_view()
+    ),
+    path(
+        'feedback_pic/',
+        FeedbackPicAPIListView.as_view()
+    ),
+    path(
+        'feedback_pic_detail/<int:pk>',
+        FeedbackPicRetrieveAPIView.as_view()
+    ),
+]

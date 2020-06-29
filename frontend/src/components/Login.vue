@@ -1,28 +1,6 @@
 <template>
-  <div id="login">
-    <b-progress
-      variant="success"
-      :value="value"
-      :max="max"
-      class="mb-3"
-      height="3px">
-    </b-progress>
-    <b-alert
-      variant="success"
-      dismissble
-      fade
-      :show="dismissSuccessAlert"
-      @dismiss-count-down="changeSuccessAlert">
-      操作成功
-    </b-alert>
-    <b-alert
-      variant="danger"
-      dismissble
-      fade
-      :show="dismissFailAlert"
-      @dismiss-count-down="changeFailAlert">
-      操作失败
-    </b-alert>
+  <div
+    id="login">
     <b-jumbotron
       class="shadow-sm mx-auto m-5"
       style="max-width: 30rem;"
@@ -35,42 +13,51 @@
         nav-class="bg-light">
         <b-tab
           title="验证登入">
+          <b-progress
+            variant="success"
+            :value="value"
+            :max="max"
+            class="mt-3"
+            height="3px">
+          </b-progress>
           <b-form
-            class="mt-5"
             align="left"
             @submit="loginSubmit"
             @reset="loginReset">
             <b-input-group
               class="mt-3 mb-3">
-              <template
-                  v-slot:prepend>
-                  <b-input-group-text>
-                    <b-icon
-                      icon="person-fill"
-                      font-scale="1.25">
-                    </b-icon>
-                  </b-input-group-text>
-                </template>
+              <b-input-group-prepend>
+                <b-button
+                  variant="light"
+                  class="bg-light border-0">
+                  <b-icon
+                    icon="person-fill"
+                    font-scale="1.25">
+                  </b-icon>
+                </b-button>
+              </b-input-group-prepend>
               <b-form-input
                 id="login-username"
                 v-model="username"
                 required
                 :state="nameState"
                 trim
-                placeholder="请输入正确的用户名">
+                placeholder="请输入正确的用户名"
+                class="bg-light border-0">
               </b-form-input>
             </b-input-group>
             <b-input-group
               class="mt-3 mb-3">
-              <template
-                v-slot:prepend>
-                <b-input-group-text>
+              <b-input-group-prepend>
+                <b-button
+                  variant="light"
+                  class="bg-light border-0">
                   <b-icon
                     icon="lock-fill"
                     font-scale="1.25">
                   </b-icon>
-                </b-input-group-text>
-              </template>
+                </b-button>
+              </b-input-group-prepend>
               <b-form-input
                   id="login-password"
                   v-model="password"
@@ -78,7 +65,8 @@
                   type="password"
                   :state="nameState"
                   trim
-                  placeholder="请输入对应用户名的密码">
+                  placeholder="请输入对应用户名的密码"
+                  class="bg-light border-0">
               </b-form-input>
             </b-input-group>
             <b-button
@@ -88,7 +76,8 @@
               class="mt-4">
               <b-icon
                 icon="box-arrow-in-right"
-                class="mr-2">
+                class="float-left"
+                shift-v="-1.25">
               </b-icon>
               验证登入
             </b-button>
@@ -98,7 +87,8 @@
               block>
               <b-icon
                 icon="arrow-clockwise"
-                class="mr-2">
+                class="float-left"
+                shift-v="-1.25">
               </b-icon>
               重置输入
             </b-button>
@@ -106,31 +96,48 @@
         </b-tab>
         <b-tab
           title="找回密码">
+          <b-alert
+            variant="success"
+            dismissble
+            fade
+            :show="dismissSuccessAlert"
+            @dismiss-count-down="changeSuccessAlert">
+            请前往邮箱进行操作
+          </b-alert>
+          <b-alert
+            variant="danger"
+            dismissble
+            fade
+            :show="dismissFailAlert"
+            @dismiss-count-down="changeFailAlert">
+            无此邮箱绑定的账号
+          </b-alert>
           <b-jumbotron
             bg-variant="white">
             <b-form
-              class="mt-1"
               align="left"
               @submit="emailSubmit"
               @reset="emailReset">
               <b-input-group
-                class="mt-1 mb-3">
-                <template
-                  v-slot:prepend>
-                  <b-input-group-text>
+                class="mb-5">
+                <b-input-group-prepend>
+                  <b-button
+                    variant="light"
+                    class="bg-light">
                     <b-icon
                       icon="envelope-fill"
                       font-scale="1.25">
                     </b-icon>
-                  </b-input-group-text>
-                </template>
+                  </b-button>
+                </b-input-group-prepend>
                 <b-form-input
                   id="email"
                   v-model="email"
                   type="email"
                   required
                   trim
-                  placeholder="输入账号绑定的邮箱">
+                  placeholder="输入账号绑定的邮箱"
+                  class="bg-light border-0">
                 </b-form-input>
               </b-input-group>
               <b-button
@@ -139,6 +146,11 @@
                 block
                 class="mt-3 mb-3"
                 v-show="afterWait">
+                <b-icon
+                  icon="envelope-fill"
+                  class="float-left"
+                  shift-v="-1.25">
+                </b-icon>
                 发送重置密码链接至邮箱
               </b-button>
               <b-button
@@ -148,6 +160,11 @@
                 class="mt-3 mb-3"
                 v-show="waitTime"
                 disabled>
+                <b-icon
+                  icon="envelope-open-fill"
+                  class="float-left"
+                  shift-v="-1.25">
+                </b-icon>
                 请前往邮箱（重新发送 {{waitTime}}）
               </b-button>
               <b-button
@@ -155,6 +172,11 @@
                 variant="outline-danger"
                 block
                 class="mt-3 mb-3">
+                <b-icon
+                  icon="arrow-clockwise"
+                  class="float-left"
+                  shift-v="-1.25">
+                </b-icon>
                 重置输入
               </b-button>
             </b-form>
@@ -167,7 +189,6 @@
 
 <script>
 import Axios from 'axios'
-// @ is an alias to /src
 
 export default {
   name: 'login',
@@ -230,11 +251,6 @@ export default {
             this.$router.push(
               '/'
             )
-          }
-        )
-        .catch(
-          err => {
-            console.log(err)
           }
         )
     },

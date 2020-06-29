@@ -86,7 +86,6 @@
 
 <script>
 import Axios from 'axios'
-// @ is an alias to /src
 
 export default {
   name: 'resetPassword',

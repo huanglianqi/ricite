@@ -1,15 +1,22 @@
 from django.contrib.auth.forms import User
 
+from .models import SubscribeEmail
+
 from django.dispatch import receiver
 from django.urls import reverse
 from django_rest_passwordreset.signals import (
     reset_password_token_created,
     post_password_reset,
 )
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-from .serializers import UserSerializer
+from .serializers import (
+    UserSerializer,
+    SubscribeEmailSerializer
+)
+
 from rest_framework.generics import (
     GenericAPIView,
 )
@@ -31,9 +38,7 @@ class UserRetrieveUpdateAPIView(
 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = [IsAuthenticated]
     lookup_field = 'username'
 
     def patch(self, request, *args, **kwargs):
@@ -72,7 +77,7 @@ class UserPasswordResetAPIView(GenericAPIView):
             # email_plaintext_message,
             "Reset Password",
             # from:
-            "admin@ricifoundation.com",
+            "huanglianqi@ricifoundation.com",
             # to:
             [reset_password_token.user.email]
         )
@@ -102,3 +107,22 @@ class UserPasswordResetAPIView(GenericAPIView):
         )
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
+
+
+class SubscribeEmailRetrieveUpdateAPIView(
+    GenericAPIView,
+    RetrieveModelMixin,
+    UpdateModelMixin
+):
+    queryset = SubscribeEmail.objects.all()
+    serializer_class = SubscribeEmailSerializer
+    permission_classes = [
+        IsAuthenticated
+    ]
+    lookup_field = 'name'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
