@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import AccountProfile from '@/components/Accountprofile.vue'
+import AccountProfile from '@/components/AccountProfile.vue'
 import NavMenu from '@/components/NavMenu.vue'
 
 export default {
