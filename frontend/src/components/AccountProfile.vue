@@ -14,7 +14,8 @@
       id="accountProfile_sidebar"
       :title="username"
       shadow
-      backdrop>
+      backdrop
+      v-model="show">
       <b-jumbotron
         bg-variant="light">
         <div
@@ -349,7 +350,8 @@ export default {
         {text: '反馈数据 ｜ 周报', value: 'feedback_weekly'},
         {text: '反馈数据 ｜ 月报', value: 'feedback_monthly'}
       ],
-      subscriptionList_sec: []
+      subscriptionList_sec: [],
+      show: false
     }
   },
   computed: {
@@ -417,7 +419,7 @@ export default {
     },
     login () {
       if (this.$router.currentRoute.path === '/login') {
-        this.$router.go()
+        this.show = false
       } else {
         this.$router.push('/login')
       }
