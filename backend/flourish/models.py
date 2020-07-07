@@ -6,11 +6,15 @@ class Teacher(models.Model):
     user_id = models.CharField(
         max_length=100
     )
+
+    # wechat name
     name = models.CharField(
         max_length=100,
         null=True,
         blank=True
     )
+
+    # real name
     real_name = models.CharField(
         max_length=100,
         null=True,

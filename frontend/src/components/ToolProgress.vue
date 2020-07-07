@@ -6,7 +6,8 @@
       :max="max">
       <b-progress-bar
         :value="value"
-        :label="`${(value / max * 100).toFixed(2)}%`">
+        :label="`${(value / max * 100).toFixed(2)}%`"
+        :variant="variant">
       </b-progress-bar>
     </b-progress>
   </div>
@@ -23,6 +24,13 @@ export default {
     value: {
       type: Number,
       required: true
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: () => {
+        return 'success'
+      }
     }
   }
 }

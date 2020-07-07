@@ -2,14 +2,13 @@
   <div
     id="course">
     <t-menu
-      :tag-name-dropdown-title="tagTitle"
-      :tag-name-dropdown-value="tagValue"
-      :tag-name-select-item="selectTag"
-      :term-num-dropdown-title="termTitle"
-      :term-num-dropdown-value="termValue"
-      :term-num-select-item="selectTerm"
-      :search-keyword="keyword"
-      :input-keyword="inputKeyword">
+      :type-dropdown-title="tagTitle"
+      :type-dropdown-value="tagValue"
+      :type-select="selectTag"
+      :time-dropdown-title="termTitle"
+      :time-dropdown-value="termValue"
+      :time-select="selectTerm"
+      :keyword="keyword">
     </t-menu>
     <t-card-group>
       <b-card
@@ -442,8 +441,11 @@ export default {
   },
   methods: {
     // search func
-    inputKeyword (keyword) {
+    search (keyword) {
       this.keyword = keyword
+    },
+    reset (keyword) {
+      this.keyword = ''
     },
     // readable
     time_readable (time) {

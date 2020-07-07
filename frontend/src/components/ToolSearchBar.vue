@@ -1,29 +1,35 @@
 <template>
   <div
     id="toolSearchBar">
-    <b-input-group>
-      <b-input-group-prepend>
-        <b-button
-          variant="light">
-          <b-icon
-            icon="search">
-          </b-icon>
-        </b-button>
-      </b-input-group-prepend>
-      <b-form-input
-        class="bg-light border-0"
-        :id="searchId"
-        :v-model="searchKeyword">
-      </b-form-input>
-      <b-input-group-append>
-        <b-button
-          variant="light">
-          <b-icon
-            icon="X">
-          </b-icon>
-        </b-button>
-      </b-input-group-append>
-    </b-input-group>
+    <b-form
+      @submit="searchFunc(keyword)"
+      @reset="reset(keyword)">
+      <b-input-group>
+        <b-input-group-prepend>
+          <b-button
+            variant="light"
+            type="submit">
+            <b-icon
+              icon="search">
+            </b-icon>
+          </b-button>
+        </b-input-group-prepend>
+        <b-form-input
+          class="bg-light border-0"
+          :id="id"
+          v-model="keyword">
+        </b-form-input>
+        <b-input-group-append>
+          <b-button
+            variant="light"
+            type="reset">
+            <b-icon
+              icon="X">
+            </b-icon>
+          </b-button>
+        </b-input-group-append>
+      </b-input-group>
+    </b-form>
   </div>
 </template>
 
@@ -31,22 +37,25 @@
 export default {
   name: 'toolSearchBar',
   props: {
-    searchKeyword: {
+    id: {
       type: String,
-      required: false
+      required: true
     },
-    searchId: {
+    keyword: {
       type: String,
-      required: false
+      required: true
     },
-    inputKeyword: {
+    search: {
       type: Function,
       required: true
     }
   },
-  watch: {
-    searchKeyword (keyword) {
-      this.inputKeyword(keyword)
+  methods: {
+    searchFunc (keyword) {
+      this.search(keyword)
+    },
+    reset () {
+      this.keyword = ''
     }
   }
 }

@@ -4,31 +4,31 @@
     <b-dropdown
       block
       no-caret
-      :variant="dropdownVariant">
+      :variant="variant">
       <template
         v-slot:button-content>
         <div
-          v-on:click="toolDropdown_down=true">
+          v-on:click="toolDropdownDown=true">
           <b-icon
             :icon="iconUp"
-            class="float-left"
-            v-show="!toolDropdown_down">
+            class="float-left mr-2"
+            v-show="!toolDropdownDown">
           </b-icon>
           <b-icon
             :icon="iconDown"
-            class="float-left"
-            v-show="toolDropdown_down">
+            class="float-left mr-2"
+            v-show="toolDropdownDown">
           </b-icon>
           {{title}}
           <b-icon
-            class="float-right"
+            class="float-right ml-1"
             icon="caret-left-fill"
-            v-show="!toolDropdown_down">
+            v-show="!toolDropdownDown">
           </b-icon>
           <b-icon
-            class="float-right"
+            class="float-right ml-1"
             icon="caret-down-fill"
-            v-show="toolDropdown_down">
+            v-show="toolDropdownDown">
           </b-icon>
         </div>
       </template>
@@ -51,7 +51,7 @@
 export default {
   name: 'toolDropdown',
   props: {
-    dropdownVariant: {
+    variant: {
       type: String,
       required: true
     },
@@ -90,14 +90,14 @@ export default {
   },
   data () {
     return {
-      toolDropdown_down: false
+      toolDropdownDown: false
     }
   },
   mounted () {
     this.$root.$on(
       'bv::dropdown::hide',
       () => {
-        this.toolDropdown_down = false
+        this.toolDropdownDown = false
       }
     )
   },

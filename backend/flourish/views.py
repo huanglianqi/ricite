@@ -16,6 +16,9 @@ from .serializers import (
     FeedbackFormSerializer,
     FeedbackUnitSerializer,
     FeedbackPicSerializer,
+    UserCourseSerializerTeacherInfo,
+    ApplyCourseSerializerTeacherInfo,
+    TeacherSerializerUserCourse,
 )
 
 from rest_framework.generics import(
@@ -29,11 +32,14 @@ from rest_framework.mixins import (
 )
 from rest_framework.permissions import (
     IsAuthenticated,
+    AllowAny
 )
 
 from rest_framework import filters
 
 from django_filters.rest_framework import DjangoFilterBackend
+
+from django.db.models import Q
 
 
 class TeacherListAPIView(ListAPIView):
@@ -72,6 +78,7 @@ class TeacherRetrieveUpdateAPIView(
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    # use for modify is_fake
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
@@ -178,9 +185,255 @@ class FeedbackPicAPIListView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 class FeedbackPicRetrieveAPIView(RetrieveAPIView):
-    queryset =FeedbackPic.objects.all()
+    queryset = FeedbackPic.objects.all()
     serializer_class = FeedbackPicSerializer
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+
+# return instance which applycourse is not exist
+def applycourseNotExist(instance):
+    try:
+        instance.applycourse
+        return None
+    except ApplyCourse.DoesNotExist:
+        return instance
+
+
+def applycourseExist(instance):
+    try:
+        instance.applycourse
+        return instance
+    except ApplyCourse.DoesNotExist:
+        return None
+
+
+# get the list of teachers
+# who have course
+# but not sign protocal
+# in certain term
+# Each item in list is UserCourseSerializer instance
+class NoProtocalListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+
+        # item filter by term and applycourse exist
+        # sign protocal will create one ApplyCourse instance related to item
+        return list(
+            filter(
+                lambda item: applycourseNotExist(item),
+                UserCourse.objects.filter(
+                    term_num=term
+                )
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+# get list of teacher
+# who have not feedback for course
+# in certain term
+# Each item in list is UserCourseSerializer instance
+class NoFeedbackListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+
+        # item filter by term and feedback form list is empty
+        # have feedback will put certain FeedbackForm instance into feedback_forms list
+        # sum feedback forms = course_num + ONE finish form !!!
+        return list(
+            filter(
+                lambda item: item.feedback_forms.count() == 0,
+                list(
+                    filter(
+                        lambda item: applycourseExist(item),
+                        UserCourse.objects.filter(
+                            term_num=term
+                        )
+                    )
+                )
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+# get list of teachers
+# who have feedback for course
+# but not complete all feedback form
+# in certain term
+# Each item in list is UserCourseSerializer instance
+class NoAllFeedbackListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+
+        # item filter by term and length of feedback form list less than course_num and more than 0
+        # sum feedback forms = course_num + ONE finish form !!!
+        return list(
+            filter(
+                lambda item: item.feedback_forms.count() < item.course_num + 1 and item.feedback_forms.count() > 0,
+                UserCourse.objects.filter(
+                    term_num=term
+                )
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+# get list of teachers
+# who have totally completed all feedback forms
+# in certain term
+# Each item in list is UserCourseSerializer instance
+class IsAllFeedbackListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+
+        # item filter by term and length of feedback form list less than course_num
+        # sum feedback forms = course_num + one finish forms
+        # sum feedback forms = course_num + ONE finish form !!!
+        return list(
+            filter(
+                lambda item: item.feedback_forms.count() == item.course_num + 1,
+                UserCourse.objects.filter(
+                    term_num=term
+                )
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+# if course num less than or eq to 3, teachers must complete all feedback forms
+# if course num less than or eq to 7 and more than 3, teachers can skip ONE feedback form for some reason
+# if course num more than or eq to 8, can skip TWO
+# if True, will return a item instance
+def NoFinishCourse(item):
+    feedback_num = item.feedback_forms.count()
+    course_num = item.course_num
+    if feedback_num > 0:
+        if course_num <= 3:
+            return feedback_num < course_num
+        elif course_num > 3 and course_num <= 7:
+            return feedback_num < course_num - 1
+        else:
+            return feedback_num < course_num - 2
+    else:
+        return False
+
+def FinishCourse(item):
+    if item.course_num <= 3:
+        return item.feedback_forms.count() >= item.course_num
+    elif item.course_num > 3 and item.course_num <= 7:
+        return item.feedback_forms.count() >= item.course_num - 1
+    else:
+        return item.feedback_forms.count() >= item.course_num - 2
+
+
+class NoFinishCourseListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+
+        return list(
+            filter(
+                lambda item: NoFinishCourse(item),
+                UserCourse.objects.filter(
+                    term_num=term
+                )
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class FinishCourseListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+
+        return list(
+            filter(
+                lambda item: FinishCourse(item),
+                UserCourse.objects.filter(
+                    term_num=term
+                )
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+def searchTeacher(keyword):
+    return Teacher.objects.filter(
+            Q(real_name__contains=keyword) |
+            Q(phone__contains=keyword) |
+            Q(name__contains=keyword),
+            is_fake=False
+        )
+
+
+class SearchUserCourseListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        keyword = self.kwargs['keyword']
+        term = self.kwargs['term']
+        tag = self.kwargs['tag']
+
+        teacherList = Teacher.objects.filter(
+            Q(real_name__contains=keyword) |
+            Q(phone__contains=keyword) |
+            Q(name__contains=keyword),
+            is_fake=False
+        )
+
+        userCourseList = []
+
+        for teacher in teacherList:
+            for userCourse in teacher.userCourses.all():
+                userCourseList.append(userCourse)
+
+        if tag == 'all':
+            return list(
+                filter(
+                    lambda item: item.term_num == term,
+                    userCourseList
+                )
+            )
+        else:
+            return list(
+                filter(
+                    lambda item: item.term_num == term and item.tag_name == tag,
+                    userCourseList
+                )
+            )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

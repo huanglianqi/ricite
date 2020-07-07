@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from .views import (
     TeacherListAPIView,
@@ -12,6 +12,13 @@ from .views import (
     FeedbackUnitRetrieveAPIView,
     FeedbackPicAPIListView,
     FeedbackPicRetrieveAPIView,
+    NoProtocalListAPIView,
+    NoFeedbackListAPIView,
+    NoAllFeedbackListAPIView,
+    IsAllFeedbackListAPIView,
+    NoFinishCourseListAPIView,
+    FinishCourseListAPIView,
+    SearchUserCourseListAPIView,
 )
 
 urlpatterns = [
@@ -59,4 +66,32 @@ urlpatterns = [
         'feedback_pic_detail/<int:pk>',
         FeedbackPicRetrieveAPIView.as_view()
     ),
+    re_path(
+        r'^no_protocal_list/(?P<term>.+)/$',
+        NoProtocalListAPIView.as_view()
+    ),
+    re_path(
+        r'^no_feedback_list/(?P<term>.+)/$',
+        NoFeedbackListAPIView.as_view()
+    ),
+    re_path(
+        r'^no_all_feedback_list/(?P<term>.+)/$',
+        NoAllFeedbackListAPIView.as_view()
+    ),
+    re_path(
+        r'is_all_feedback_list/(?P<term>.+)/$',
+        IsAllFeedbackListAPIView.as_view()
+    ),
+    re_path(
+        r'no_finish_course_list/(?P<term>.+)/$',
+        NoFinishCourseListAPIView.as_view()
+    ),
+    re_path(
+        r'finish_course_list/(?P<term>.+)/$',
+        FinishCourseListAPIView.as_view()
+    ),
+    re_path(
+        r'search_usercourse/(?P<keyword>.+)/(?P<term>.+)/(?P<tag>.+)/$',
+        SearchUserCourseListAPIView.as_view()
+    )
 ]

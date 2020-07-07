@@ -87,7 +87,8 @@ HEADERS = {
 @periodic_task(
     run_every=(
         crontab(
-            minute='*/30'
+            minute=0,
+            hour=0
         )
     ),
     name="Update_Teacher_Info",

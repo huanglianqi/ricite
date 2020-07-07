@@ -8,47 +8,43 @@
         id="toolMenuMobile">
         <b-row
           class="text-left font-weight-bolder my-2">
-          教师
+          {{searchBtnName}}
         </b-row>
         <b-row>
-          <t-searchBar
-            :search-keyword="searchKeyword"
-            search-id="mobile-search"
-            :input-keyword="inputKeywordFunc">
-          </t-searchBar>
+          <slot></slot>
         </b-row>
         <b-row
           class="text-left font-weight-bolder my-2">
-          课程
+          {{typeName}}
         </b-row>
         <b-row>
           <t-dropdown
-            dropdown-variant="outline-success"
+            variant="outline-success"
             icon-up="folder-check"
             icon-down="folder-plus"
-            :title="tagNameDropdownTitle"
-            :value="tagNameDropdownValue"
-            first-item-title="全部课程"
-            first-item-value=""
-            :item-list="tagNameItemList"
-            :select-item-func="tagNameSelectItemFunc">
+            :title="typeDropdownTitle"
+            :value="typeDropdownValue"
+            :first-item-title="firstTypeTitle"
+            :first-item-value="firstTypeValue"
+            :item-list="typeList"
+            :select-item-func="typeSelectItemFunc">
           </t-dropdown>
         </b-row>
         <b-row
           class="text-left font-weight-bolder my-2">
-          学期
+          {{timeName}}
         </b-row>
         <b-row>
           <t-dropdown
-            dropdown-variant="outline-info"
+            variant="outline-info"
             icon-up="calendar-check-fill"
             icon-down="calendar-plus-fill"
-            :title="termNumDropdownTitle"
-            :value="termNumDropdownValue"
-            first-item-title="全部学期"
-            first-item-value=""
-            :item-list="termNumItemList"
-            :select-item-func="termNumSelectItemFunc">
+            :title="timeDropdownTitle"
+            :value="timeDropdownValue"
+            :first-item-title="firstTimeTitle"
+            :first-item-value="firstTimeValue"
+            :item-list="termList"
+            :select-item-func="timeSelectItemFunc">
           </t-dropdown>
         </b-row>
       </div>
@@ -57,47 +53,43 @@
         <b-row
           class="text-left font-weight-bolder my-2">
           <b-col>
-            教师
+            {{searchBtnName}}
           </b-col>
           <b-col>
-            课程
+            {{typeName}}
           </b-col>
           <b-col>
-            学期
+            {{timeName}}
           </b-col>
         </b-row>
         <b-row>
           <b-col>
-            <t-searchBar
-              :search-keyword="searchKeyword"
-              search-id="desktop-search"
-              :input-keyword="inputKeywordFunc">
-            </t-searchBar>
+            <slot></slot>
           </b-col>
           <b-col>
             <t-dropdown
-              dropdown-variant="outline-success"
+              variant="outline-success"
               icon-up="folder-check"
               icon-down="folder-plus"
-              :title="tagNameDropdownTitle"
-              :value="tagNameDropdownValue"
-              first-item-title="全部课程"
-              first-item-value=""
-              :item-list="tagNameItemList"
-              :select-item-func="tagNameSelectItemFunc">
+              :title="typeDropdownTitle"
+              :value="typeDropdownValue"
+              :first-item-title="firstTypeTitle"
+              :first-item-value="firstTypeValue"
+              :item-list="typeList"
+              :select-item-func="typeSelectItemFunc">
             </t-dropdown>
           </b-col>
           <b-col>
             <t-dropdown
-              dropdown-variant="outline-info"
+              variant="outline-info"
               icon-up="calendar-check-fill"
               icon-down="calendar-plus-fill"
-              :title="termNumDropdownTitle"
-              :value="termNumDropdownValue"
-              first-item-title="全部学期"
-              first-item-value=""
-              :item-list="termNumItemList"
-              :select-item-func="termNumSelectItemFunc">
+              :title="timeDropdownTitle"
+              :value="timeDropdownValue"
+              :first-item-title="firstTimeTitle"
+              :first-item-value="firstTimeValue"
+              :item-list="termList"
+              :select-item-func="timeSelectItemFunc">
             </t-dropdown>
           </b-col>
         </b-row>
@@ -108,44 +100,87 @@
 
 <script>
 import ToolDropdownVue from './ToolDropdown.vue'
-import ToolSearchBarVue from './ToolSearchBar.vue'
 
 export default {
   name: 'toolMenu',
   components: {
-    't-dropdown': ToolDropdownVue,
-    't-searchBar': ToolSearchBarVue
+    't-dropdown': ToolDropdownVue
   },
   props: {
-    tagNameDropdownTitle: {
+    typeName: {
+      type: String,
+      required: false,
+      default: () => {
+        return '课程'
+      }
+    },
+    typeDropdownTitle: {
       type: String,
       required: true
     },
-    tagNameDropdownValue: {
+    typeDropdownValue: {
       type: String,
       required: false
     },
-    tagNameSelectItem: {
+    typeSelect: {
       type: Function,
       required: true
     },
-    termNumDropdownTitle: {
+    firstTypeTitle: {
+      type: String,
+      required: false,
+      default: () => {
+        return '全部课程'
+      }
+    },
+    firstTypeValue: {
+      type: String,
+      required: false,
+      default: () => {
+        return ''
+      }
+    },
+    timeName: {
+      type: String,
+      required: false,
+      default: () => {
+        return '学期'
+      }
+    },
+    timeDropdownTitle: {
       type: String,
       required: true
     },
-    termNumDropdownValue: {
+    timeDropdownValue: {
       type: String,
       required: false
     },
-    termNumSelectItem: {
+    timeSelect: {
       type: Function,
       required: true
     },
-    searchKeyword: {
+    firstTimeTitle: {
       type: String,
-      required: false
+      required: false,
+      default: () => {
+        return '全部学期'
+      }
     },
-    tagNameItemList: {
+    firstTimeValue: {
+      type: String,
+      required: false,
+      default: () => {
+        return ''
+      }
+    },
+    searchBtnName: {
+      type: String,
+      required: false,
+      default: () => {
+        return '教师'
+      }
+    },
+    typeList: {
       type: Array,
       required: false,
       default: () => {
@@ -158,7 +193,7 @@ export default {
         ]
       }
     },
-    termNumItemList: {
+    termList: {
       type: Array,
       required: false,
       default: () => {
@@ -178,10 +213,6 @@ export default {
         }
         return ls
       }
-    },
-    inputKeyword: {
-      type: Function,
-      required: true
     }
   },
   computed: {
@@ -204,31 +235,11 @@ export default {
     }
   },
   methods: {
-    term_num_list_ () {
-      let ls = []
-      let yearDelta = new Date().getFullYear() - 2019
-      for (let i = 0; i <= yearDelta; i++) {
-        ls.push(
-          {
-            title: `${2019 + i}年春季学期`,
-            value: `${i * 2}`
-          },
-          {
-            title: `${2019 + i}年秋季学期`,
-            value: `${i * 2 + 1}`
-          }
-        )
-      }
-      return ls
+    typeSelectItemFunc (title, value) {
+      this.typeSelect(title, value)
     },
-    tagNameSelectItemFunc (title, value) {
-      this.tagNameSelectItem(title, value)
-    },
-    termNumSelectItemFunc (title, value) {
-      this.termNumSelectItem(title, value)
-    },
-    inputKeywordFunc (keyword) {
-      this.inputKeyword(keyword)
+    timeSelectItemFunc (title, value) {
+      this.timeSelect(title, value)
     }
   }
 }

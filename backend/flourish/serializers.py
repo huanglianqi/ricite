@@ -73,3 +73,66 @@ class FeedbackPicSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedbackPic
         fields = '__all__'
+
+
+# return data noly contains question and answer
+class BaseInfoFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoForm
+        fields = [
+            'field_name',
+            'field_value'
+        ]
+
+
+# return data contains
+# full Teacher data and InfoForm which related to
+class TeacherSerializerInfo(serializers.ModelSerializer):
+    infoForms = BaseInfoFormSerializer(many=True,read_only=True)
+    class Meta:
+        model = Teacher
+        fields = '__all__'
+
+
+# return data contains
+# full UserCourse data and TeacherInfo which related to
+class UserCourseSerializerTeacherInfo(serializers.ModelSerializer):
+    teacher = TeacherSerializerInfo(read_only=True)
+    feedback_forms = FeedbackFormSerializer(
+        many=True,
+        read_only=True
+    )
+    class Meta:
+        model = UserCourse
+        fields = '__all__'
+
+
+# return data contains
+# full ApplyCourse data and TeacherInfo which related to
+class ApplyCourseSerializerTeacherInfo(serializers.ModelSerializer):
+    teacher = TeacherSerializerInfo(read_only=True)
+    class Meta:
+        model = ApplyCourse
+        fields = '__all__'
+
+
+class UserCourseSerializerFeedbackForm(serializers.ModelSerializer):
+    feedback_forms = FeedbackFormSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = UserCourse
+        fields = '__all__'
+
+
+class TeacherSerializerUserCourse(serializers.ModelSerializer):
+    userCourses = UserCourseSerializer(
+        read_only=True,
+        many=True
+    )
+
+    class Meta:
+        model = Teacher
+        fields = '__all__'
