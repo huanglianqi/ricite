@@ -458,6 +458,14 @@
             class="ml-1 mt-1 mb-1 font-weight-bolder">
             总课时：{{item.course_num}} + 1
           </b-row>
+          <b-row>
+            <b-button
+              variant="outlint-danger"
+              v-on:click="delDetailItem(item.id)">
+              <b-icon
+                icon="trash"></b-icon>
+            </b-button>
+          </b-row>
         </div>
       </b-container>
       <b-container
@@ -470,7 +478,7 @@
           <b-row
             class="font-weight-bolder shadow-sm bg-light mb-3 p-3">
             <b-col
-              cols="4">
+              cols="3">
               <b-img
                 :src="item.teacher.head_img"
                 :alt="item.teacher.head_img"
@@ -498,6 +506,19 @@
                     :max="item.course_num + 1"
                     variant="success">
                   </b-progress>
+                </b-col>
+              </b-row>
+            </b-col>
+            <b-col
+              cols="1">
+              <b-row>
+                <b-col>
+                  <b-button
+                    variant="outline-danger"
+                    v-on:click="delDetailItem(item.id)">
+                    <b-icon
+                      icon="trash"></b-icon>
+                  </b-button>
                 </b-col>
               </b-row>
             </b-col>
@@ -665,6 +686,23 @@ export default {
     }
   },
   methods: {
+    delDetailItem (id) {
+      Axios
+        .patch(
+          `flourish/update_usercourse/${id}`,
+          {
+            is_fake: true
+          }
+        )
+        .catch(
+          err => {
+            if (String(err).indexOf('401')) {
+              this.autoLogin()
+              this.delDetailItem(id)
+            }
+          }
+        )
+    },
     search () {
       Axios
         .get(

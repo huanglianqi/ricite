@@ -78,6 +78,13 @@ export default {
         },
         {
           id: 'navMenu_item_4',
+          variant: 'outline-secondary',
+          path: '/pictureManage',
+          icon: 'images',
+          name: '图片管理'
+        },
+        {
+          id: 'navMenu_item_5',
           variant: 'outline-dark',
           path: '/about',
           icon: 'info-circle-fill',

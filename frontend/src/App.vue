@@ -40,6 +40,16 @@
       </router-link>
       |
       <router-link
+        to='/pictureManage'>
+        <b-icon
+          icon="images"
+          scale="1.25"
+          aria-hidden="true">
+        </b-icon>
+        图片
+      </router-link>
+      |
+      <router-link
         to='/about'>
         <b-icon
           icon="info-circle-fill"

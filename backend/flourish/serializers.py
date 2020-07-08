@@ -136,3 +136,67 @@ class TeacherSerializerUserCourse(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
+
+
+'''
+ FeedbackPicSerializer needs picture url(FeedbackPic),
+ create time(FeedbackForm), tag name(user course),
+ real name(teacher), school(info form).
+'''
+class infoFormSerializerForPic(serializers.ModelSerializer):
+    class Meta:
+        model = InfoForm
+        fields = [
+            'field_value',
+            'field_id'
+        ]
+
+class TeacherSerializerForPic(serializers.ModelSerializer):
+    infoForms = infoFormSerializerForPic(
+        read_only=True,
+        many=True
+    )
+
+    class Meta:
+        model = Teacher
+        fields = [
+            'infoForms',
+            'real_name',
+            'phone',
+            'head_img'
+        ]
+
+
+class UserCourseSerializerForPic(serializers.ModelSerializer):
+    class Meta:
+        model = UserCourse
+        fields = [
+            'tag_name'
+        ]
+
+
+
+class FeedbackFormSerializerForPic(serializers.ModelSerializer):
+    class Meta:
+        model = FeedbackForm
+        fields = [
+            'create_time'
+        ]
+
+
+class FeedbackPicCollectSerializer(serializers.ModelSerializer):
+    feedback_form = FeedbackFormSerializerForPic(
+        read_only=True
+    )
+    teacher = TeacherSerializerForPic(read_only=True)
+    user_course = UserCourseSerializerForPic(read_only=True)
+
+    class Meta:
+        model = FeedbackPic
+        fields = [
+            'pic_url',
+            'feedback_form',
+            'teacher',
+            'user_course',
+            'id'
+        ]

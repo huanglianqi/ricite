@@ -9,6 +9,7 @@ import About from '@/components/About'
 import ResetPassword from '@/components/ResetPassword'
 import FeedbackCheck from '@/components/FeedbackCheck'
 import VolunteerManagement from '@/components/VolunteerManagement'
+import PictureManage from '@/components/PictureManage'
 
 Vue.use(Router)
 
@@ -51,6 +52,17 @@ export default new Router({
       path: '/volunteerManagement',
       name: 'VolunteerManagement',
       component: VolunteerManagement,
+      beforeEnter: (to, from, next) => {
+        if (
+          to.name !== 'Login' && store.state.auth.status !== 'success'
+        ) next({name: 'Login'})
+        else next()
+      }
+    },
+    {
+      path: '/pictureManage',
+      name: 'PictureManage',
+      component: PictureManage,
       beforeEnter: (to, from, next) => {
         if (
           to.name !== 'Login' && store.state.auth.status !== 'success'

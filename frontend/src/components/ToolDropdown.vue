@@ -73,7 +73,7 @@ export default {
     },
     firstItemTitle: {
       type: String,
-      required: true
+      required: false
     },
     firstItemValue: {
       type: String,

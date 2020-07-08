@@ -97,6 +97,9 @@ class UserCourse(models.Model):
         on_delete=models.CASCADE,
         related_name='userCourses'
     )
+    is_fake = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
         return '{0} | {1} | 学期：{2}'.format(

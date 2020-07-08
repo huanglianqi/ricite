@@ -19,6 +19,8 @@ from .views import (
     NoFinishCourseListAPIView,
     FinishCourseListAPIView,
     SearchUserCourseListAPIView,
+    UserCourseUpdateAPIView,
+    FeedbackPicCollectListAPIView,
 )
 
 urlpatterns = [
@@ -93,5 +95,13 @@ urlpatterns = [
     re_path(
         r'search_usercourse/(?P<keyword>.+)/(?P<term>.+)/(?P<tag>.+)/$',
         SearchUserCourseListAPIView.as_view()
-    )
+    ),
+    path(
+        'update_usercourse/<int:pk>',
+        UserCourseUpdateAPIView.as_view()
+    ),
+    re_path(
+        r'feedback_pic_collect/(?P<endDate>.+)/(?P<startDate>.+)/$',
+        FeedbackPicCollectListAPIView.as_view()
+    ),
 ]

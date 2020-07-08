@@ -5,7 +5,6 @@
       :id="id"
       centered
       size='xl'
-      scrollable
       ok-only
       ok-variant="outline-success"
       body-bg-variant="light"

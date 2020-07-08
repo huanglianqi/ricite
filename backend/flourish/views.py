@@ -19,11 +19,13 @@ from .serializers import (
     UserCourseSerializerTeacherInfo,
     ApplyCourseSerializerTeacherInfo,
     TeacherSerializerUserCourse,
+    FeedbackPicCollectSerializer,
 )
 
 from rest_framework.generics import(
     GenericAPIView,
     RetrieveAPIView,
+    UpdateAPIView,
     ListAPIView,
 )
 from rest_framework.mixins import (
@@ -40,6 +42,8 @@ from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 from django.db.models import Q
+
+from datetime import datetime
 
 
 class TeacherListAPIView(ListAPIView):
@@ -86,7 +90,7 @@ class TeacherRetrieveUpdateAPIView(
 class InfoFormListAPIView(ListAPIView):
     queryset = InfoForm.objects.all()
     serializer_class = InfoFormSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     filter_backends = [
         DjangoFilterBackend
     ]
@@ -134,7 +138,7 @@ class FeedbackFormRetrieveAPIView(RetrieveAPIView):
 class FeedbackFormListAPIView(ListAPIView):
     queryset = FeedbackForm.objects.all()
     serializer_class = FeedbackFormSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         '_user_course_id',
@@ -174,7 +178,7 @@ class FeedbackUnitListAPIView(ListAPIView):
 class FeedbackPicAPIListView(ListAPIView):
     queryset = FeedbackPic.objects.all()
     serializer_class = FeedbackPicSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'user_id',
@@ -228,7 +232,8 @@ class NoProtocalListAPIView(ListAPIView):
             filter(
                 lambda item: applycourseNotExist(item),
                 UserCourse.objects.filter(
-                    term_num=term
+                    term_num=term,
+                    is_fake=False
                 )
             )
         )
@@ -258,7 +263,8 @@ class NoFeedbackListAPIView(ListAPIView):
                     filter(
                         lambda item: applycourseExist(item),
                         UserCourse.objects.filter(
-                            term_num=term
+                            term_num=term,
+                            is_fake=False
                         )
                     )
                 )
@@ -287,7 +293,8 @@ class NoAllFeedbackListAPIView(ListAPIView):
             filter(
                 lambda item: item.feedback_forms.count() < item.course_num + 1 and item.feedback_forms.count() > 0,
                 UserCourse.objects.filter(
-                    term_num=term
+                    term_num=term,
+                    is_fake=False
                 )
             )
         )
@@ -314,7 +321,8 @@ class IsAllFeedbackListAPIView(ListAPIView):
             filter(
                 lambda item: item.feedback_forms.count() == item.course_num + 1,
                 UserCourse.objects.filter(
-                    term_num=term
+                    term_num=term,
+                    is_fake=False
                 )
             )
         )
@@ -360,7 +368,8 @@ class NoFinishCourseListAPIView(ListAPIView):
             filter(
                 lambda item: NoFinishCourse(item),
                 UserCourse.objects.filter(
-                    term_num=term
+                    term_num=term,
+                    is_fake=False
                 )
             )
         )
@@ -389,15 +398,6 @@ class FinishCourseListAPIView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-def searchTeacher(keyword):
-    return Teacher.objects.filter(
-            Q(real_name__contains=keyword) |
-            Q(phone__contains=keyword) |
-            Q(name__contains=keyword),
-            is_fake=False
-        )
-
-
 class SearchUserCourseListAPIView(ListAPIView):
     serializer_class = UserCourseSerializerTeacherInfo
     permission_classes = [AllowAny]
@@ -423,17 +423,53 @@ class SearchUserCourseListAPIView(ListAPIView):
         if tag == 'all':
             return list(
                 filter(
-                    lambda item: item.term_num == term,
+                    lambda item: item.term_num == term and item.is_fake == False,
                     userCourseList
                 )
             )
         else:
             return list(
                 filter(
-                    lambda item: item.term_num == term and item.tag_name == tag,
+                    lambda item: item.term_num == term and item.tag_name == tag and item.is_fake == False,
                     userCourseList
                 )
             )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class UserCourseUpdateAPIView(UpdateAPIView):
+    serializer_class = UserCourseSerializer
+    permission_classes = [AllowAny]
+    queryset = UserCourse.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
+class FeedbackPicCollectListAPIView(ListAPIView):
+    serializer_class = FeedbackPicCollectSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        startDate = datetime.fromisoformat(self.kwargs['startDate'])
+        endDate = datetime.fromisoformat(self.kwargs['endDate'])
+
+        feedbackFormList = list(
+            filter(
+                lambda item: item.create_time >= startDate and item.create_time <= endDate,
+                FeedbackForm.objects.all()
+            )
+        )
+
+        feedbackPicList = []
+
+        for form in feedbackFormList:
+            for pic in form.feedback_pics.all():
+                feedbackPicList.append(pic)
+
+        return feedbackPicList
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
