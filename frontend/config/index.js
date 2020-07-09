@@ -10,7 +10,17 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      // download image
+      'upload': {
+        target: 'https://www.rici.org.cn/',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/upload': ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
