@@ -108,8 +108,7 @@
         center
         fluid-grow
         :src="detail.pic_url"
-        :alt="detail.pic_url"
-        blank></b-img></tool-modal>
+        :alt="detail.pic_url"></b-img></tool-modal>
   </div>
 </template>
 
@@ -222,23 +221,58 @@ export default {
       this.detail = pic
     },
     downloadPic (pic) {
-      Axios
-        .get(
-          `${pic.pic_url}`
-        )
-        .then(response => {
-          this.forceFileDownload(response, pic)
-        })
-        .catch(() => console.log('error occured'))
+      let image = new Image()
+      let that = this
+      image.crossOrigin = ''
+      image.src = pic.pic_url
+      image.src = pic.pic_url + '?time' + new Date().indexOf()
+      image.setAttribute('crossOrigin', 'anonymous')
+      image.onload = function () {
+        let base64 = that.getBase64Image(image)
+        let img = that.convertBase64UrlToBlob(base64)
+        that.changeKoubeiImg(1, img)
+      }
     },
-    forceFileDownload (response, pic) {
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `${pic.teacher.real_name}.jpg`)
-      document.body.appendChild(link)
-      link.click()
+    /*
+    downloadPic (pic) {
+      var canvas = document.createElement('canvas')
+      var context = canvas.getContext('2d')
+
+      var img = new Image()
+      img.crossOrigin = ''
+      img.onload = function () {
+          context.drawImage(this, 0, 0)
+          context.getImageData(0, 0, this.width, this.height)
+      }
+      img.src = pic.pic_url
     },
+    downloadPic (pic) {
+      let that = this
+      let image = new Image()
+      image.src = pic.pic_url
+      image.crossOrigin = 'anonymous'
+      image.onload = function () {
+        let base64 = that.getBase64Image(image)
+        that.talkInfo.imageUrls.push(base64)
+        that.networkImg = ''
+      }
+    },
+    getBase64Image (img) {
+      let canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      let ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, img.width, img.height)
+      let dataURL = canvas.toDataURL('image/jpeg')
+      return dataURL
+    },
+    downloadPic (pic) {
+      saveAs(
+        pic.pic_url,
+        `${pic.teacher.real_name}.jpg`
+      )
+    },
+    */
     autoLogin () {
       this.$store
         .dispatch(
