@@ -45,6 +45,8 @@ from django.db.models import Q
 
 from datetime import datetime
 
+import pytz
+
 
 class TeacherListAPIView(ListAPIView):
     queryset = Teacher.objects.all()
@@ -453,8 +455,8 @@ class FeedbackPicCollectListAPIView(ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        startDate = datetime.fromisoformat(self.kwargs['startDate'])
-        endDate = datetime.fromisoformat(self.kwargs['endDate'])
+        startDate = datetime.strptime(self.kwargs['startDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+        endDate = datetime.strptime(self.kwargs['endDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
 
         feedbackFormList = list(
             filter(

@@ -202,7 +202,7 @@ export default {
     getPicCollect (start, end) {
       Axios
         .get(
-          `flourish/feedback_pic_collect/${end}T23:59:59+08:00/${start}T00:00:00+08:00:00/`
+          `flourish/feedback_pic_collect/${end}T23:59:59/${start}T00:00:00/`
         )
         .then(
           res => {
