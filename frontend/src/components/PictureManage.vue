@@ -118,6 +118,7 @@ import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
 import ThreeBlocksVue from './ThreeBlocks.vue'
 import ToolModalVue from './ToolModal.vue'
+// import {saveAs} from 'file-saver'
 
 export default {
   name: 'pictureManage',
@@ -220,18 +221,42 @@ export default {
     getDetail (pic) {
       this.detail = pic
     },
+    // downloadPic (pic) {
+    //   let image = new Image()
+    //   let that = this
+    //   image.crossOrigin = ''
+    //   image.src = pic.pic_url
+    //   image.src = pic.pic_url + '?time' + new Date().indexOf()
+    //   image.setAttribute('crossOrigin', 'anonymous')
+    //   image.onload = function () {
+    //     let base64 = that.getBase64Image(image)
+    //     let img = that.convertBase64UrlToBlob(base64)
+    //     that.changeKoubeiImg(1, img)
+    //   }
+    // },
     downloadPic (pic) {
-      let image = new Image()
-      let that = this
-      image.crossOrigin = ''
-      image.src = pic.pic_url
-      image.src = pic.pic_url + '?time' + new Date().indexOf()
-      image.setAttribute('crossOrigin', 'anonymous')
-      image.onload = function () {
-        let base64 = that.getBase64Image(image)
-        let img = that.convertBase64UrlToBlob(base64)
-        that.changeKoubeiImg(1, img)
-      }
+      Axios
+        .get(
+          `${pic.pic_url}`
+        )
+        .then(
+          res => {
+            this.forceFileDownload(res, pic)
+          }
+        )
+        .catch(
+          err => {
+            console.log(err)
+          }
+        )
+    },
+    forceFileDownload (res, pic) {
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `${pic.teacher.real_name}.jpg`)
+      document.body.append(link)
+      link.click()
     },
     /*
     downloadPic (pic) {
