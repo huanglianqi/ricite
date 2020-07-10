@@ -261,9 +261,9 @@ export default {
     },
     downloadPic (pic) {
       let image = new Image()
-      // let src = pic.pic_url.replace('https://www.rici.org.cn/', 'download/')
+      let src = pic.pic_url.replace('https://www.rici.org.cn/', 'download/')
       image.setAttribute('crossOrigin', 'anonymous')
-      image.src = pic.pic_url
+      image.src = src
       image.onload = () => {
         let canvas = document.createElement('canvas')
         canvas.width = image.width
