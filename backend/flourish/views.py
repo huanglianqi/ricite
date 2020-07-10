@@ -475,3 +475,25 @@ class FeedbackPicCollectListAPIView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class FeedbackPicLikeListAPIView(ListAPIView):
+    serializer_class = FeedbackPicCollectSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return FeedbackPic.objects.filter(
+            like=True
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class FeedbackPicLikeUpdateAPIView(UpdateAPIView):
+    serializer_class = FeedbackPicCollectSerializer
+    permission_classes = [AllowAny]
+    queryset = FeedbackPic.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)

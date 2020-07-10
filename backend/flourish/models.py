@@ -262,3 +262,6 @@ class FeedbackPic(models.Model):
         Teacher,
         on_delete=models.CASCADE
     )
+    like = models.BooleanField(
+        default=False
+    )

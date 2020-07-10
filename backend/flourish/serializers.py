@@ -198,5 +198,6 @@ class FeedbackPicCollectSerializer(serializers.ModelSerializer):
             'feedback_form',
             'teacher',
             'user_course',
-            'id'
+            'id',
+            'like'
         ]

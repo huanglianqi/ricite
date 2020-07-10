@@ -91,28 +91,40 @@
             rounded="circle"
             blank></b-img-lazy>
           {{pic.teacher.real_name}}
-          <b-icon
-            :icon="isLike(pic)"
-            variant="danger"
-            v-on:click="likeIt(pic)"></b-icon>
+          <b-button
+            size="sm"
+            pill
+            variant="white"
+            v-on:click="likeIt(pic)">
+            <b-icon
+              variant="danger"
+              shift-v="1.75"
+              :icon="isLike(pic)"></b-icon></b-button>
           <b-button
             size="sm"
             class="float-right"
-            variant="outline-success"
+            variant="white"
             pill
             v-on:click="downloadPic(pic)">
             <b-icon
               icon="download"
-              font-scale="0.95"
-              shift-v="1.75"></b-icon></b-button></b-card-text></b-card></three-blocks>
-    <tool-modal aria-label="detail"
+              shift-v="1.75"
+              variant="success"></b-icon></b-button></b-card-text></b-card></three-blocks>
+    <b-modal aria-label="detail"
       id="detail"
-      :title="detail.teacher.real_name">
+      size="xl"
+      hide-header
+      centered
+      ok-variant="outline-success"
+      ok-only
+      ok-title="关闭"
+      body-bg-variant="light">
       <b-img
+        block
         center
         fluid-grow
         :src="detail.pic_url"
-        :alt="detail.pic_url"></b-img></tool-modal>
+        :alt="detail.pic_url"></b-img></b-modal>
   </div>
 </template>
 
@@ -197,9 +209,15 @@ export default {
     },
     likeIt (pic) {
       if (pic.like) {
+        // modify data remotely
         this.updateLike(pic.id, false)
+        // modify data locally
+        pic.like = false
       } else {
+        // modify data remotely
         this.updateLike(pic.id, true)
+        // modify data locally
+        pic.like = true
       }
     },
     updateLike (id, bool) {
@@ -260,6 +278,7 @@ export default {
       this.detail = pic
     },
     downloadPic (pic) {
+      // Translate pic_url into 'download/' format for proxy request.
       let image = new Image()
       let src = pic.pic_url.replace('https://www.rici.org.cn/', 'download/')
       image.setAttribute('crossOrigin', 'anonymous')
@@ -272,21 +291,28 @@ export default {
         ctx.drawImage(image, 0, 0, image.width, image.height)
         canvas.toBlob((blob) => {
           let url = URL.createObjectURL(blob)
-          this.download(url, pic)
+          // Click on simulate download link
+          this.onDownloadPic(url, pic)
           URL.revokeObjectURL(url)
         })
+        // auto add 'like' list
+        this.likeIt(pic)
       }
     },
-    download (url, pic) {
+    onDownloadPic (url, pic) {
+      // human readable time format is 'yyyy-mm--dd'
       let time = pic.feedback_form.create_time.split('T')[0]
+      // Data 'school' exist in info forms
       let school = this.searchSchool(pic.teacher.infoForms)
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', `${time}-${school}-心灵魔法学院-${pic.teacher.real_name}-${pic.user_course.tag_name}.jpg`)
       document.body.append(link)
       link.click()
+      document.body.removeChild(link)
     },
     searchSchool (forms) {
+      // info form field id 9 is school
       for (let i = 0; i < forms.length; i++) {
         if (forms[i].field_id === '9') {
           return forms[i].field_value
