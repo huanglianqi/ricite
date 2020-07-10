@@ -261,8 +261,9 @@ export default {
     },
     downloadPic (pic) {
       let image = new Image()
+      let src = pic.pic_url.replace('https://www.rici.org.cn/', 'download/')
       image.setAttribute('crossOrigin', 'anonymous')
-      image.src = pic.pic_url
+      image.src = src
       image.onload = () => {
         let canvas = document.createElement('canvas')
         canvas.width = image.width
@@ -271,166 +272,27 @@ export default {
         ctx.drawImage(image, 0, 0, image.width, image.height)
         canvas.toBlob((blob) => {
           let url = URL.createObjectURL(blob)
-          this.download(url)
-          // 用完释放URL对象
+          this.download(url, pic)
           URL.revokeObjectURL(url)
         })
       }
-      /*
-      let image = new Image()
-      image.setAttribute('crossOrigin', 'anonymous')
-      image.src = pic.pic_url
-      image.onload = () => {
-        let canvas = document.createElement('canvas')
-        canvas.width = image.width
-        canvas.height = image.height
-        let ctx = canvas.getContext('2d')
-        ctx.drawImage(image, 0, 0, image.width, image.height)
-        let ext = image.src.substring(image.src.lastIndexOf('.') + 1).toLowerCase()
-        let dataURL = canvas.toDataURL('image/' + ext)
-        this.download(dataURL)
-      }
-      */
-      /*
-      var canvas = document.createElement('canvas')
-      var context = canvas.getContext('2d')
-
-      var img = new Image()
-      img.crossOrigin = 'anonymous'
-      img.setAttribute('crossOrigin', 'anonymous')
-      img.onload = function () {
-        context.drawImage(this, 0, 0)
-        context.getImageData(0, 0, this.width, this.height)
-      }
-      img.src = pic.pic_url
-      */
-      /*
-      Axios
-        .get(
-          pic.pic_url,
-          {
-            responseType: 'blob'
-          }
-        )
-        .then(
-          res => {
-            let blob = res.data
-            let url = URL.createObjectURL(blob)
-            this.download(url)
-            URL.revokeObjectURL(url, pic)
-          }
-        )
-    */
     },
     download (url, pic) {
+      let time = pic.feedback_form.create_time.split('T')[0]
+      let school = this.searchSchool(pic.teacher.infoForms)
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `${pic.teacher.real_name}.jpg`)
+      link.setAttribute('download', `${time}-${school}-心灵魔法学院-${pic.teacher.real_name}-${pic.user_course.tag_name}.jpg`)
       document.body.append(link)
       link.click()
     },
-    /*
-    downloadPic (pic) {
-      let src = pic.pic_url
-      var canvas = document.createElement('canvas')
-      var img = document.createElement('img')
-      img.onload = function (e) {
-        canvas.width = img.width
-        canvas.height = img.height
-        var context = canvas.getContext('2d')
-        context.drawImage(img, 0, 0, img.width, img.height)
-        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height)
-        canvas.toBlob(
-          (blob) => {
-            let link = document.createElement('a')
-            link.href = window.URL.createObjectURL(blob)
-            link.download = pic.teacher.real_name
-            link.click()
-          },
-          'image/jpeg'
-        )
+    searchSchool (forms) {
+      for (let i = 0; i < forms.length; i++) {
+        if (forms[i].field_id === '9') {
+          return forms[i].field_value
+        }
       }
     },
-    */
-    // downloadPic (pic) {
-    //   let image = new Image()
-    //   let that = this
-    //   image.crossOrigin = ''
-    //   image.src = pic.pic_url
-    //   image.src = pic.pic_url + '?time' + new Date().indexOf()
-    //   image.setAttribute('crossOrigin', 'anonymous')
-    //   image.onload = function () {
-    //     let base64 = that.getBase64Image(image)
-    //     let img = that.convertBase64UrlToBlob(base64)
-    //     that.changeKoubeiImg(1, img)
-    //   }
-    // },
-    /*
-    downloadPic (pic) {
-      Axios
-        .get(
-          `${pic.pic_url}`
-        )
-        .then(
-          res => {
-            this.forceFileDownload(res, pic)
-          }
-        )
-        .catch(
-          err => {
-            console.log(err)
-          }
-        )
-    },
-    forceFileDownload (res, pic) {
-      const url = window.URL.createObjectURL(new Blob([res.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `${pic.teacher.real_name}.jpg`)
-      document.body.append(link)
-      link.click()
-    },
-    */
-    /*
-    downloadPic (pic) {
-      var canvas = document.createElement('canvas')
-      var context = canvas.getContext('2d')
-
-      var img = new Image()
-      img.crossOrigin = ''
-      img.onload = function () {
-          context.drawImage(this, 0, 0)
-          context.getImageData(0, 0, this.width, this.height)
-      }
-      img.src = pic.pic_url
-    },
-    downloadPic (pic) {
-      let that = this
-      let image = new Image()
-      image.src = pic.pic_url
-      image.crossOrigin = 'anonymous'
-      image.onload = function () {
-        let base64 = that.getBase64Image(image)
-        that.talkInfo.imageUrls.push(base64)
-        that.networkImg = ''
-      }
-    },
-    getBase64Image (img) {
-      let canvas = document.createElement('canvas')
-      canvas.width = img.width
-      canvas.height = img.height
-      let ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, img.width, img.height)
-      let dataURL = canvas.toDataURL('image/jpeg')
-      return dataURL
-    },
-    downloadPic (pic) {
-      saveAs(
-        pic.pic_url,
-        `${pic.teacher.real_name}.jpg`
-      )
-    },
-    */
     autoLogin () {
       this.$store
         .dispatch(
