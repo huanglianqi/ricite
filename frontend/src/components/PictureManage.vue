@@ -91,6 +91,10 @@
             rounded="circle"
             blank></b-img-lazy>
           {{pic.teacher.real_name}}
+          <b-icon
+            :icon="isLike(pic)"
+            variant="danger"
+            v-on:click="likeIt(pic)"></b-icon>
           <b-button
             size="sm"
             class="float-right"
@@ -178,6 +182,40 @@ export default {
     }
   },
   methods: {
+    /*
+     * Heart-fill means we like it,
+     * when pic was choised by us.
+     * Heart means we don't like it,
+     * when pic isn't choised by us.
+    */
+    isLike (pic) {
+      if (pic.like) {
+        return 'heart-fill'
+      } else {
+        return 'heart'
+      }
+    },
+    likeIt (pic) {
+      if (pic.like) {
+        this.updateLike(pic.id, false)
+      } else {
+        this.updateLike(pic.id, true)
+      }
+    },
+    updateLike (id, bool) {
+      Axios
+        .patch(
+          `flourish/feedback_pic_like_update/${id}`,
+          {
+            like: bool
+          }
+        )
+        .catch(
+          err => {
+            console.log(err)
+          }
+        )
+    },
     selectType (title, value) {
       this.type.value = value
       this.type.title = title
@@ -221,6 +259,99 @@ export default {
     getDetail (pic) {
       this.detail = pic
     },
+    downloadPic (pic) {
+      let image = new Image()
+      image.setAttribute('crossOrigin', 'anonymous')
+      image.src = pic.pic_url
+      image.onload = () => {
+        let canvas = document.createElement('canvas')
+        canvas.width = image.width
+        canvas.height = image.height
+        let ctx = canvas.getContext('2d')
+        ctx.drawImage(image, 0, 0, image.width, image.height)
+        canvas.toBlob((blob) => {
+          let url = URL.createObjectURL(blob)
+          this.download(url)
+          // 用完释放URL对象
+          URL.revokeObjectURL(url)
+        })
+      }
+      /*
+      let image = new Image()
+      image.setAttribute('crossOrigin', 'anonymous')
+      image.src = pic.pic_url
+      image.onload = () => {
+        let canvas = document.createElement('canvas')
+        canvas.width = image.width
+        canvas.height = image.height
+        let ctx = canvas.getContext('2d')
+        ctx.drawImage(image, 0, 0, image.width, image.height)
+        let ext = image.src.substring(image.src.lastIndexOf('.') + 1).toLowerCase()
+        let dataURL = canvas.toDataURL('image/' + ext)
+        this.download(dataURL)
+      }
+      */
+      /*
+      var canvas = document.createElement('canvas')
+      var context = canvas.getContext('2d')
+
+      var img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.setAttribute('crossOrigin', 'anonymous')
+      img.onload = function () {
+        context.drawImage(this, 0, 0)
+        context.getImageData(0, 0, this.width, this.height)
+      }
+      img.src = pic.pic_url
+      */
+      /*
+      Axios
+        .get(
+          pic.pic_url,
+          {
+            responseType: 'blob'
+          }
+        )
+        .then(
+          res => {
+            let blob = res.data
+            let url = URL.createObjectURL(blob)
+            this.download(url)
+            URL.revokeObjectURL(url, pic)
+          }
+        )
+    */
+    },
+    download (url, pic) {
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `${pic.teacher.real_name}.jpg`)
+      document.body.append(link)
+      link.click()
+    },
+    /*
+    downloadPic (pic) {
+      let src = pic.pic_url
+      var canvas = document.createElement('canvas')
+      var img = document.createElement('img')
+      img.onload = function (e) {
+        canvas.width = img.width
+        canvas.height = img.height
+        var context = canvas.getContext('2d')
+        context.drawImage(img, 0, 0, img.width, img.height)
+        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height)
+        canvas.toBlob(
+          (blob) => {
+            let link = document.createElement('a')
+            link.href = window.URL.createObjectURL(blob)
+            link.download = pic.teacher.real_name
+            link.click()
+          },
+          'image/jpeg'
+        )
+      }
+    },
+    */
     // downloadPic (pic) {
     //   let image = new Image()
     //   let that = this
@@ -234,6 +365,7 @@ export default {
     //     that.changeKoubeiImg(1, img)
     //   }
     // },
+    /*
     downloadPic (pic) {
       Axios
         .get(
@@ -258,6 +390,7 @@ export default {
       document.body.append(link)
       link.click()
     },
+    */
     /*
     downloadPic (pic) {
       var canvas = document.createElement('canvas')
