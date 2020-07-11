@@ -12,8 +12,8 @@
           iconDown="collection-fill"
           :title="type.title"
           :value="type.value"
-          firstItemTitle="群组动态"
-          firstItemValue="2"
+          firstItemTitle="课程反馈"
+          firstItemValue="feedback_pic_collect"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template>
       <template v-slot:secondColumn>
@@ -134,7 +134,6 @@ import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
 import ThreeBlocksVue from './ThreeBlocks.vue'
 import ToolModalVue from './ToolModal.vue'
-// import {saveAs} from 'file-saver'
 
 export default {
   name: 'pictureManage',
@@ -175,13 +174,21 @@ export default {
         locale: 'zh'
       },
       type: {
-        title: '群组动态',
-        value: '1'
+        title: '课时反馈',
+        value: 'feedback_pic_collect'
       },
       typeList: [
         {
-          title: '课时反馈',
-          value: '2'
+          title: '群组动态',
+          value: 'feedback_pic_collect'
+        },
+        {
+          title: '课时反馈精选',
+          value: 'feedback_pic_like'
+        },
+        {
+          title: '群组动态精选',
+          value: 'feedback_pic_like'
         }
       ],
       picList: [],
@@ -237,6 +244,7 @@ export default {
     selectType (title, value) {
       this.type.value = value
       this.type.title = title
+      this.collectPic()
     },
     onConfirmStartDate () {
       this.confirmStartDate = !this.confirmStartDate
@@ -258,7 +266,7 @@ export default {
     getPicCollect (start, end) {
       Axios
         .get(
-          `flourish/feedback_pic_collect/${end}T23:59:59/${start}T00:00:00/`
+          `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
         )
         .then(
           res => {

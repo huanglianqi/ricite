@@ -106,8 +106,8 @@ urlpatterns = [
         r'feedback_pic_collect/(?P<endDate>.+)/(?P<startDate>.+)/$',
         FeedbackPicCollectListAPIView.as_view()
     ),
-    path(
-        'feedback_pic_like/',
+    re_path(
+        r'feedback_pic_like/(?P<endDate>.+)/(?P<startDate>.+)/$',
         FeedbackPicLikeListAPIView.as_view()
     ),
     path(

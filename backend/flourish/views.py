@@ -482,8 +482,27 @@ class FeedbackPicLikeListAPIView(ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return FeedbackPic.objects.filter(
-            like=True
+        startDate = datetime.strptime(self.kwargs['startDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+        endDate = datetime.strptime(self.kwargs['endDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+
+        feedbackFormList = list(
+            filter(
+                lambda item: item.create_time >= startDate and item.create_time <= endDate,
+                FeedbackForm.objects.all()
+            )
+        )
+
+        feedbackPicList = []
+
+        for form in feedbackFormList:
+            for pic in form.feedback_pics.all():
+                feedbackPicList.append(pic)
+
+        return list(
+            filter(
+                lambda item: item.like == True,
+                feedbackPicList
+            )
         )
 
     def get(self, request, *args, **kwargs):
