@@ -12,12 +12,12 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       // download image
-      'upload': {
-        target: 'https://www.rici.org.cn/',
+      '/download': {
+        target: 'https://www.rici.org.cn',
         changeOrigin: true,
         secure: false,
         pathRewrite: {
-          '^/upload': ''
+          '^/download': ''
         }
       }
     },

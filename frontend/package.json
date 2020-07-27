@@ -19,6 +19,7 @@
     "bootstrap-vue": "^2.15.0",
     "echarts": "^4.8.0",
     "echarts-liquidfill": "^2.0.6",
+    "file-saver": "^2.0.2",
     "three": "^0.117.1",
     "vue": "^2.5.2",
     "vue-echarts": "^5.0.0-beta.0",

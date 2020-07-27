@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <div
+    <div aria-label="nav-bar"
       id="nav-bar">
       <NavMenu/>
       <AccountProfile/>
     </div>
     <hr>
     <router-view/>
-    <div
+    <div aria-label="nav-top"
       id="nav-top">
       <router-link
         to='/'>
@@ -17,6 +17,26 @@
           aria-hidden="true">
         </b-icon>
         首页
+      </router-link>
+      |
+      <router-link
+        to='/statistics'>
+        <b-icon
+          icon="clipboard-data"
+          scale="1.25"
+          aria-hidden="true">
+        </b-icon>
+        数据
+      </router-link>
+      |
+      <router-link
+        to='/pictureManage'>
+        <b-icon
+          icon="images"
+          scale="1.25"
+          aria-hidden="true">
+        </b-icon>
+        图片
       </router-link>
       |
       <router-link
@@ -40,16 +60,6 @@
       </router-link>
       |
       <router-link
-        to='/pictureManage'>
-        <b-icon
-          icon="images"
-          scale="1.25"
-          aria-hidden="true">
-        </b-icon>
-        图片
-      </router-link>
-      |
-      <router-link
         to='/about'>
         <b-icon
           icon="info-circle-fill"
@@ -57,9 +67,8 @@
           aria-hidden="true">
         </b-icon>
         关于
-      </router-link>
-    </div>
-    <div
+      </router-link></div>
+    <div aria-label="nac-bottom"
       id="nav">
       Copyright &copy; {{currentYear}}
       <a
@@ -83,8 +92,7 @@
           aria-hidden="true">
         </b-icon>
         粤ICP备14073346号
-      </a>
-    </div>
+      </a></div>
   </div>
 </template>
 

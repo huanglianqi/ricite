@@ -99,6 +99,7 @@
             <b-icon
               variant="danger"
               shift-v="1.75"
+              font-scale="1.5"
               :icon="isLike(pic)"></b-icon></b-button>
           <b-button
             size="sm"
@@ -108,6 +109,7 @@
             v-on:click="downloadPic(pic)">
             <b-icon
               icon="download"
+              font-scale="1.5"
               shift-v="1.75"
               variant="success"></b-icon></b-button></b-card-text></b-card></three-blocks>
     <b-modal aria-label="detail"

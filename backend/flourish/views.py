@@ -20,6 +20,7 @@ from .serializers import (
     ApplyCourseSerializerTeacherInfo,
     TeacherSerializerUserCourse,
     FeedbackPicCollectSerializer,
+    UserCourseSerializerApplyCount,
 )
 
 from rest_framework.generics import(
@@ -516,3 +517,36 @@ class FeedbackPicLikeUpdateAPIView(UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+# Outputs' applycourse may be null, need FILTER in frontend
+class CountApplyDataListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerApplyCount
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+        tag = self.kwargs['tag']
+
+        if tag == 'all':
+            return list(
+                filter(
+                    lambda item: item.is_fake == False and item.teacher.is_fake == False,
+                    UserCourse.objects.filter(
+                        term_num=term
+                    )
+                )
+            )
+        else:
+            return list(
+                filter(
+                    lambda item: item.is_fake == False and item.teacher.is_fake == False,
+                    UserCourse.objects.filter(
+                        term_num=term,
+                        tag_name=tag
+                    )
+                )
+            )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

@@ -10,6 +10,7 @@ import ResetPassword from '@/components/ResetPassword'
 import FeedbackCheck from '@/components/FeedbackCheck'
 import VolunteerManagement from '@/components/VolunteerManagement'
 import PictureManage from '@/components/PictureManage'
+import DataStatistics from '@/components/DataStatistics'
 
 Vue.use(Router)
 
@@ -20,7 +21,13 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      beforeEnter: (to, from, next) => {
+        if (
+          to.name !== 'Login' && store.state.auth.status !== 'success'
+        ) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: '/login',
@@ -30,7 +37,13 @@ export default new Router({
     {
       path: '/about',
       name: 'About',
-      component: About
+      component: About,
+      beforeEnter: (to, from, next) => {
+        if (
+          to.name !== 'Login' && store.state.auth.status !== 'success'
+        ) next({name: 'Login'})
+        else next()
+      }
     },
     {
       path: '/resetPassword',
@@ -63,6 +76,17 @@ export default new Router({
       path: '/pictureManage',
       name: 'PictureManage',
       component: PictureManage,
+      beforeEnter: (to, from, next) => {
+        if (
+          to.name !== 'Login' && store.state.auth.status !== 'success'
+        ) next({name: 'Login'})
+        else next()
+      }
+    },
+    {
+      path: '/statistics',
+      name: 'dataStatistics',
+      component: DataStatistics,
       beforeEnter: (to, from, next) => {
         if (
           to.name !== 'Login' && store.state.auth.status !== 'success'

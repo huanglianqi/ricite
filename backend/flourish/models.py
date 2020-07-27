@@ -145,7 +145,8 @@ class ApplyCourse(models.Model):
     )
     user_course = models.OneToOneField(
         UserCourse,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='applycourse'
     )
     teacher = models.ForeignKey(
         Teacher,
@@ -262,6 +263,12 @@ class FeedbackPic(models.Model):
         Teacher,
         on_delete=models.CASCADE
     )
+    like = models.BooleanField(
+        default=False
+    )
+
+
+class SharePic(models.Model):
     like = models.BooleanField(
         default=False
     )

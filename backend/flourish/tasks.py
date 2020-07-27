@@ -76,6 +76,11 @@ GET_USER_INFO_FORM = BASE_URL + 'get_user_info_form'
 # field means courses feedback form
 GET_CLASS_FORM_INFO = BASE_URL + 'get_class_form_info'
 
+# method: get
+# params: {page: <int>}
+# data: {code: 0, msg: 'success', data: [{uid, username, name, groupid, reg_time, last_login_time}]}
+GET_SHARE_LIST = BASE_URL + 'get_share_list'
+
 res_token = requests.get(GET_API_TOKEN)
 
 HEADERS = {

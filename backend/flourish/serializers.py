@@ -201,3 +201,26 @@ class FeedbackPicCollectSerializer(serializers.ModelSerializer):
             'id',
             'like'
         ]
+
+
+# Count applycourse instance teacher num, student num and school name
+class ApplyCourseSerializerCount(serializers.ModelSerializer):
+    class Meta:
+        model = ApplyCourse
+        fields = [
+            'teacher_num',
+            'stu_num',
+            'school_name'
+        ]
+
+
+class UserCourseSerializerApplyCount(serializers.ModelSerializer):
+    applycourse = ApplyCourseSerializerCount(read_only=True)
+
+    class Meta:
+        model = UserCourse
+        fields = [
+            'applycourse',
+            'term_num',
+            'course_num'
+        ]

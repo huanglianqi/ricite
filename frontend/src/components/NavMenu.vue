@@ -57,7 +57,7 @@ export default {
       navMenu_list: [
         {
           id: 'navMenu_item_1',
-          variant: 'outline-secondary',
+          variant: 'outline-dark',
           path: '/',
           icon: 'house-fill',
           name: '网站首页'
@@ -65,26 +65,33 @@ export default {
         {
           id: 'navMenu_item_2',
           variant: 'outline-success',
-          path: '/volunteerManagement',
-          icon: 'people-fill',
-          name: '社群运营'
+          path: '/statistics',
+          icon: 'clipboard-data',
+          name: '数据统计'
         },
         {
           id: 'navMenu_item_3',
-          variant: 'outline-info',
-          path: '/feedbackCheck',
-          icon: 'receipt-cutoff',
-          name: '课程反馈'
-        },
-        {
-          id: 'navMenu_item_4',
-          variant: 'outline-secondary',
+          variant: 'outline-success',
           path: '/pictureManage',
           icon: 'images',
           name: '图片管理'
         },
         {
+          id: 'navMenu_item_4',
+          variant: 'outline-success',
+          path: '/volunteerManagement',
+          icon: 'people-fill',
+          name: '社群运营'
+        },
+        {
           id: 'navMenu_item_5',
+          variant: 'outline-success',
+          path: '/feedbackCheck',
+          icon: 'receipt-cutoff',
+          name: '课程反馈'
+        },
+        {
+          id: 'navMenu_item_6',
           variant: 'outline-dark',
           path: '/about',
           icon: 'info-circle-fill',

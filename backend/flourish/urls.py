@@ -23,6 +23,7 @@ from .views import (
     FeedbackPicCollectListAPIView,
     FeedbackPicLikeListAPIView,
     FeedbackPicLikeUpdateAPIView,
+    CountApplyDataListAPIView,
 )
 
 urlpatterns = [
@@ -113,5 +114,9 @@ urlpatterns = [
     path(
         'feedback_pic_like_update/<int:pk>',
         FeedbackPicLikeUpdateAPIView.as_view()
-    )
+    ),
+    re_path(
+        r'count_apply_data/(?P<term>.+)/(?P<tag>.+)/$',
+        CountApplyDataListAPIView.as_view()
+    ),
 ]
