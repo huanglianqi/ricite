@@ -268,7 +268,82 @@ class FeedbackPic(models.Model):
     )
 
 
-class SharePic(models.Model):
+class Share(models.Model):
     like = models.BooleanField(
         default=False
+    )
+    user_id = models.CharField(
+        max_length=100
+    )
+    moment_id = models.CharField(
+        max_length=100
+    )
+    content = models.TextField(
+        null=True,
+        blank=True
+    )
+    create_time = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+
+class SharePic(models.Model):
+    url = models.URLField(
+        null=True,
+        blank=True
+    )
+    belongTo = models.ForeignKey(
+        Share,
+        on_delete=models.CASCADE
+    )
+    like = models.BooleanField(
+        default=False
+    )
+
+
+class ShareComment(models.Model):
+    content = models.TextField()
+    share = models.ForeignKey(
+        Share,
+        on_delete=models.CASCADE
+    )
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE
+    )
+    user_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    user_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    user_real_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+
+class ShareLike(models.Model):
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE
+    )
+    share = models.ForeignKey(
+        Share,
+        on_delete=models.CASCADE
+    )
+    user_id = models.CharField(
+        max_length=100
+    )
+    user_name = models.CharField(
+        max_length=100
+    )
+    user_real_name = models.CharField(
+        max_length=100
     )

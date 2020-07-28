@@ -15,13 +15,17 @@ from .models import (
     FeedbackForm,
     FeedbackUnit,
     FeedbackPic,
+    Share,
+    ShareComment,
+    SharePic,
+    ShareLike,
 )
 
 from datetime import datetime
 
 from django.utils.timezone import get_current_timezone
 
-import requests
+import requests, json
 
 
 def strToDate(strTime):
@@ -93,6 +97,146 @@ HEADERS = {
     run_every=(
         crontab(
             minute=0,
+            hour='*/3'
+        )
+    ),
+    name="Update_Share_List",
+    ignore_result=True
+)
+def Update_share_list(page=0):
+    """
+    Each 3 Hour, Update db for share list,
+    If not exits, create a new instant;
+    If exits, update certain instant.
+    """
+    res_data = requests.get(
+        '{0}?page{1}'.format(
+            GET_SHARE_LIST,
+            page
+        ),
+        headers=HEADERS
+    )
+    data = res_data.json()['data']
+    for item in data:
+        try:
+            instant = Share.objects.get(
+                moment_id=item['moment_id']
+            )
+            try:
+                for comment in item['comments']:
+                    try:
+                        c = ShareComment.objects.get(
+                            teacher__user_id=comment['user_id']
+                        )
+                    except ShareComment.DoesNotExist:
+                        try:
+                            c = ShareComment(
+                                content=comment['content'],
+                                teacher=Teacher.objects.get(user_id=comment['user_id']),
+                                share=instant,
+                                user_id=commnet['user_id'],
+                                user_name=commnet['user_name'],
+                                user_real_name=commnet['user_real_name']
+                            )
+                            c.save()
+                        except Teacher.DoesNotExist:
+                            print('This teacher may has been delated')
+            except KeyError:
+                    print('Not exist comments')
+            try:
+                for like in item['likes']:
+                    try:
+                        l = ShareLike.objects.get(
+                            user_id=like['user_id']
+                        )
+                    except ShareLike.DoesNotExist:
+                        try:
+                            l = ShareLike(
+                                teacher=Teacehr.objects.get(
+                                    user_id=like['user_id']
+                                ),
+                                share=instant,
+                                user_id=like['user_id'],
+                                user_name=like['user_name'],
+                                user_real_name=like['user_real_name']
+                            )
+                            l.save()
+                        except Teacher.DoesNotExist:
+                            print(item)
+            except KeyError:
+                print('Not exist likes')
+        except Share.DoesNotExist:
+            instant = Share(
+                like=False,
+                user_id=item['user_id'],
+                moment_id=item['moment_id'],
+                content=item['content'],
+                create_time=item['create_time']
+            )
+            instant.save()
+            try:
+                for comment in item['comments']:
+                    try:
+                        c = ShareComment.objects.get(
+                            teacher__user_id=comment['user_id']
+                        )
+                    except ShareComment.DoesNotExist:
+                        try:
+                            c = ShareComment(
+                                content=comment['content'],
+                                teacher=Teacher.objects.get(user_id=comment['user_id']),
+                                share=instant,
+                                user_id=commnet['user_id'],
+                                user_name=commnet['user_name'],
+                                user_real_name=commnet['user_real_name']
+                            )
+                            c.save()
+                        except Teacher.DoesNotExist:
+                            print('This teacher may has been deleted')
+            except KeyError:
+                print('Not exist comments')
+            try:
+                for like in item['likes']:
+                    try:
+                        l = ShareLike.objects.get(
+                            user_id=like['user_id']
+                        )
+                    except ShareLike.DoesNotExist:
+                        try:
+                            l = ShareLike(
+                                teacher=Teacehr.objects.get(
+                                    user_id=like['user_id']
+                                ),
+                                share=instant,
+                                user_id=like['user_id'],
+                                user_name=like['user_name'],
+                                user_real_name=like['user_real_name']
+                            )
+                            l.save()
+                        except Teacher.DoesNotExist:
+                            print('This teacher may has been deleted')
+            except KeyError:
+                print('Not exist likes')
+            try:
+                for pic in item['pics']:
+                    sharePic = SharePic(
+                        url=pic,
+                        belongTo=instant,
+                        like=False
+                    )
+                    sharePic.save()
+            except KeyError:
+                print('Not exist pics')
+    if len(data) == 100:
+        page += 1
+        Update_share_list(page)
+
+
+@shared_task
+@periodic_task(
+    run_every=(
+        crontab(
+            minute=0,
             hour=0
         )
     ),
@@ -101,7 +245,7 @@ HEADERS = {
 )
 def update_teacher_info():
     """
-    Each 15 min update database for app flourish,
+    Every MIDNIGHT update database for app flourish,
     If not exits, create a new instant;
     If exits, update certain instant.
     """

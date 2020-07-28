@@ -24,6 +24,8 @@ from .views import (
     FeedbackPicLikeListAPIView,
     FeedbackPicLikeUpdateAPIView,
     CountApplyDataListAPIView,
+    ShareListAPIView,
+    SharePicRetrieveAPIView,
 )
 
 urlpatterns = [
@@ -118,5 +120,9 @@ urlpatterns = [
     re_path(
         r'count_apply_data/(?P<term>.+)/(?P<tag>.+)/$',
         CountApplyDataListAPIView.as_view()
+    ),
+    re_path(
+        r'share_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
+        ShareListAPIView.as_view()
     ),
 ]

@@ -6,6 +6,8 @@ from .models import (
     FeedbackForm,
     FeedbackUnit,
     FeedbackPic,
+    Share,
+    SharePic
 )
 
 from rest_framework import serializers
@@ -224,3 +226,20 @@ class UserCourseSerializerApplyCount(serializers.ModelSerializer):
             'term_num',
             'course_num'
         ]
+
+class ShareContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Share
+        fields = ['content']
+
+class SharePicSerializer(serializers.ModelSerializer):
+    belongTo = ShareContentSerializer(read_only=True)
+
+    class Meta:
+        model = SharePic
+        fields = '__all__'
+
+class ShareSrializer(serializers.ModelSerializer):
+    class Meta:
+        model = Share
+        fields = '__all__'

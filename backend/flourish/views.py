@@ -6,6 +6,8 @@ from .models import (
     FeedbackForm,
     FeedbackUnit,
     FeedbackPic,
+    Share,
+    SharePic,
 )
 
 from .serializers import (
@@ -21,6 +23,9 @@ from .serializers import (
     TeacherSerializerUserCourse,
     FeedbackPicCollectSerializer,
     UserCourseSerializerApplyCount,
+    ShareContentSerializer,
+    SharePicSerializer,
+    ShareSrializer,
 )
 
 from rest_framework.generics import(
@@ -47,6 +52,8 @@ from django.db.models import Q
 from datetime import datetime
 
 import pytz
+
+from django.db.models import Q
 
 
 class TeacherListAPIView(ListAPIView):
@@ -550,3 +557,32 @@ class CountApplyDataListAPIView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+# newest share in the front
+# enDate >= startDate
+class ShareListAPIView(ListAPIView):
+    serializer_class = ShareSrializer
+    permission_classes = [AllowAny]
+    def get_queryset(self):
+        startDate = datetime.strptime(self.kwargs['startDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+        endDate = datetime.strptime(self.kwargs['endDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+
+        return list(
+            filter(
+                lambda item: item.create_time >= startDate and item.create_time <= endDate,
+                Share.objects.order_by('-create_time')
+            )
+        )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class SharePicRetrieveAPIView(RetrieveAPIView):
+    serializer_class = SharePicSerializer
+    permission_classes = [AllowAny]
+    queryset = SharePic.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)

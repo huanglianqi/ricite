@@ -8,8 +8,7 @@
       :time-dropdown-title="termTitle"
       :time-dropdown-value="termValue"
       :time-select="selectTerm"
-      :keyword="keyword">
-    </t-menu>
+      :keyword="keyword"></t-menu>
     <t-card-group>
       <b-card
         v-show="certain_tag_and_term_no_keyword"
@@ -21,24 +20,19 @@
           <b-icon
             icon="star-fill"
             class="float-left"
-            shift-v="-3">
-          </b-icon>
+            shift-v="-3"></b-icon>
           课程反馈 | 学期汇总
           <b-icon
             icon="star-fill"
             class="float-right"
-            shift-v="-3">
-          </b-icon>
-        </b-card-header>
+            shift-v="-3"></b-icon></b-card-header>
         <b-card-text
           class="text-left font-weight-bolder">
           <b-icon
             icon="calendar-check-fill"
             variant="success"
-            class="mr-3">
-          </b-icon>
-          {{termTitle}}
-        </b-card-text>
+            class="mr-3"></b-icon>
+          {{termTitle}}</b-card-text>
         <b-card-text
           class="text-left font-weight-bolder">
           <b-icon
