@@ -134,8 +134,8 @@ def Update_share_list(page=0):
                                 content=comment['content'],
                                 teacher=Teacher.objects.get(user_id=comment['user_id']),
                                 share=instant,
-                                user_id=commnet['user_id'],
-                                user_name=commnet['user_name'],
+                                user_id=comment['user_id'],
+                                user_name=comment['user_name'],
                                 user_real_name=commnet['user_real_name']
                             )
                             c.save()
