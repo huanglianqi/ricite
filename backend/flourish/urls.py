@@ -25,7 +25,6 @@ from .views import (
     FeedbackPicLikeUpdateAPIView,
     CountApplyDataListAPIView,
     ShareListAPIView,
-    SharePicRetrieveAPIView,
 )
 
 urlpatterns = [

@@ -171,7 +171,8 @@ def Update_share_list(page=0):
                 user_id=item['user_id'],
                 moment_id=item['moment_id'],
                 content=item['content'],
-                create_time=item['create_time']
+                create_time=item['create_time'],
+                teacher = Teacher.objects.get(user_id=item['user_id'])
             )
             instant.save()
             try:

@@ -6,6 +6,8 @@ from .models import (
     FeedbackForm,
     FeedbackUnit,
     FeedbackPic,
+    ShareComment,
+    ShareLike,
     Share,
     SharePic
 )
@@ -227,19 +229,66 @@ class UserCourseSerializerApplyCount(serializers.ModelSerializer):
             'course_num'
         ]
 
-class ShareContentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Share
-        fields = ['content']
 
 class SharePicSerializer(serializers.ModelSerializer):
-    belongTo = ShareContentSerializer(read_only=True)
-
     class Meta:
         model = SharePic
-        fields = '__all__'
+        fields = [
+            'like',
+            'url'
+        ]
+
+
+class ShareCommentSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializerForPic(read_only=True)
+
+    class Meta:
+        model = ShareComment
+        fields = [
+            'content',
+            'teacher',
+            'user_id',
+            'user_name',
+            'user_real_name'
+        ]
+
+
+class ShareLikeSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializerForPic(read_only=True)
+
+    class Meta:
+        model = ShareLike
+        fields = [
+            'teacher',
+            'user_id',
+            'user_name',
+            'user_real_name'
+        ]
+
 
 class ShareSrializer(serializers.ModelSerializer):
+    sharePics = SharePicSerializer(
+        many=True,
+        read_only=True
+    )
+    shareComments = ShareCommentSerializer(
+        many=True,
+        read_only=True
+    )
+    shareLikes = ShareLikeSerializer(
+        many=True,
+        read_only=True
+    )
+
     class Meta:
         model = Share
-        fields = '__all__'
+        fields = [
+            'like',
+            'user_id',
+            'moment_id',
+            'content',
+            'create_time',
+            'shareLikes',
+            'shareComments',
+            'sharePics'
+        ]

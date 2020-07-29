@@ -23,8 +23,6 @@ from .serializers import (
     TeacherSerializerUserCourse,
     FeedbackPicCollectSerializer,
     UserCourseSerializerApplyCount,
-    ShareContentSerializer,
-    SharePicSerializer,
     ShareSrializer,
 )
 
@@ -577,12 +575,3 @@ class ShareListAPIView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-
-
-class SharePicRetrieveAPIView(RetrieveAPIView):
-    serializer_class = SharePicSerializer
-    permission_classes = [AllowAny]
-    queryset = SharePic.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        return self.get(request, *args, **kwargs)

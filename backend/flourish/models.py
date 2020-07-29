@@ -286,6 +286,10 @@ class Share(models.Model):
         null=True,
         blank=True
     )
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE
+    )
 
 
 class SharePic(models.Model):
@@ -295,7 +299,8 @@ class SharePic(models.Model):
     )
     belongTo = models.ForeignKey(
         Share,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='sharePics'
     )
     like = models.BooleanField(
         default=False
@@ -306,7 +311,8 @@ class ShareComment(models.Model):
     content = models.TextField()
     share = models.ForeignKey(
         Share,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='shareCommnets'
     )
     teacher = models.ForeignKey(
         Teacher,
@@ -336,7 +342,8 @@ class ShareLike(models.Model):
     )
     share = models.ForeignKey(
         Share,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='shareLikes'
     )
     user_id = models.CharField(
         max_length=100
