@@ -110,7 +110,7 @@ def Update_share_list(page=0):
     If exits, update certain instant.
     """
     res_data = requests.get(
-        '{0}?page{1}'.format(
+        '{0}?page={1}'.format(
             GET_SHARE_LIST,
             page
         ),
@@ -119,115 +119,84 @@ def Update_share_list(page=0):
     data = res_data.json()['data']
     for item in data:
         try:
-            instant = Share.objects.get(
+            share = Share.objects.get(
                 moment_id=item['moment_id']
             )
-            try:
-                for comment in item['comments']:
-                    try:
-                        c = ShareComment.objects.get(
-                            teacher__user_id=comment['user_id']
-                        )
-                    except ShareComment.DoesNotExist:
-                        try:
-                            c = ShareComment(
-                                content=comment['content'],
-                                teacher=Teacher.objects.get(user_id=comment['user_id']),
-                                share=instant,
-                                user_id=comment['user_id'],
-                                user_name=comment['user_name'],
-                                user_real_name=commnet['user_real_name']
-                            )
-                            c.save()
-                        except Teacher.DoesNotExist:
-                            print('This teacher may has been delated')
-            except KeyError:
-                    print('Not exist comments')
-            try:
-                for like in item['likes']:
-                    try:
-                        l = ShareLike.objects.get(
-                            user_id=like['user_id']
-                        )
-                    except ShareLike.DoesNotExist:
-                        try:
-                            l = ShareLike(
-                                teacher=Teacehr.objects.get(
-                                    user_id=like['user_id']
-                                ),
-                                share=instant,
-                                user_id=like['user_id'],
-                                user_name=like['user_name'],
-                                user_real_name=like['user_real_name']
-                            )
-                            l.save()
-                        except Teacher.DoesNotExist:
-                            print(item)
-            except KeyError:
-                print('Not exist likes')
         except Share.DoesNotExist:
-            instant = Share(
-                like=False,
-                user_id=item['user_id'],
-                moment_id=item['moment_id'],
-                content=item['content'],
-                create_time=item['create_time'],
-                teacher = Teacher.objects.get(user_id=item['user_id'])
-            )
-            instant.save()
             try:
-                for comment in item['comments']:
-                    try:
-                        c = ShareComment.objects.get(
-                            teacher__user_id=comment['user_id']
-                        )
-                    except ShareComment.DoesNotExist:
-                        try:
-                            c = ShareComment(
-                                content=comment['content'],
-                                teacher=Teacher.objects.get(user_id=comment['user_id']),
-                                share=instant,
-                                user_id=commnet['user_id'],
-                                user_name=commnet['user_name'],
-                                user_real_name=commnet['user_real_name']
-                            )
-                            c.save()
-                        except Teacher.DoesNotExist:
-                            print('This teacher may has been deleted')
-            except KeyError:
-                print('Not exist comments')
-            try:
-                for like in item['likes']:
-                    try:
-                        l = ShareLike.objects.get(
-                            user_id=like['user_id']
-                        )
-                    except ShareLike.DoesNotExist:
-                        try:
-                            l = ShareLike(
-                                teacher=Teacehr.objects.get(
-                                    user_id=like['user_id']
-                                ),
-                                share=instant,
-                                user_id=like['user_id'],
-                                user_name=like['user_name'],
-                                user_real_name=like['user_real_name']
-                            )
-                            l.save()
-                        except Teacher.DoesNotExist:
-                            print('This teacher may has been deleted')
-            except KeyError:
-                print('Not exist likes')
-            try:
-                for pic in item['pics']:
-                    sharePic = SharePic(
-                        url=pic,
-                        belongTo=instant,
-                        like=False
+                share = Share(
+                    like=False,
+                    user_id=item['user_id'],
+                    moment_id=item['moment_id'],
+                    content=item['content'],
+                    create_time=item['create_time'],
+                    teacher=Teacher.objects.get(user_id=item['user_id']),
+                    user_real_name=item['user_real_name'],
+                    user_name=item['user_name']
+                )
+                share.save()
+            except Teacher.DoesNotExist:
+                print('teacher Does not exist')
+        try:
+            for pic_item in item['pics']:
+                try:
+                    pic = SharePic.objects.get(
+                        url=pic_item
                     )
-                    sharePic.save()
-            except KeyError:
-                print('Not exist pics')
+                except SharePic.DoesNotExist:
+                    pic = SharePic(
+                        url=pic_item,
+                        belongTo=share,
+                        like=False,
+                        moment_id=item['moment_id'],
+                        user_real_name=item['user_real_name'],
+                        user_name=item['user_name'],
+                        user_id=item['user_id']
+                    )
+                    pic.save()
+        except KeyError:
+            print('Not pictures exist!')
+        try:
+            for comment in item['comments']:
+                try:
+                    c = ShareComment.objects.get(
+                        teacher__user_id=comment['user_id']
+                    )
+                except ShareComment.DoesNotExist:
+                    try:
+                        c = ShareComment(
+                            content=comment['content'],
+                            teacher=Teacher.objects.get(user_id=comment['user_id']),
+                            share=share,
+                            user_id=comment['user_id'],
+                            user_name=comment['user_name'],
+                            user_real_name=comment['user_real_name'],
+                            moment_id=item['moment_id']
+                        )
+                        c.save()
+                    except Teacher.DoesNotExist:
+                        print('This teacher may has been delated')
+        try:
+            for like in item['likes']:
+                try:
+                    l = ShareLike.objects.get(
+                        user_id=like['user_id']
+                    )
+                except ShareLike.DoesNotExist:
+                    try:
+                        l = ShareLike(
+                            teacher=Teacher.objects.get(
+                                user_id=like['user_id']
+                            ),
+                            share=share,
+                            user_id=like['user_id'],
+                            user_name=like['user_name'],
+                            user_real_name=like['user_real_name'],
+                            moment_id=item['moment_id']
+                        )
+                        l.save()
+                    except Teacher.DoesNotExist:
+                        print(item)
     if len(data) == 100:
         page += 1
         Update_share_list(page)
@@ -258,33 +227,32 @@ def update_teacher_info():
             'limit': 0
         }
     )
-    data_num = int(
-        res_data_num.json()['data']['total_count']
-    )
 
     # get all data -> <list: data>
     res_data = requests.get(
         GET_USER_LIST,
         headers=HEADERS,
         params={
-            'limit': data_num
+            'limit': res_data_num.json()['data']['total_count']
         }
     )
     data = res_data.json()['data']['data']
 
-    # create or update teacher info
+    # Update teacher and data related with it
+    # For New teachers, their other data must be empty.
     for item in data:
+        # Update teacher list
         try:
-            instant = Teacher.objects.get(
+            teacher = Teacher.objects.get(
                 user_id=item['user_id']
             )
-            instant.name = item['name']
-            instant.real_name = item['real_name']
-            instant.phone = item['phone']
-            instant.head_img = item['head_img']
-            instant.save()
+            teacher.name = item['name']
+            teacher.real_name = item['real_name']
+            teacher.phone = item['phone']
+            teacher.head_img = item['head_img']
+            teacher.save()
         except Teacher.DoesNotExist:
-            instant = Teacher(
+            teacher = Teacher(
                 user_id=item['user_id'],
                 name=item['name'],
                 real_name=item['real_name'],
@@ -298,8 +266,211 @@ def update_teacher_info():
                 is_reapply=False,
                 is_fake=False
             )
-            instant.save()
+            teacher.save()
 
+        # Update info form list
+        info_list = requests.get(
+            GET_USER_INFO_FORM,
+            headers=HEADERS,
+            params={
+                'user_id': item['user_id']
+            }
+        ).json()['data']
+
+        if info_list != None or info_list != []:
+            for info_item in info_list:
+                try:
+                    info = InfoForm.objects.get(
+                        user_id=info_item['user_id'],
+                        field_id=info_item['field_id']
+                    )
+                    info.field_name = info_item['field_name']
+                    info.field_value = info_item['field_value']
+                    info.create_time = strToDate(
+                        info_item['create_time']
+                    )
+                    info.save()
+                except InfoForm.DoesNotExist:
+                    info = InfoForm(
+                        user_id=info_item['user_id'],
+                        field_id=info_item['field_id'],
+                        field_value=info_item['field_value'],
+                        field_name=info_item['field_name'],
+                        create_time=strToDate(
+                            info_item['create_time']
+                        ),
+                        teacher=teacher
+                    )
+                    info.save()
+
+        # Update user course list
+        course_list = requests.get(
+            GET_USER_COURSE,
+            headers=HEADERS,
+            params={
+                'user_id': item['user_id']
+            }
+        ).json()['data']
+
+        if course_list != None or course_list != []:
+            for course_item in course_list:
+                try:
+                    course = UserCourse.objects.get(
+                        user_course_id=course_item['user_course_id']
+                    )
+                except UserCourse.DoesNotExist:
+                    course = UserCourse(
+                        user_course_id=course_item['user_course_id'],
+                        user_id=item['user_id'],
+                        tag_name=course_item['tag_name'],
+                        course_num=course_item['course_num'],
+                        term_num=course_item['term_num'],
+                        teacher=teacher,
+                        is_fake=False,
+                        has_protocal=False,
+                        feedback_num=0,
+                        finish_final=False
+                    )
+                    course.save()
+
+                # Update apply course which related to user course
+                apply_item = requests.get(
+                    GET_USER_PROTOCAL,
+                    headers=HEADERS,
+                    params={
+                        'user_course_id': course_item['user_course_id']
+                    }
+                ).json()['data']
+
+                if apply_item == None:
+                    course.has_protocal = False
+                else:
+                    course.has_protocal = True
+                    try:
+                        apply = course.applycourse
+                        apply.stu_num = apply_item['stu_num']
+                        apply.teacher_num = apply_item['teacher_num']
+                        apply.front_img = apply_item['front_img']
+                        apply.back_img = apply_item['back_img']
+                        apply.school_name = apply_item['school_name']
+                        apply.school_address = apply_item['school_address']
+                        apply.save()
+                    except UserCourse.applycourse.RelatedObjectDoesNotExist:
+                        apply = ApplyCourse(
+                            stu_num=apply_item['stu_num'],
+                            teacher_num=apply_item['teacher_num'],
+                            front_img=apply_item['front_img'],
+                            back_img=apply_item['back_img'],
+                            school_name=apply_item['school_name'],
+                            school_address=apply_item['school_address'],
+                            _user_course_id=course_item['user_course_id'],
+                            user_id=item['user_id'],
+                            user_course=course,
+                            teacher=teacher
+                        )
+                        apply.save()
+
+                # Update feedback form list which related to user course
+                feedback_list = requests.get(
+                    GET_CLASS_FORM_INFO,
+                    headers=HEADERS,
+                    params={
+                        'user_course_id': course_item['user_course_id']
+                    }
+                ).json()['data']
+
+                if feedback_list != None or feedback_list != []:
+                    # class num == 0 means 结课反馈表
+                    if '0' in list(
+                        map(
+                            lambda feedback_item: feedback_item['class_num'],
+                            feedback_list
+                        )
+                    ):
+                        course.finish_final = True
+                        course.feedback_num = len(feedback_list) - 1
+                    else:
+                        course.feedback_num = len(feedback_list)
+                    for feedback_item in feedback_list:
+                        try:
+                            feedback = FeedbackForm.objects.get(
+                                feedback_id=feedback_item['id']
+                            )
+                        except FeedbackForm.DoesNotExist:
+                            feedback = FeedbackForm(
+                                feedback_id=feedback_item['id'],
+                                create_time=strToDate(
+                                    feedback_item['create_time']
+                                ),
+                                class_num=feedback_item['class_num'],
+                                _user_course_id=course_item['user_course_id'],
+                                user_id=item['user_id'],
+                                user_course=course,
+                                teacher=teacher
+                            )
+                            feedback.save()
+
+                        # Update feedback picture
+                        pic_list = feedback_item['feedback_pic'].split(',')
+
+                        for pic_item in pic_list:
+                            try:
+                                pic = FeedbackPic.objects.get(
+                                    pic_url=pic_item
+                                )
+                            except FeedbackPic.DoesNotExist:
+                                pic = FeedbackPic(
+                                    pic_url=pic_item,
+                                    feedback_id=feedback_item['id'],
+                                    _user_course_id=course_item['user_course_id'],
+                                    feedback_form=feedback,
+                                    user_course=course,
+                                    teacher=teacher,
+                                    like=False,
+                                    create_time=strToDate(
+                                        feedback_item['create_time']
+                                    ),
+                                    user_id=item['user_id']
+                                )
+                                pic.save()
+
+                        # Update feedback unit
+                        def updateUnit(form):
+                            no_finish = True
+                            sign = 0
+                            while no_finish:
+                                try:
+                                    unit_item = form['{0}'.format(sign)]
+                                    sign += 1
+                                    try:
+                                        unit = FeedbackUnit.objects.get(
+                                            field_id=unit_item['field_id'],
+                                            feedback_id=form['id']
+                                        )
+                                        unit.field_name = unit_item['field_name']
+                                        unit.field_value = unit_item['field_value']
+                                        unit.save()
+                                    except FeedbackUnit.DoesNotExist:
+                                        unit = FeedbackUnit(
+                                            field_id=unit_item['field_id'],
+                                            field_name=unit_item['field_name'],
+                                            field_value=unit_item['field_value'],
+                                            feedback_id=form['id'],
+                                            _user_course_id=course_item['user_course_id'],
+                                            feedback_form=feedback,
+                                            user_course=course,
+                                            user_id=item['user_id'],
+                                            teacher=teacher,
+                                            create_time=strToDate(
+                                                form['create_time']
+                                            )
+                                        )
+                                        unit.save()
+                                except KeyError:
+                                    no_finish = False
+                        updateUnit(feedback_item)
+
+'''
     for teacher in Teacher.objects.all():
         # update user info form
         res_info_form = requests.get(
@@ -355,10 +526,10 @@ def update_teacher_info():
                     instant = UserCourse.objects.get(
                         user_course_id=item['user_course_id']
                     )
-                    instant.tag_name=item['tag_name']
-                    instant.course_num=item['course_num']
-                    instant.term_num=item['term_num']
-                    teacher.save()
+                    instant.tag_name = item['tag_name']
+                    instant.course_num = item['course_num']
+                    instant.term_num = item['term_num']
+                    instant.save()
                 except UserCourse.DoesNotExist:
                     instant = UserCourse(
                         user_course_id=item['user_course_id'],
@@ -492,3 +663,4 @@ def update_teacher_info():
                             teacher=apply.teacher
                         )
                         instant.save()
+'''

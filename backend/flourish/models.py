@@ -100,6 +100,11 @@ class UserCourse(models.Model):
     is_fake = models.BooleanField(
         default=False
     )
+    has_protocal = models.BooleanField(
+        default=False
+    )
+    feedback_num = models.IntegerField()
+    finish_final = models.BooleanField()
 
     def __str__(self):
         return '{0} | {1} | 学期：{2}'.format(
@@ -227,6 +232,10 @@ class FeedbackUnit(models.Model):
         Teacher,
         on_delete=models.CASCADE
     )
+    create_time = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return '{0}: {1}'.format(
@@ -266,6 +275,10 @@ class FeedbackPic(models.Model):
     like = models.BooleanField(
         default=False
     )
+    create_time = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
 
 class Share(models.Model):
@@ -290,6 +303,16 @@ class Share(models.Model):
         Teacher,
         on_delete=models.CASCADE
     )
+    user_real_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    user_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
 
 
 class SharePic(models.Model):
@@ -304,6 +327,26 @@ class SharePic(models.Model):
     )
     like = models.BooleanField(
         default=False
+    )
+    moment_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    user_real_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    user_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    user_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
     )
 
 
@@ -333,6 +376,11 @@ class ShareComment(models.Model):
         null=True,
         blank=True
     )
+    moment_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
 
 
 class ShareLike(models.Model):
@@ -346,11 +394,22 @@ class ShareLike(models.Model):
         related_name='shareLikes'
     )
     user_id = models.CharField(
-        max_length=100
+        max_length=100,
+        null=True,
+        blank=True
     )
     user_name = models.CharField(
-        max_length=100
+        max_length=100,
+        null=True,
+        blank=True
     )
     user_real_name = models.CharField(
-        max_length=100
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    moment_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
     )
