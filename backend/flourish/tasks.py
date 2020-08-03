@@ -177,6 +177,8 @@ def Update_share_list(page=0):
                         c.save()
                     except Teacher.DoesNotExist:
                         print('This teacher may has been delated')
+        except KeyError:
+            print('This share has not comments')
         try:
             for like in item['likes']:
                 try:
@@ -198,6 +200,8 @@ def Update_share_list(page=0):
                         l.save()
                     except Teacher.DoesNotExist:
                         print(item)
+        except KeyError:
+            print('this share has not likes')
     if len(data) == 100:
         page += 1
         Update_share_list(page)
