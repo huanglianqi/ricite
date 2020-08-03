@@ -4,6 +4,7 @@
     <b-dropdown
       block
       no-caret
+      menu-class="w-100"
       :variant="variant">
       <template
         v-slot:button-content>
@@ -12,26 +13,20 @@
           <b-icon
             :icon="iconUp"
             class="float-left mr-2"
-            v-show="!toolDropdownDown">
-          </b-icon>
+            v-show="!toolDropdownDown"></b-icon>
           <b-icon
             :icon="iconDown"
             class="float-left mr-2"
-            v-show="toolDropdownDown">
-          </b-icon>
+            v-show="toolDropdownDown"></b-icon>
           {{title}}
           <b-icon
             class="float-right ml-1"
             icon="caret-left-fill"
-            v-show="!toolDropdownDown">
-          </b-icon>
+            v-show="!toolDropdownDown"></b-icon>
           <b-icon
             class="float-right ml-1"
             icon="caret-down-fill"
-            v-show="toolDropdownDown">
-          </b-icon>
-        </div>
-      </template>
+            v-show="toolDropdownDown"></b-icon></div></template>
       <b-dropdown-item
         v-on:click="selectItem(firstItemTitle, firstItemValue)">
         {{firstItemTitle}}
@@ -41,9 +36,7 @@
         v-for="item in itemList"
         v-bind:key="item.title"
         v-on:click="selectItem(item.title, item.value)">
-        {{item.title}}
-      </b-dropdown-item>
-    </b-dropdown>
+        {{item.title}}</b-dropdown-item></b-dropdown>
   </div>
 </template>
 

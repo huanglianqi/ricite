@@ -160,7 +160,8 @@ def Update_share_list(page=0):
             for comment in item['comments']:
                 try:
                     c = ShareComment.objects.get(
-                        teacher__user_id=comment['user_id']
+                        teacher__user_id=comment['user_id'],
+                        moment_id=comment['moment_id']
                     )
                 except ShareComment.DoesNotExist:
                     try:

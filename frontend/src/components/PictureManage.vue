@@ -2,73 +2,49 @@
   <div
     id="pictureManage">
     <three-columns aria-label="head toolbar"
-      firstColumnTitle="类型"
-      secondColumnTitle="起于"
-      thirdColumnTitle="止于">
+      firstColumnTitle="起于"
+      secondColumnTitle="止于"
+      thirdColumnTitle="类型">
       <template v-slot:firstColumn>
+        <b-input-group aria-label="start date">
+          <b-form-datepicker
+            v-model="startDate"
+            calendar-width="100%"
+            hide-header
+            button-only
+            button-variant="white"></b-form-datepicker>
+          <b-form-input
+            v-model="startDate"
+            :state="checkStartDate"
+            debounce=500
+            placeholder="YYYY-MM-DD"
+            trim></b-form-input></b-input-group></template>
+      <template v-slot:secondColumn>
+        <b-input-group aria-label="end date">
+          <b-form-datepicker
+            v-model="endDate"
+            calendar-width="100%"
+            hide-header
+            button-only
+            button-variant="white"></b-form-datepicker>
+          <b-form-input
+            v-model="endDate"
+            :state="checkEndDate"
+            debounce=500
+            placeholder="YYYY-MM-DD"
+            trim></b-form-input></b-input-group></template>
+      <template v-slot:thirdColumn>
         <tool-dropdown
           variant="outline-success"
           iconUp="collection-play-fill"
           iconDown="collection-fill"
           :title="type.title"
           :value="type.value"
-          firstItemTitle="课程反馈"
+          firstItemTitle="全部图片"
           firstItemValue="feedback_pic_collect"
           :itemList="typeList"
-          :selectItemFunc="selectType"></tool-dropdown></template>
-      <template v-slot:secondColumn>
-        <b-button
-          variant="outline-info"
-          block
-          class="mb-3"
-          v-on:click="onConfirmStartDate">
-          <div
-            v-show="!confirmStartDate">
-            请确定开始日期
-          </div>
-          <div
-            v-show="confirmStartDate">
-            <div
-              v-if="startDate === ''">
-              请选择结束日期
-            </div>
-            {{startDate}}
-          </div></b-button>
-        <div
-          v-show="!confirmStartDate">
-          <b-calendar
-            v-model="startDate"
-            v-bind="calendarFormat"
-            selected-variant="success"
-            today-variant="info"
-            block></b-calendar></div></template>
-      <template v-slot:thirdColumn>
-        <b-button
-          variant="outline-info"
-          block
-          class="mb-3"
-          v-on:click="onConfirmEndDate">
-          <div
-            v-show="!confirmEndDate">
-            请确定结束日期
-          </div>
-          <div
-            v-show="confirmEndDate">
-            <div
-              v-if="endDate === ''">
-              请选择结束日期
-            </div>
-            {{endDate}}
-          </div></b-button>
-        <div
-          v-show="!confirmEndDate">
-          <b-calendar
-            v-model="endDate"
-            v-bind="calendarFormat"
-            selected-variant="success"
-            today-variant="info"
-            block></b-calendar></div></template></three-columns>
-    <three-blocks aria-label="list">
+          :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
+    <three-blocks aria-label="PicList">
       <b-card
         v-for="pic in picList"
         :key="pic.id"
@@ -154,43 +130,24 @@ export default {
         rounded: 'circle',
         left: true
       },
-      confirmStartDate: true,
-      confirmEndDate: true,
       startDate: '',
       endDate: '',
-      calendarFormat: {
-        weekdayHeaderFormat: 'narrow',
-        labelPrevDecade: '过去十年',
-        labelPrevYear: '上一年',
-        labelPrevMonth: '上个月',
-        labelCurrentMonth: '当前月份',
-        labelNextMonth: '下个月',
-        labelNextYear: '明年',
-        labelNextDecade: '下一个十年',
-        labelToday: '今天',
-        labelSelected: '选定日期',
-        labelNoDateSelected: '未选择日期',
-        labelCalendar: '日历',
-        labelNav: '日历导航',
-        labelHelp: '使用光标键浏览日期',
-        locale: 'zh'
-      },
       type: {
-        title: '课时反馈',
-        value: 'feedback_pic_collect'
+        title: '选择图片类型',
+        value: ''
       },
       typeList: [
         {
-          title: '群组动态',
-          value: 'feedback_pic_collect'
-        },
-        {
-          title: '课时反馈精选',
+          title: '图片精选',
           value: 'feedback_pic_like'
         },
         {
-          title: '群组动态精选',
-          value: 'feedback_pic_like'
+          title: '全部图文',
+          value: 'share_list'
+        },
+        {
+          title: '图文精选',
+          value: 'share_like_list'
         }
       ],
       picList: [],
@@ -199,6 +156,30 @@ export default {
           real_name: ''
         },
         pic_url: ''
+      }
+    }
+  },
+  watch: {
+    endDate (val) {
+      this.checkDateFormat(val)
+    },
+    startDate (val) {
+      this.checkDateFormat(val)
+    }
+  },
+  computed: {
+    checkEndDate () {
+      if (this.endDate.length === 10) {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkStartDate () {
+      if (this.startDate.length === 10) {
+        return true
+      } else {
+        return false
       }
     }
   },
@@ -243,21 +224,20 @@ export default {
           }
         )
     },
+    checkDateFormat (date) {
+      if (date.length === 10) {
+        if (date.slice(0, 4) >= 2018 && date[5] === '-' && date[8] === '-' && date[6] >= 0 && date[6] <= 1 && date[7] <= 9 && date[7] >= 0 && date[9] >= 0 && date[9] <= 3 && date[10] >= 0 && date[10] <= 9) {
+          this.collectPic()
+        }
+      }
+    },
     selectType (title, value) {
       this.type.value = value
       this.type.title = title
       this.collectPic()
     },
-    onConfirmStartDate () {
-      this.confirmStartDate = !this.confirmStartDate
-      this.collectPic()
-    },
-    onConfirmEndDate () {
-      this.confirmEndDate = !this.confirmEndDate
-      this.collectPic()
-    },
     collectPic () {
-      if (this.confirmEndDate === true && this.confirmStartDate === true && this.startDate !== '' && this.endDate !== '') {
+      if (this.startDate !== '' && this.endDate !== '' && this.type.value !== '') {
         if (this.startDate > this.endDate) {
           this.getPicCollect(this.endDate, this.startDate)
         } else {
@@ -284,9 +264,13 @@ export default {
           }
         )
     },
+    // Zoom up the picture
     getDetail (pic) {
       this.detail = pic
     },
+    /*
+     * Download image one by one, HD
+    */
     downloadPic (pic) {
       // Translate pic_url into 'download/' format for proxy request.
       let image = new Image()
@@ -321,6 +305,10 @@ export default {
       link.click()
       document.body.removeChild(link)
     },
+    /*
+     * search school string in info form
+     * and its field id is 9
+    */
     searchSchool (forms) {
       // info form field id 9 is school
       for (let i = 0; i < forms.length; i++) {
