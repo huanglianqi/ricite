@@ -136,7 +136,7 @@ def Update_share_list(page=0):
                 )
                 share.save()
             except Teacher.DoesNotExist:
-                print('teacher Does not exist')
+                continue
         try:
             for pic_item in item['pics']:
                 try:
@@ -155,7 +155,7 @@ def Update_share_list(page=0):
                     )
                     pic.save()
         except KeyError:
-            print('Not pictures exist!')
+            continue
         try:
             for comment in item['comments']:
                 try:
@@ -176,9 +176,9 @@ def Update_share_list(page=0):
                         )
                         c.save()
                     except Teacher.DoesNotExist:
-                        print('This teacher may has been delated')
+                        continue
         except KeyError:
-            print('This share has not comments')
+            continue
         try:
             for like in item['likes']:
                 try:
@@ -199,9 +199,9 @@ def Update_share_list(page=0):
                         )
                         l.save()
                     except Teacher.DoesNotExist:
-                        print(item)
+                        continue
         except KeyError:
-            print('this share has not likes')
+            continue
     if len(data) == 100:
         page += 1
         Update_share_list(page)
