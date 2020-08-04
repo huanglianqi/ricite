@@ -167,7 +167,9 @@ class TeacherSerializerForPic(serializers.ModelSerializer):
             'infoForms',
             'real_name',
             'phone',
-            'head_img'
+            'head_img',
+            'name',
+            'is_reapply'
         ]
 
 
@@ -230,6 +232,17 @@ class UserCourseSerializerApplyCount(serializers.ModelSerializer):
         ]
 
 
+class TeacherSerializerForShareLikeAndComment(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = [
+            'head_img',
+            'phone',
+            'real_name',
+            'name'
+        ]
+
+
 class SharePicSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharePic
@@ -240,7 +253,7 @@ class SharePicSerializer(serializers.ModelSerializer):
 
 
 class ShareCommentSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializerForPic(read_only=True)
+    teacher = TeacherSerializerForShareLikeAndComment(read_only=True)
 
     class Meta:
         model = ShareComment
@@ -254,7 +267,7 @@ class ShareCommentSerializer(serializers.ModelSerializer):
 
 
 class ShareLikeSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializerForPic(read_only=True)
+    teacher = TeacherSerializerForShareLikeAndComment(read_only=True)
 
     class Meta:
         model = ShareLike
@@ -279,6 +292,7 @@ class ShareSrializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
+    teacher = TeacherSerializerForPic
 
     class Meta:
         model = Share
@@ -290,5 +304,8 @@ class ShareSrializer(serializers.ModelSerializer):
             'create_time',
             'shareLikes',
             'shareComments',
-            'sharePics'
+            'sharePics',
+            'teacher',
+            'user_real_name',
+            'user_name'
         ]

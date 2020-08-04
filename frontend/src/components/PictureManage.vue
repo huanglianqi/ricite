@@ -44,50 +44,55 @@
           firstItemValue="feedback_pic_collect"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
-    <three-blocks aria-label="PicList">
+    <three-blocks aria-label="PicList"
+      v-show="!isGraph">
       <b-card
         v-for="pic in picList"
         :key="pic.id"
-        border-variant="white">
-        <div
-          v-on:click="getDetail(pic)">
-          <b-card-img-lazy aria-label="feedback pic"
-            :src="pic.pic_url"
-            alt="Oops 服务器丢掉了该图片"
-            top
-            v-b-modal.detail
-            blank-width="300"
-            black-height="200"></b-card-img-lazy></div>
-        <b-card-text
-          class="p-2 font-weight-bolder text-left text-black-75 align-text-bottom">
-          <b-img-lazy aria-label="head pic"
-            :src="pic.teacher.head_img"
-            :alt="pic.teacher.head_img"
-            v-bind="headImgFormat"
-            rounded="circle"
-            blank></b-img-lazy>
-          {{pic.teacher.real_name}}
-          <b-button
-            size="sm"
-            pill
-            variant="white"
-            v-on:click="likeIt(pic)">
-            <b-icon
-              variant="danger"
-              shift-v="1.75"
-              font-scale="1.5"
-              :icon="isLike(pic)"></b-icon></b-button>
-          <b-button
-            size="sm"
-            class="float-right"
-            variant="white"
-            pill
-            v-on:click="downloadPic(pic)">
-            <b-icon
-              icon="download"
-              font-scale="1.5"
-              shift-v="1.75"
-              variant="success"></b-icon></b-button></b-card-text></b-card></three-blocks>
+        border-variant="white"
+        :img-src="pic.pic_url"
+        overlay>
+        <b-container
+          class="mt-3">
+            <b-row
+              class="mb-3">
+              <b-col>
+                <b-button
+                  block
+                  variant="outline-danger"
+                  v-on:click="likeIt(pic)">
+                  <b-icon
+                    :icon="isLike(pic)"></b-icon></b-button></b-col>
+              <b-col>
+                <b-button
+                  block
+                  variant="outline-success"
+                  v-on:click="downloadPic(pic)">
+                  <b-icon
+                    icon="cloud-download"></b-icon></b-button></b-col></b-row>
+            <b-row
+              class="mb-3 px-3">
+              <b-button
+                block
+                v-b-modal.detail
+                v-on:click="getDetail(pic)"
+                variant="outline-info">
+                详情</b-button></b-row></b-container></b-card></three-blocks>
+    <three-blocks aria-label="shareList"
+      v-show="isGraph">
+      <b-carousel
+        v-for="share in shareList"
+        :key="share.moment"
+        fade
+        indicators
+        controls
+        img-width="1024"
+        img-height="480">
+        <b-carousel-slide
+          v-for="pic in share.sharePics"
+          :key="pic.url"
+          :img-src="pic.url"></b-carousel-slide></b-carousel>
+    </three-blocks>
     <b-modal aria-label="detail"
       id="detail"
       size="xl"
@@ -99,10 +104,53 @@
       body-bg-variant="light">
       <b-img
         block
-        center
         fluid-grow
         :src="detail.pic_url"
-        :alt="detail.pic_url"></b-img></b-modal>
+        alt="图片丢失"></b-img>
+        <div
+          class="p-2 font-weight-bold text-left text-black-75 align-text-bottom">
+          <p>
+            <b-img-lazy aria-label="head pic"
+              :src="detail.teacher.head_img"
+              v-bind="headImgFormat"
+              rounded
+              blank></b-img-lazy>
+            {{detail.teacher.name}}</p>
+          <p>
+            <b-icon
+            icon="calendar-event-fill"></b-icon>
+            {{detail.feedback_form.create_time}}</p>
+          <p>
+            <b-icon
+            icon="person-fill"></b-icon>
+            {{detail.teacher.real_name}}</p>
+          <p>
+            <b-icon
+              icon="tag-fill"></b-icon>
+            {{detail.user_course.tag_name}}</p>
+          <p>
+            {{detail.is_reapply}}</p>
+          <p>
+            <b-icon
+              icon="telephone-fill"></b-icon>
+            {{detail.teacher.phone}}</p>
+          <b-container
+            class="mt-3">
+            <b-row>
+              <b-col>
+                <b-button
+                  block
+                  variant="outline-danger"
+                  v-on:click="likeIt(detail)">
+                  <b-icon
+                    :icon="isLike(detail)"></b-icon></b-button></b-col>
+              <b-col>
+                <b-button
+                  block
+                  variant="outline-success"
+                  v-on:click="downloadPic(detail)">
+                  <b-icon
+                    icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></div></b-modal>
   </div>
 </template>
 
@@ -111,22 +159,20 @@ import ThreeColumnsVue from './ThreeColumns.vue'
 import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
 import ThreeBlocksVue from './ThreeBlocks.vue'
-import ToolModalVue from './ToolModal.vue'
 
 export default {
   name: 'pictureManage',
   components: {
     'three-columns': ThreeColumnsVue,
     'tool-dropdown': ToolDropdownVue,
-    'three-blocks': ThreeBlocksVue,
-    'tool-modal': ToolModalVue
+    'three-blocks': ThreeBlocksVue
   },
   data () {
     return {
       headImgFormat: {
         width: 25,
         height: 25,
-        class: 'ml-1 mr-2 mb-1 mt-0',
+        class: 'ml-0 mr-2 mb-1 mt-0',
         rounded: 'circle',
         left: true
       },
@@ -151,9 +197,17 @@ export default {
         }
       ],
       picList: [],
+      shareList: [],
       detail: {
         teacher: {
-          real_name: ''
+          real_name: '',
+          name: ''
+        },
+        user_course: {
+          tag_name: ''
+        },
+        feedback_form: {
+          create_time: ''
         },
         pic_url: ''
       }
@@ -177,6 +231,13 @@ export default {
     },
     checkStartDate () {
       if (this.startDate.length === 10) {
+        return true
+      } else {
+        return false
+      }
+    },
+    isGraph () {
+      if (this.type.value === 'share_list' || this.type.value === 'share_like_list') {
         return true
       } else {
         return false
@@ -226,43 +287,61 @@ export default {
     },
     checkDateFormat (date) {
       if (date.length === 10) {
-        if (date.slice(0, 4) >= 2018 && date[5] === '-' && date[8] === '-' && date[6] >= 0 && date[6] <= 1 && date[7] <= 9 && date[7] >= 0 && date[9] >= 0 && date[9] <= 3 && date[10] >= 0 && date[10] <= 9) {
-          this.collectPic()
-        }
+        this.collectList()
       }
     },
     selectType (title, value) {
       this.type.value = value
       this.type.title = title
-      this.collectPic()
+      this.collectList()
     },
-    collectPic () {
+    collectList () {
       if (this.startDate !== '' && this.endDate !== '' && this.type.value !== '') {
         if (this.startDate > this.endDate) {
-          this.getPicCollect(this.endDate, this.startDate)
+          this.getCollect(this.endDate, this.startDate)
         } else {
-          this.getPicCollect(this.startDate, this.endDate)
+          this.getCollect(this.startDate, this.endDate)
         }
       }
     },
-    getPicCollect (start, end) {
-      Axios
-        .get(
-          `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
-        )
-        .then(
-          res => {
-            this.picList = res.data.results
-          }
-        )
-        .catch(
-          err => {
-            if (String(err).indexOf('401')) {
-              this.autoLogin()
-              this.getPicCollect(start, end)
+    getCollect (start, end) {
+      if (this.type.value === 'share_list' || this.type.value === 'share_like_list') {
+        Axios
+          .get(
+            `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
+          )
+          .then(
+            res => {
+              this.shareList = res.data.results
             }
-          }
-        )
+          )
+          .catch(
+            err => {
+              if (String(err).indexOf('401')) {
+                this.autoLogin()
+                this.getCollect(start, end)
+              }
+            }
+          )
+      } else {
+        Axios
+          .get(
+            `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
+          )
+          .then(
+            res => {
+              this.picList = res.data.results
+            }
+          )
+          .catch(
+            err => {
+              if (String(err).indexOf('401')) {
+                this.autoLogin()
+                this.getCollect(start, end)
+              }
+            }
+          )
+      }
     },
     // Zoom up the picture
     getDetail (pic) {

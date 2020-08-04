@@ -355,7 +355,7 @@ class ShareComment(models.Model):
     share = models.ForeignKey(
         Share,
         on_delete=models.CASCADE,
-        related_name='shareCommnets'
+        related_name='shareComments'
     )
     teacher = models.ForeignKey(
         Teacher,
