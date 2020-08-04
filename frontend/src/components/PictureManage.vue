@@ -44,14 +44,17 @@
           firstItemValue="feedback_pic_collect"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
-    <three-blocks aria-label="PicList"
+    <three-blocks aria-label="feedback pic list"
       v-show="!isGraph">
       <b-card
         v-for="pic in picList"
         :key="pic.id"
-        border-variant="white"
-        :img-src="pic.pic_url"
-        overlay>
+        border-variant="white">
+        <div
+          v-on:click="getDetail(pic)">
+          <b-card-img-lazy
+            :src="pic.pic_url"
+            v-b-modal.detail></b-card-img-lazy></div>
         <b-container
           class="mt-3">
             <b-row
@@ -69,16 +72,8 @@
                   variant="outline-success"
                   v-on:click="downloadPic(pic)">
                   <b-icon
-                    icon="cloud-download"></b-icon></b-button></b-col></b-row>
-            <b-row
-              class="mb-3 px-3">
-              <b-button
-                block
-                v-b-modal.detail
-                v-on:click="getDetail(pic)"
-                variant="outline-info">
-                详情</b-button></b-row></b-container></b-card></three-blocks>
-    <three-blocks aria-label="shareList"
+                    icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
+    <three-blocks aria-label="share list"
       v-show="isGraph">
       <b-carousel
         v-for="share in shareList"
@@ -93,7 +88,7 @@
           :key="pic.url"
           :img-src="pic.url"></b-carousel-slide></b-carousel>
     </three-blocks>
-    <b-modal aria-label="detail"
+    <b-modal aria-label="feedback pic detail"
       id="detail"
       size="xl"
       hide-header
