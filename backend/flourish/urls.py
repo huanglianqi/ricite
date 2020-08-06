@@ -23,6 +23,7 @@ from .views import (
     FeedbackPicCollectListAPIView,
     FeedbackPicLikeListAPIView,
     FeedbackPicLikeUpdateAPIView,
+    FeedbackPicRetrieveAPIView,
     CountApplyDataListAPIView,
     ShareListAPIView,
 )
@@ -111,6 +112,10 @@ urlpatterns = [
     re_path(
         r'feedback_pic_like/(?P<endDate>.+)/(?P<startDate>.+)/$',
         FeedbackPicLikeListAPIView.as_view()
+    ),
+    path(
+        'get_feedback_pic/<int:pk>',
+        FeedbackPicRetrieveAPIView.as_view()
     ),
     path(
         'feedback_pic_like_update/<int:pk>',

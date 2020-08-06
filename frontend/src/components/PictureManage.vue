@@ -44,108 +44,39 @@
           firstItemValue="feedback_pic_collect"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
-    <three-blocks aria-label="feedback pic list"
-      v-show="!isGraph">
-      <b-card
-        v-for="pic in picList"
-        :key="pic.id"
-        border-variant="white">
+
+    <b-container aria-label="share list"
+      class="mt-3"
+      v-show="isGraph"
+      v-for="item in shareList"
+      :key="item.id">
+      <b-row>
         <div
-          v-on:click="getDetail(pic)">
-          <b-card-img-lazy
-            :src="pic.pic_url"
-            v-b-modal.detail></b-card-img-lazy></div>
-        <b-container
-          class="mt-3">
-            <b-row
-              class="mb-3">
-              <b-col>
-                <b-button
-                  block
-                  variant="outline-danger"
-                  v-on:click="likeIt(pic)">
-                  <b-icon
-                    :icon="isLike(pic)"></b-icon></b-button></b-col>
-              <b-col>
-                <b-button
-                  block
-                  variant="outline-success"
-                  v-on:click="downloadPic(pic)">
-                  <b-icon
-                    icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
-    <three-blocks aria-label="share list"
-      v-show="isGraph">
-      <b-carousel
-        v-for="share in shareList"
-        :key="share.moment"
-        fade
-        indicators
-        controls
-        img-width="1024"
-        img-height="480">
-        <b-carousel-slide
-          v-for="pic in share.sharePics"
-          :key="pic.url"
-          :img-src="pic.url"></b-carousel-slide></b-carousel>
-    </three-blocks>
-    <b-modal aria-label="feedback pic detail"
-      id="detail"
-      size="xl"
-      hide-header
-      centered
-      ok-variant="outline-success"
-      ok-only
-      ok-title="关闭"
-      body-bg-variant="light">
-      <b-img
-        block
-        fluid-grow
-        :src="detail.pic_url"
-        alt="图片丢失"></b-img>
-        <div
-          class="p-2 font-weight-bold text-left text-black-75 align-text-bottom">
-          <p>
-            <b-img-lazy aria-label="head pic"
-              :src="detail.teacher.head_img"
-              v-bind="headImgFormat"
+          v-on:click="getPersonDetail(item.teacher)">
+          <head-img
+            class="mr-2"
+            :src="item.teacher.head_img"
+            :button="true"
+            v-b-modal.personDetail></head-img></div>
+          <b-col><b-row><p>{{item.teacher.real_name}}</p></b-row>
+          <b-row><p>{{item.content}}</p></b-row></b-col></b-row>
+        <b-row>
+          <div
+            class="overflow-auto d-inline-block">
+            <b-img-lazy
+              v-for="pic in item.sharePics"
+              :key="pic.url"
+              class="m-2"
+              height="200"
+              left
               rounded
-              blank></b-img-lazy>
-            {{detail.teacher.name}}</p>
-          <p>
-            <b-icon
-            icon="calendar-event-fill"></b-icon>
-            {{detail.feedback_form.create_time}}</p>
-          <p>
-            <b-icon
-            icon="person-fill"></b-icon>
-            {{detail.teacher.real_name}}</p>
-          <p>
-            <b-icon
-              icon="tag-fill"></b-icon>
-            {{detail.user_course.tag_name}}</p>
-          <p>
-            {{detail.is_reapply}}</p>
-          <p>
-            <b-icon
-              icon="telephone-fill"></b-icon>
-            {{detail.teacher.phone}}</p>
-          <b-container
-            class="mt-3">
-            <b-row>
-              <b-col>
-                <b-button
-                  block
-                  variant="outline-danger"
-                  v-on:click="likeIt(detail)">
-                  <b-icon
-                    :icon="isLike(detail)"></b-icon></b-button></b-col>
-              <b-col>
-                <b-button
-                  block
-                  variant="outline-success"
-                  v-on:click="downloadPic(detail)">
-                  <b-icon
-                    icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></div></b-modal>
+              :src="pic.url"></b-img-lazy></div></b-row></b-container>
+    <person-detail
+      id="personDetail"
+      :detail="personDetail"></person-detail>
+    <image-pad
+      :show="!isGraph"
+      :list="picList"></image-pad>
   </div>
 </template>
 
@@ -154,13 +85,21 @@ import ThreeColumnsVue from './ThreeColumns.vue'
 import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
 import ThreeBlocksVue from './ThreeBlocks.vue'
+import HeadImgVue from './HeadImg.vue'
+import PersonDetailModalVue from './PersonDetailModal.vue'
+import updateLikeButtonVue from './updateLikeButton.vue'
+import ImagePadVue from './ImagePad.vue'
 
 export default {
   name: 'pictureManage',
   components: {
     'three-columns': ThreeColumnsVue,
     'tool-dropdown': ToolDropdownVue,
-    'three-blocks': ThreeBlocksVue
+    'three-blocks': ThreeBlocksVue,
+    'head-img': HeadImgVue,
+    'person-detail': PersonDetailModalVue,
+    'update-like-button': updateLikeButtonVue,
+    'image-pad': ImagePadVue
   },
   data () {
     return {
@@ -193,6 +132,7 @@ export default {
       ],
       picList: [],
       shareList: [],
+      personDetail: {},
       detail: {
         teacher: {
           real_name: '',
@@ -240,45 +180,8 @@ export default {
     }
   },
   methods: {
-    /*
-     * Heart-fill means we like it,
-     * when pic was choised by us.
-     * Heart means we don't like it,
-     * when pic isn't choised by us.
-    */
-    isLike (pic) {
-      if (pic.like) {
-        return 'heart-fill'
-      } else {
-        return 'heart'
-      }
-    },
-    likeIt (pic) {
-      if (pic.like) {
-        // modify data remotely
-        this.updateLike(pic.id, false)
-        // modify data locally
-        pic.like = false
-      } else {
-        // modify data remotely
-        this.updateLike(pic.id, true)
-        // modify data locally
-        pic.like = true
-      }
-    },
-    updateLike (id, bool) {
-      Axios
-        .patch(
-          `flourish/feedback_pic_like_update/${id}`,
-          {
-            like: bool
-          }
-        )
-        .catch(
-          err => {
-            console.log(err)
-          }
-        )
+    getPersonDetail (detail) {
+      this.personDetail = detail
     },
     checkDateFormat (date) {
       if (date.length === 10) {
@@ -336,59 +239,6 @@ export default {
               }
             }
           )
-      }
-    },
-    // Zoom up the picture
-    getDetail (pic) {
-      this.detail = pic
-    },
-    /*
-     * Download image one by one, HD
-    */
-    downloadPic (pic) {
-      // Translate pic_url into 'download/' format for proxy request.
-      let image = new Image()
-      let src = pic.pic_url.replace('https://www.rici.org.cn/', 'download/')
-      image.setAttribute('crossOrigin', 'anonymous')
-      image.src = src
-      image.onload = () => {
-        let canvas = document.createElement('canvas')
-        canvas.width = image.width
-        canvas.height = image.height
-        let ctx = canvas.getContext('2d')
-        ctx.drawImage(image, 0, 0, image.width, image.height)
-        canvas.toBlob((blob) => {
-          let url = URL.createObjectURL(blob)
-          // Click on simulate download link
-          this.onDownloadPic(url, pic)
-          URL.revokeObjectURL(url)
-        })
-        // auto add 'like' list
-        this.likeIt(pic)
-      }
-    },
-    onDownloadPic (url, pic) {
-      // human readable time format is 'yyyy-mm--dd'
-      let time = pic.feedback_form.create_time.split('T')[0]
-      // Data 'school' exist in info forms
-      let school = this.searchSchool(pic.teacher.infoForms)
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `${time}-${school}-心灵魔法学院-${pic.teacher.real_name}-${pic.user_course.tag_name}.jpg`)
-      document.body.append(link)
-      link.click()
-      document.body.removeChild(link)
-    },
-    /*
-     * search school string in info form
-     * and its field id is 9
-    */
-    searchSchool (forms) {
-      // info form field id 9 is school
-      for (let i = 0; i < forms.length; i++) {
-        if (forms[i].field_id === '9') {
-          return forms[i].field_value
-        }
       }
     },
     autoLogin () {

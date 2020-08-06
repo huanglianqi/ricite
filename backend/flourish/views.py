@@ -31,6 +31,7 @@ from rest_framework.generics import(
     RetrieveAPIView,
     UpdateAPIView,
     ListAPIView,
+    RetrieveUpdateAPIView,
 )
 from rest_framework.mixins import (
     RetrieveModelMixin,
@@ -515,13 +516,25 @@ class FeedbackPicLikeListAPIView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class FeedbackPicLikeUpdateAPIView(UpdateAPIView):
+class FeedbackPicRetrieveAPIView(RetrieveAPIView):
+    serializer_class = FeedbackPicCollectSerializer
+    permission_classes = [AllowAny]
+    queryset = FeedbackPic.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args,**kwargs)
+
+
+class FeedbackPicLikeUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = FeedbackPicCollectSerializer
     permission_classes = [AllowAny]
     queryset = FeedbackPic.objects.all()
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 # Outputs' applycourse may be null, need FILTER in frontend

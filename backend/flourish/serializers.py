@@ -152,7 +152,8 @@ class infoFormSerializerForPic(serializers.ModelSerializer):
         model = InfoForm
         fields = [
             'field_value',
-            'field_id'
+            'field_id',
+            'field_name'
         ]
 
 class TeacherSerializerForPic(serializers.ModelSerializer):
@@ -292,7 +293,9 @@ class ShareSrializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
-    teacher = TeacherSerializerForPic
+    teacher = TeacherSerializerForPic(
+        read_only=True
+    )
 
     class Meta:
         model = Share

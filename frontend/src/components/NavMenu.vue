@@ -87,7 +87,7 @@ export default {
           id: 'navMenu_item_5',
           variant: 'outline-success',
           path: '/feedbackCheck',
-          icon: 'receipt-cutoff',
+          icon: 'book',
           name: '课程反馈'
         },
         {
