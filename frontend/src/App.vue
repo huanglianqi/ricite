@@ -2,10 +2,14 @@
   <div id="app">
     <div aria-label="nav-bar"
       id="nav-bar">
-      <NavMenu/>
-      <AccountProfile/>
+      <b-row>
+        <b-col
+          cols="1"><NavMenu/></b-col>
+        <b-col
+          cols="11">
+          <div
+            class="float-right"><AccountProfile/></div></b-col></b-row>
     </div>
-    <hr>
     <router-view/>
     <div aria-label="nav-top"
       id="nav-top">
@@ -52,7 +56,7 @@
       <router-link
         to='/feedbackCheck'>
         <b-icon
-          icon="receipt-cutoff"
+          icon="book"
           scale="1.25"
           aria-hidden="true">
         </b-icon>
@@ -153,7 +157,7 @@ export default {
 }
 
 #nav-bar > * {
-  display: inline-block;
+  display: fixed;
   padding: 10px 10px 0px 10px;
 }
 
