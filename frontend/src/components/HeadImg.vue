@@ -2,23 +2,47 @@
   <div
     id="headImg">
     <b-avatar
+      class="mr-2"
       icon="person-fill"
       variant="white"
       size="2em"
       :button="button"
       rounded
-      :src="src"></b-avatar></div>
+      v-b-modal.detail
+      :src="src"></b-avatar>
+    <span
+      class="align-bottom"
+      v-show="showName">{{info.name}}</span>
+    <person-info
+      :info="info"
+      :id="'detail'"></person-info></div>
 </template>
 
 <script>
+import ModalModelVue from './ModalModel.vue'
+import PersonInfoVue from './PersonInfo.vue'
+
 export default {
   name: 'headImg',
+  components: {
+    'modal-model': ModalModelVue,
+    'person-info': PersonInfoVue
+  },
   props: {
     src: {
       type: String,
       required: false
     },
     button: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    info: {
+      type: Object,
+      required: false
+    },
+    showName: {
       type: Boolean,
       required: false,
       default: true

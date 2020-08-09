@@ -2,6 +2,7 @@
   <div
     id="toolDropdown">
     <b-dropdown
+      toggle-class="shadow-sm border-white border-0 p-2"
       block
       no-caret
       menu-class="w-100"
@@ -12,20 +13,23 @@
           v-on:click="toolDropdownDown=true">
           <b-icon
             :icon="iconUp"
+            shift-v="-1"
             class="float-left mr-2"
             v-show="!toolDropdownDown"></b-icon>
           <b-icon
             :icon="iconDown"
+            shift-v="-1"
             class="float-left mr-2"
             v-show="toolDropdownDown"></b-icon>
           {{title}}
           <b-icon
             class="float-right ml-1"
-            icon="caret-left-fill"
+            shift-v="-1"
+            icon="three-dots"
             v-show="!toolDropdownDown"></b-icon>
           <b-icon
             class="float-right ml-1"
-            icon="caret-down-fill"
+            icon="x"
             v-show="toolDropdownDown"></b-icon></div></template>
       <b-dropdown-item
         v-on:click="selectItem(firstItemTitle, firstItemValue)">

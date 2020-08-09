@@ -11,33 +11,23 @@
             v-model="startDate"
             calendar-width="100%"
             hide-header
-            button-only
-            button-variant="white"></b-form-datepicker>
-          <b-form-input
-            v-model="startDate"
-            :state="checkStartDate"
-            debounce=500
-            placeholder="YYYY-MM-DD"
-            trim></b-form-input></b-input-group></template>
+            selected-variant="success"
+            menu-class="shadow-sm border-0 mt-2 w-100"
+            class="border-white border-0 bg-white shadow-sm p-1"></b-form-datepicker></b-input-group></template>
       <template v-slot:secondColumn>
         <b-input-group aria-label="end date">
           <b-form-datepicker
             v-model="endDate"
             calendar-width="100%"
             hide-header
-            button-only
-            button-variant="white"></b-form-datepicker>
-          <b-form-input
-            v-model="endDate"
-            :state="checkEndDate"
-            debounce=500
-            placeholder="YYYY-MM-DD"
-            trim></b-form-input></b-input-group></template>
+            selected-variant="success"
+            menu-class="shadow-sm border-0 mt-2 w-100"
+            class="border-white border-0 bg-white shadow-sm p-1"></b-form-datepicker></b-input-group></template>
       <template v-slot:thirdColumn>
         <tool-dropdown
-          variant="outline-success"
-          iconUp="collection-play-fill"
-          iconDown="collection-fill"
+          variant="outline-info"
+          iconUp="image"
+          iconDown="images"
           :title="type.title"
           :value="type.value"
           firstItemTitle="全部图片"
@@ -51,13 +41,11 @@
       v-for="item in shareList"
       :key="item.id">
       <b-row>
-        <div
-          v-on:click="getPersonDetail(item.teacher)">
-          <head-img
-            class="mr-2"
-            :src="item.teacher.head_img"
-            :button="true"
-            v-b-modal.personDetail></head-img></div>
+        <head-img
+          class="mr-2"
+          :src="item.teacher.head_img"
+          :button="true"
+          v-b-modal.personDetail></head-img>
           <b-col><b-row><p>{{item.teacher.real_name}}</p></b-row>
           <b-row><p>{{item.content}}</p></b-row></b-col></b-row>
         <b-row>
@@ -71,11 +59,8 @@
               left
               rounded
               :src="pic.url"></b-img-lazy></div></b-row></b-container>
-    <person-detail
-      id="personDetail"
-      :detail="personDetail"></person-detail>
     <image-pad
-      :show="!isGraph"
+      v-show="!isGraph"
       :list="picList"></image-pad>
   </div>
 </template>
@@ -86,7 +71,6 @@ import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
 import ThreeBlocksVue from './ThreeBlocks.vue'
 import HeadImgVue from './HeadImg.vue'
-import PersonDetailModalVue from './PersonDetailModal.vue'
 import updateLikeButtonVue from './updateLikeButton.vue'
 import ImagePadVue from './ImagePad.vue'
 
@@ -97,7 +81,6 @@ export default {
     'tool-dropdown': ToolDropdownVue,
     'three-blocks': ThreeBlocksVue,
     'head-img': HeadImgVue,
-    'person-detail': PersonDetailModalVue,
     'update-like-button': updateLikeButtonVue,
     'image-pad': ImagePadVue
   },
@@ -132,7 +115,6 @@ export default {
       ],
       picList: [],
       shareList: [],
-      personDetail: {},
       detail: {
         teacher: {
           real_name: '',
@@ -157,20 +139,6 @@ export default {
     }
   },
   computed: {
-    checkEndDate () {
-      if (this.endDate.length === 10) {
-        return true
-      } else {
-        return false
-      }
-    },
-    checkStartDate () {
-      if (this.startDate.length === 10) {
-        return true
-      } else {
-        return false
-      }
-    },
     isGraph () {
       if (this.type.value === 'share_list' || this.type.value === 'share_like_list') {
         return true
@@ -180,9 +148,6 @@ export default {
     }
   },
   methods: {
-    getPersonDetail (detail) {
-      this.personDetail = detail
-    },
     checkDateFormat (date) {
       if (date.length === 10) {
         this.collectList()

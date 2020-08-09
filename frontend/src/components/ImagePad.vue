@@ -1,84 +1,129 @@
 <template>
   <div
     id="imagePad">
-    <three-blocks aria-label="picture set"
-      v-show="show">
+    <three-blocks aria-label="picture set">
       <b-card
-        no-body
         v-for="item in list"
         :key="item.id"
-        border-variant="white">
+        border-variant="white"
+        bg-variant="light"
+        rounded>
         <div
           v-on:click="getDetail(item)">
-          <b-card-img-lazy
+          <b-img-lazy
+            class="shadow"
+            rounded
             v-b-modal.detail
-            :src="item.pic_url"></b-card-img-lazy></div>
+            :src="item.pic_url"
+            height="300"></b-img-lazy></div>
         <b-container
-          class="mb-3">
-          <b-row
-            class="mt-2">
+          class="mt-3">
+          <b-row>
             <b-col>
               <b-button
+                v-b-modal.detail
+                class="shadow border-white border-0"
+                block
+                variant="outline-info"
+                v-on:click="getDetail(item)">
+                <b-icon
+                  icon="arrows-angle-expand"></b-icon></b-button></b-col>
+            <b-col>
+              <b-button
+                class="shadow border-white border-0"
                 block
                 variant="outline-danger"
-                v-on:click="update(item)">
+                v-on:click="update(item.id, item.like)">
                 <b-icon
                   :icon="updateIcon(item.like)"></b-icon></b-button></b-col>
             <b-col>
               <b-button
+                class="shadow border-white border-0"
                 block
                 variant="outline-success"
                 v-on:click="download(item)">
                 <b-icon
                   icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
     <modal-model aria-label="picture detail"
-      id='detail'>
+      id='detail'
+      body-bg-variant="light">
       <b-img
+        class="shadow-lg"
+        rounded
         block
         fluid-grow
         :src="detail.pic_url"
         alt="图片丢失"></b-img>
         <div
-          class="p-2 font-weight-bold text-left text-black-75 align-text-bottom">
+          class="shadow p-3 rounded bg-white mt-3">
+          <div>
+            <small
+              class="text-muted">图片提供者</small></div>
           <head-img
+            class="d-inline"
             :src="detail.teacher.head_img"
-            :button="true"></head-img>
-          {{detail.teacher.name}}
-          <p>
+            :button="true"
+            :show-name="true"
+            :info="detail.teacher"></head-img></div>
+        <div
+          class="shadow p-3 rounded bg-white mt-3">
+          <div>
+            <small
+              class="text-muted">上传时间</small></div>
             <b-icon
-            icon="calendar-event-fill"></b-icon>
-            {{detail.feedback_form.create_time}}</p>
-          <p>
-            <b-icon
-            icon="person-fill"></b-icon>
-            {{detail.teacher.real_name}}</p>
-          <p>
+              icon="clock-fill"></b-icon>
+            {{detail.feedback_form.create_time}}</div>
+        <div
+          class="shadow p-3 rounded bg-white mt-3">
+          <div>
+            <small
+              class="text-muted">所属课程包</small></div>
             <b-icon
               icon="tag-fill"></b-icon>
-            {{detail.user_course.tag_name}}</p>
-          <p>
-            {{detail.is_reapply}}</p>
-          <p>
+            {{detail.user_course.tag_name}}</div>
+        <div
+          class="shadow p-3 rounded bg-white mt-3">
+          <div>
+            <small
+              class="text-muted">真实姓名</small></div>
+            <b-icon
+              icon="person-fill"></b-icon>
+            {{detail.teacher.real_name}}</div>
+        <div
+          class="shadow p-3 rounded bg-white mt-3">
+          <div>
+            <small
+              class="text-muted">联系方式</small></div>
             <b-icon
               icon="telephone-fill"></b-icon>
-            {{detail.teacher.phone}}</p>
-          <b-container
-            class="mt-3">
-            <b-row>
-              <b-col>
-                <b-button
-                  block
-                  variant="outline-danger"
-                  v-on:click="updateLike(detail.id, detail.like)">
-                  <b-icon
-                    :icon="updateIcon(detail.like)"></b-icon></b-button></b-col>
-              <b-col>
-                <b-button
-                  block
-                  variant="outline-success"
-                  v-on:click="download(detail)">
-                  <b-icon
-                    icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></div></modal-model>
+            {{detail.teacher.phone}}</div>
+        <div
+          class="shadow p-3 rounded bg-white mt-3">
+          <div>
+            <small
+              class="text-muted">所属学校</small></div>
+            <b-icon
+              icon="geo"></b-icon>
+            {{detail.user_course.tag_name}}</div>
+        <b-container
+          class="mt-3">
+          <b-row>
+            <b-col>
+              <b-button
+                class="shadow border-white border-0"
+                block
+                variant="outline-danger"
+                v-on:click="updateLike(detail.id, detail.like)">
+                <b-icon
+                  :icon="updateIcon(detail.like)"></b-icon></b-button></b-col>
+            <b-col>
+              <b-button
+                class="shadow border-white border-0"
+                block
+                variant="outline-success"
+                v-on:click="download(detail)">
+                <b-icon
+                  icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></modal-model>
   </div>
 </template>
 
@@ -114,11 +159,6 @@ export default {
     }
   },
   props: {
-    show: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
     list: {
       type: Array,
       required: false

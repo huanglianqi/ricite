@@ -415,11 +415,11 @@
             class="font-weight-bolder">
             <b-col
               cols="3">
-              <b-img
+              <head-img
                 :src="item.teacher.head_img"
-                :alt="item.teacher.head_img"
-                v-bind="headImgFormat">
-              </b-img>
+                :button="true"
+                :info="item.teacher"
+                :show-name="true"></head-img>
             </b-col>
             <b-col
               cols="9">
@@ -479,11 +479,11 @@
             class="font-weight-bolder shadow-sm bg-light mb-3 p-3">
             <b-col
               cols="3">
-              <b-img
+              <head-img
                 :src="item.teacher.head_img"
-                :alt="item.teacher.head_img"
-                v-bind="headImgFormat">
-              </b-img>
+                :button="true"
+                :info="item.teacher"
+                :show-name="true"></head-img>
               <b-row
                 class="mt-1 mb-1">
                 {{item.teacher.real_name}} | {{item.teacher.name}}
@@ -533,12 +533,14 @@
 import Axios from 'axios'
 import ToolDropdownVue from './ToolDropdown.vue'
 import ThreeColumnsVue from './ThreeColumns.vue'
+import HeadImgVue from './HeadImg.vue'
 
 export default {
   name: 'volunteerManagement',
   components: {
     't-dropdown': ToolDropdownVue,
-    'three-columns': ThreeColumnsVue
+    'three-columns': ThreeColumnsVue,
+    'head-img': HeadImgVue
   },
   data () {
     return {

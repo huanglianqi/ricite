@@ -3,13 +3,13 @@
     id="modalModel">
     <b-modal
       :id="id"
-      size="xl"
+      :size="size"
       hide-header
       centered
       ok-variant="outline-success"
       ok-only
       ok-title="关闭"
-      body-bg-variant="light">
+      :body-bg-variant="bodyBgVariant">
       <slot></slot></b-modal></div>
 </template>
 
@@ -20,6 +20,16 @@ export default {
     id: {
       type: String,
       required: true
+    },
+    size: {
+      type: String,
+      required: false,
+      default: 'xl'
+    },
+    bodyBgVariant: {
+      type: String,
+      required: false,
+      default: 'white'
     }
   }
 }

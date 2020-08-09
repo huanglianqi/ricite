@@ -2,17 +2,17 @@
   <div
     id="accountProfile">
     <b-button
+      class="shadow-sm border-0 border-white"
+      pill
       v-b-toggle.accountProfile_sidebar
       :variant="accountProfile_btn_clr">
       <b-icon
         icon="person-fill"
-        shift-v="1.25">
-      </b-icon>
-      {{username}}
-    </b-button>
+        shift-v="4"
+        font-scale="0.9"></b-icon></b-button>
     <b-sidebar
       id="accountProfile_sidebar"
-      :title="username"
+      title="账号管理"
       shadow
       backdrop
       v-model="show">
@@ -20,314 +20,276 @@
         bg-variant="light">
         <div
           v-show="isLogin">
-          <p
-            class="text-left mb-3 text-break">
-            <b-icon
-              icon="person-fill">
-            </b-icon>
-            {{fullname}}
-          </p>
-          <p
-            class="text-left mb-5 text-break">
-            <b-icon
-              icon="envelope-fill">
-            </b-icon>
-            {{email}}
-          </p>
-          <b-alert
-            variant="success"
-            dismissble
-            fade
-            :show="dismissSuccessAlert"
-            @dismiss-count-down="changeSuccessAlert">
-            <b-icon
-              icon="check2">
-            </b-icon>
-            操作成功
-          </b-alert>
-          <b-alert
-            variant="danger"
-            dismissble
-            fade
-            :show="dismissFailAlert"
-            @dismiss-count-down="changeFailAlert">
-            <b-icon
-              icon="exclamation">
-            </b-icon>
-            操作失败
-          </b-alert>
           <div
-            v-on:click="baseInfo_collapse_open=!baseInfo_collapse_open">
-            <b-button
-              v-b-toggle.baseInfo_collapse
-              variant="outline-info"
-              block
-              class="mt-3">
-              <b-icon
-                icon="gear-fill"
-                animation="null"
-                class="float-left"
-                v-show="!baseInfo_collapse_open">
-              </b-icon>
-              <b-icon
-                icon="gear-fill"
-                animation="spin"
-                class="float-left"
-                v-show="baseInfo_collapse_open">
-              </b-icon>
-              修改个人账户信息
-              <b-icon
-                icon="caret-left-fill"
-                shift-v="-1.25"
-                class="float-right"
-                v-show="!baseInfo_collapse_open">
-              </b-icon>
-              <b-icon
-                icon="caret-down-fill"
-                class="float-right"
-                shift-v="-1.25"
-                v-show="baseInfo_collapse_open">
-              </b-icon>
-            </b-button>
-          </div>
-          <b-collapse
-            id="baseInfo_collapse">
-            <b-form
-              class="mb-5"
-              align="left"
-              @submit="baseInfo_modify_submit">
-              <b-input-group
-                class="mt-3 mb-3">
-                <b-input-group-prepend>
-                  <b-button
-                    class="bg-white"
-                    variant="white border-0">
-                  姓
-                  </b-button>
-                </b-input-group-prepend>
-                <b-form-input
-                  id="baseInfo_lastname"
-                  v-model="lastname"
-                  required
-                  trim
-                  class="border-white">
-                </b-form-input>
-              </b-input-group>
-              <b-input-group>
-                <b-input-group-prepend>
-                  <b-button
-                    class="bg-white border-0"
-                    variant="white">
-                  名
-                  </b-button>
-                </b-input-group-prepend>
-                <b-form-input
-                  id="baseInfo_firsename"
-                  v-model="firstname"
-                  required
-                  trim
-                  class="bg-white border-0">
-                </b-form-input>
-              </b-input-group>
-              <b-input-group
-                class="mt-3 mb-3">
-                <b-input-group-prepend>
-                  <button
-                    class="bg-white border-0"
-                    variant="white">
-                    <b-icon
-                      icon="envelope-fill"
-                      font-scale="1.25">
-                    </b-icon>
-                  </button>
-                </b-input-group-prepend>
-              <b-form-input
-                id="baseInfo_email"
-                v-model="email"
-                required
-                trim
-                class="bg-white border-0">
-              </b-form-input>
-            </b-input-group>
+            class="text-left mb-3 shadow p-3 rounded">
+            <div>
+              <small
+                class="text-muted">账号</small>
               <b-button
-                type="submit"
-                variant="outline-success"
-                block
-                class="mt-4"
-                v-b-toggle.baseInfo_collapse>
-                <div
-                  v-on:click="baseInfo_collapse_open=false">
-                  <b-icon
-                    icon="box-arrow-in-right"
-                    shift-v="-1.25"
-                    class="float-left">
-                  </b-icon>
-                  修改账户信息
-                </div>
-              </b-button>
-              <b-button
-                v-on:click="modifyReset"
+                v-b-tooltip.hover
+                title="退出/切换账号"
+                v-on:click="logout"
+                size="sm"
+                pill
                 variant="outline-danger"
-                block>
+                class="float-right shadow-sm border-0 border-white">
                 <b-icon
-                  icon="arrow-clockwise"
-                  shift-v="-1.25"
-                  class="float-left">
-                </b-icon>
-                重置输入
-                </b-button>
-            </b-form>
-          </b-collapse>
-          <b-button
-            block
-            class="mt-3"
-            variant="outline-success"
-            v-b-toggle.subscriptionList_collapse>
+
+                  icon="box-arrow-left"
+                  font-scale="0.9"
+                  shift-v="3"></b-icon></b-button></div>
             <div
-              v-on:click="subscriptionList_collapse_open=!subscriptionList_collapse_open">
+              class="text-monospace">
               <b-icon
-                icon="calendar-check-fill"
-                shift-v="-1.25"
-                v-show="!subscriptionList_collapse_open"
-                class="float-left">
-              </b-icon>
-              <b-icon
-                icon="calendar-plus-fill"
-                shift-v="-1.25"
-                v-show="subscriptionList_collapse_open"
-                class="float-left">
-              </b-icon>
-              设置订阅邮件
-              <b-icon
-                icon="caret-left-fill"
-                shift-v="-1.25"
-                v-show="!subscriptionList_collapse_open"
-                class="float-right">
-              </b-icon>
-              <b-icon
-                icon="caret-down-fill"
-                shift-v="-1.25"
-                v-show="subscriptionList_collapse_open"
-                class="float-right">
-              </b-icon>
-            </div>
-          </b-button>
-          <b-collapse
-            id="subscriptionList_collapse">
-            <b-form-checkbox-group
-              id="subscriptionList_detail"
-              v-model="subscriptionList_sec"
-              :options="subscriptionList_opt"
-              switches
-              stacked
-              class="ml-3 mt-3 mb-3"
-              align="left">
-            </b-form-checkbox-group>
-            <b-button
-              type="submit"
-              block
-              variant="outline-success"
-              class="mt-4"
-              v-on:click="subscriptionList_modify_submit"
-              v-b-toggle.subscriptionList_collapse>
-              <div
-                v-on:click="subscriptionList_collapse_open=false">
+                icon="person-fill"></b-icon>
+              {{username}}</div></div>
+          <div
+            class="text-left mb-3 shadow p-3 rounded">
+            <div>
+              <small
+                class="text-muted">姓名</small>
+              <b-button
+                v-b-tooltip.hover
+                title="小慈应该怎么称呼你"
+                v-b-modal.modifyName
+                size="sm"
+                pill
+                variant="outline-success"
+                class="float-right shadow-sm border-0 border-white">
                 <b-icon
-                  icon="box-arrow-in-right"
-                  class="float-left"
-                  shift-v="-1.25">
-                </b-icon>
-                修改订阅设置
-              </div>
-            </b-button>
-            <b-button
-              block
-              variant="outline-danger"
-              v-on:click="modifyReset"
-              class="mb-5">
-              <b-icon
-                icon="arrow-clockwise"
-                shift-v="-1.25"
-                class="float-left">
-              </b-icon>
-              重置修改
-            </b-button>
-          </b-collapse>
-          <b-button
-            block
-            class="mt-3"
-            variant="outline-dark"
-            v-on:click="resetPassword_submit"
-            :disabled="!resetPassword_afterWait">
+                  icon="pencil-square"
+                  font-scale="0.9"
+                  shift-v="3"></b-icon></b-button></div>
             <div
-              v-show="resetPassword_afterWait">
+              class="text-monospace">
               <b-icon
-                icon="lock-fill"
-                shift-v="-1.25"
-                class="float-left">
-              </b-icon>
-              通过邮箱重置密码
-            </div>
+                icon="person-fill"></b-icon>
+              {{fullname}}</div></div>
+          <div
+            class="text-left mb-3 shadow p-3 rounded">
+            <div>
+              <small
+                class="text-muted">邮箱</small>
+              <b-button
+                v-b-tooltip.hover
+                title="修改绑定邮箱，邮箱可用于找回或重置密码"
+                v-b-modal.modifyEmail
+                size="sm"
+                pill
+                variant="outline-success"
+                class="float-right shadow-sm border-0 border-white">
+                <b-icon
+                  icon="pencil-square"
+                  font-scale="0.9"
+                  shift-v="3"></b-icon></b-button></div>
             <div
-              v-show="resetPassword_waitTime">
+              class="text-monospace">
               <b-icon
-                icon="unlock-fill"
-                shift-v="-1.25"
-                class="float-left">
-              </b-icon>
-              请前往邮箱（重新发送 {{resetPassword_waitTime}}）
-            </div>
-          </b-button>
-          <b-button
-            variant="outline-danger"
-            v-on:click="logout"
-            block
-            class="mt-3">
-            <b-icon
-              icon="box-arrow-left"
-              shift-v="-1.25"
-              class="float-left">
-            </b-icon>
-            退出/切换账号
-          </b-button>
-        </div>
-        <b-button
-          variant="outline-success"
-          v-on:click="login"
+                icon="mailbox2"></b-icon>
+              {{emailName}}
+              <br/>
+              <b-icon
+                icon="at"
+                class="mr-1"
+                font-scale="1.25"
+                shift-h="-1"></b-icon>{{emailAt}}</div></div>
+          <div
+            class="text-left mb-3 shadow p-3 rounded">
+            <div>
+              <small
+                class="text-muted">订阅</small>
+              <b-button
+                v-b-tooltip.hover
+                title="功能尚未开放"
+                size="sm"
+                pill
+                variant="outline-dark"
+                class="float-right shadow-sm border-0 border-white">
+                <b-icon
+                  icon="question"
+                  font-scale="0.9"
+                  shift-v="3"></b-icon></b-button></div></div>
+          <div
+            class="text-left mb-3 shadow p-3 rounded">
+            <div>
+              <small
+                class="text-muted">密码</small>
+              <b-button
+                v-b-tooltip.hover
+                title="通过邮箱重置密码:你的邮箱将收到一份邮件，点击邮箱中的链接，进入重置密码页面"
+                v-on:click="resetPassword_submit"
+                size="sm"
+                pill
+                :disabled="!resetPassword_afterWait"
+                variant="outline-success"
+                class="float-right shadow-sm border-0 border-white">
+                <b-icon
+                  v-show="resetPassword_afterWait"
+                  icon="envelope-fill"
+                  font-scale="0.9"
+                  shift-v="3"></b-icon>
+                <b-icon
+                  v-show="resetPassword_waitTime"
+                  icon="envelope-open-fill"
+                  font-scale="0.9"
+                  shift-v="3"></b-icon></b-button></div>
+                  <b-icon
+                    icon="lock-fill"></b-icon>
+                  通过邮箱重置密码 | {{resetPassword_waitTime}}</div></div>
+        <div
           v-show="!isLogin"
-          block
-          class="mt-3">
-          <b-icon
-            icon="box-arrow-in-right"
-            shift-v="-1.25"
-            class="float-left">
-          </b-icon>
-          登入验证
-        </b-button>
-        <b-button
-          variant="outline-danger"
-          block
-          v-b-toggle.accountProfile_sidebar
-          class="mt-3">
-          <b-icon
-            icon="power"
-            class="float-left">
-          </b-icon>
-          关闭账户菜单
-        </b-button>
-      </b-jumbotron>
-    </b-sidebar>
+          class="text-left mb-3 shadow p-3 rounded">
+          <div>
+            <small
+              class="text-muted">账号</small>
+            <b-button
+              v-b-tooltip.hover
+              title="跳转至登入页面"
+              v-on:click="login"
+              size="sm"
+              pill
+              variant="outline-success"
+              class="float-right shadow-sm border-0 border-white">
+              <b-icon
+                icon="box-arrow-in-right"
+                font-scale="0.9"
+                shift-v="3"></b-icon></b-button></div>
+          <div
+            class="text-monospace">
+            <b-icon
+              icon="person-fill"></b-icon>
+            账号未登入</div></div></b-jumbotron></b-sidebar>
+    <modal-model
+      id="modifyEmail"
+      size="md">
+      <div
+        class="shadow-sm p-3 rounded mb-3 bg-info text-white font-weight-bold text-center">
+        日慈信息管理平台 ｜ 修改绑定邮箱</div>
+        <b-input-group
+          class="shadow-sm p-3 px-3 rounded my-3">
+          <b-input-group-prepend>
+            <b-button
+              variant="white"
+              disabled>
+              <b-icon
+                icon="mailbox2"
+                variant="dark"></b-icon></b-button></b-input-group-prepend>
+          <b-form-input
+            id="email"
+            v-model="newEmail"
+            type="email"
+            required
+            placeholder="输入新的邮箱地址"
+            class="bg-white border-0"></b-form-input></b-input-group>
+        <b-row>
+          <b-col>
+            <b-button
+              v-on:click="email_modify_submit"
+              variant="outline-success"
+              block
+              class="shadow-sm border-0">
+              <b-icon
+                icon="pencil-square"
+                class="float-left"
+                shift-v="-1.25"></b-icon>
+              修改</b-button></b-col>
+        <b-col>
+          <b-button
+            v-on:click="newEmail=''"
+            variant="outline-danger"
+            block
+            class="shadow-sm border-0">
+            <b-icon
+              icon="arrow-clockwise"
+              class="float-left"
+              shift-v="-1.25"></b-icon>
+            重置</b-button></b-col>
+        <b-col>
+          <b-button
+            v-on:click="quitModifyEmail"
+            variant="outline-info"
+            block
+            class="shadow-sm border-0">
+            <b-icon
+              icon="arrow-left"></b-icon>
+            返回</b-button></b-col></b-row></modal-model>
+    <modal-model
+      id="modifyName"
+      size="md">
+      <div
+        class="shadow-sm p-3 rounded mb-3 bg-info text-white font-weight-bold text-center">
+        日慈信息管理平台 ｜ 修改姓名</div>
+        <b-input-group
+          class="shadow-sm p-3 px-3 rounded my-3">
+          <b-input-group-prepend>
+            <b-button
+              variant="white"
+              disabled>
+              <b-icon
+                icon="person-fill"
+                variant="dark"></b-icon></b-button></b-input-group-prepend>
+          <b-form-input
+            id="lastname"
+            v-model="newLastName"
+            type="text"
+            required
+            placeholder="姓"
+            class="bg-white border-0"></b-form-input>
+          <b-form-input
+            id="firstname"
+            v-model="newFirstName"
+            type="text"
+            required
+            placeholder="名"
+            class="bg-white border-0"></b-form-input></b-input-group>
+        <b-row>
+          <b-col>
+            <b-button
+              v-on:click="name_modify_submit"
+              variant="outline-success"
+              block
+              class="shadow-sm border-0">
+              <b-icon
+                icon="pencil-square"
+                class="float-left"
+                shift-v="-1.25"></b-icon>
+              修改</b-button></b-col>
+        <b-col>
+          <b-button
+            v-on:click="resetModifyName"
+            variant="outline-danger"
+            block
+            class="shadow-sm border-0">
+            <b-icon
+              icon="arrow-clockwise"
+              class="float-left"
+              shift-v="-1.25"></b-icon>
+            重置</b-button></b-col>
+        <b-col>
+          <b-button
+            v-on:click="quitModifyName"
+            variant="outline-info"
+            block
+            class="shadow-sm border-0">
+            <b-icon
+              icon="arrow-left"></b-icon>
+            返回</b-button></b-col></b-row></modal-model>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ModalModelVue from './ModalModel.vue'
 
 export default {
   name: 'app-account',
+  components: {
+    'modal-model': ModalModelVue
+  },
   data () {
     return {
-      accountProfile_btn_clr: '',
+      newEmail: '',
+      accountProfile_btn_clr: 'outline-secondary',
       username: '登入账号',
       lastname: '',
       firstname: '',
@@ -335,8 +297,6 @@ export default {
       id: '',
       fullname: '',
       dismissSecs: 2,
-      dismissFailAlert: 0,
-      dismissSuccessAlert: 0,
       resetPassword_waitTime: 0,
       resetPassword_afterWait: true,
       oneMin: 60,
@@ -361,6 +321,12 @@ export default {
       } else {
         return false
       }
+    },
+    emailName () {
+      return this.email.substring(0, this.email.search('@'))
+    },
+    emailAt () {
+      return this.email.substring(this.email.search('@') + 1)
     }
   },
   watch: {
@@ -388,6 +354,16 @@ export default {
     }
   },
   methods: {
+    showToast (title, content, variant) {
+      this.$bvToast.toast(
+        content,
+        {
+          title: title,
+          solid: true,
+          variant: variant
+        }
+      )
+    },
     strechAccount () {
       this.username = this.$store.state.auth.username
       this.firstname = this.$store.state.auth.firstname
@@ -413,7 +389,11 @@ export default {
         )
         .catch(
           err => {
-            console.log(err)
+            this.showToast(
+              '获取账号信息失败',
+              `error: ${err},请刷新页面后重新登入`,
+              'warning'
+            )
           }
         )
     },
@@ -434,7 +414,34 @@ export default {
           err => (console.log(err))
         )
     },
-    baseInfo_modify_submit () {
+    email_modify_submit () {
+      this.email = this.newEmail
+      this.baseInfo_modify_submit(`你的邮箱已成功修改为${this.email}`)
+      this.$bvModal.hide('modifyEmail')
+      this.newEmail = ''
+    },
+    quitModifyEmail () {
+      this.$bvModal.hide('modifyEmail')
+      this.newEmail = ''
+    },
+    name_modify_submit () {
+      this.firstname = this.newFirstName
+      this.lastname = this.newLastName
+      this.baseInfo_modify_submit(`你的姓名已成功修改为${this.lastname}${this.firstname}`)
+      this.$bvModal.hide('modifyName')
+      this.newFirstName = ''
+      this.newLastName = ''
+    },
+    quitModifyName () {
+      this.$bvModal.hide('modifyName')
+      this.newFirstName = ''
+      this.newLastName = ''
+    },
+    resetModifyName () {
+      this.newFirstName = ''
+      this.newLastName = ''
+    },
+    baseInfo_modify_submit (content) {
       axios
         .patch(
           `user/account/${this.username}/`,
@@ -446,12 +453,20 @@ export default {
         )
         .then(
           () => {
-            this.showSuccessAlert()
+            this.showToast(
+              '修改成功',
+              content,
+              'success'
+            )
           }
         )
         .catch(
           () => {
-            this.showFailAlert()
+            this.showToast(
+              '修改失败',
+              '可能是以下原因导致：网络出现问题，请刷新后重试',
+              'warning'
+            )
           }
         )
     },
@@ -468,28 +483,24 @@ export default {
         )
         .then(
           () => {
-            this.showSuccessAlert()
+            this.showToast(
+              '发送成功',
+              `重置密码的链接已成功发送至${this.email}，前往邮箱并打开链接进行密码重置`,
+              'success'
+            )
             this.showWait()
             this.timeCountDown()
           }
         )
         .catch(
           () => {
-            this.showFailAlert()
+            this.showToast(
+              '发送失败',
+              '可能是以下原因导致：网络出现问题，请刷新后重试',
+              'warning'
+            )
           }
         )
-    },
-    changeFailAlert (dismissCountDown) {
-      this.dismissFailAlert = dismissCountDown
-    },
-    changeSuccessAlert (dismissCountDown) {
-      this.dismissSuccessAlert = dismissCountDown
-    },
-    showFailAlert () {
-      this.dismissFailAlert = this.dismissSecs
-    },
-    showSuccessAlert () {
-      this.dismissSuccessAlert = this.dismissSecs
     },
     showWait () {
       this.resetPassword_waitTime = this.oneMin
@@ -515,12 +526,20 @@ export default {
         )
         .then(
           () => {
-            this.showSuccessAlert()
+            this.showToast(
+              '修改成功',
+              `你的邮件${this.email}的订阅修改成功`,
+              'success'
+            )
           }
         )
         .catch(
           () => {
-            this.showFailAlert()
+            this.showToast(
+              '修改失败',
+              '可能是以下原因导致：网络出现问题，请刷新后重试',
+              'warning'
+            )
           }
         )
     }

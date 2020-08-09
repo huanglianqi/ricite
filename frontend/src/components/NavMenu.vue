@@ -2,13 +2,11 @@
   <div
     id="navMenu">
     <b-button
+      class="shadow-sm border-white border-0"
       v-b-toggle.navMenu_sidebar
-      variant="outline-success">
+      variant="outline-info">
       <b-icon
-        icon="list">
-      </b-icon>
-      导航菜单
-    </b-button>
+        icon="list"></b-icon></b-button>
     <b-sidebar
       title="导航菜单"
       id="navMenu_sidebar"
@@ -23,7 +21,7 @@
           <b-button
             :variant="navMenu_item.variant"
             v-on:click="navMenu_skip(navMenu_item.path)"
-            class="mt-3"
+            class="mt-3 shadow-sm border-0 border-white"
             block>
             <b-icon
               :icon="navMenu_item.icon"
@@ -35,7 +33,7 @@
         <b-button
           variant="outline-danger"
           block
-          class="mt-3"
+          class="mt-3 shadow-sm border-white border-0"
           v-b-toggle.navMenu_sidebar>
           <b-icon
             icon="power"
