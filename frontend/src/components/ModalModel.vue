@@ -9,6 +9,7 @@
       ok-variant="outline-success"
       ok-only
       ok-title="关闭"
+      :hide-footer="hideFooter"
       :body-bg-variant="bodyBgVariant">
       <slot></slot></b-modal></div>
 </template>
@@ -30,6 +31,11 @@ export default {
       type: String,
       required: false,
       default: 'white'
+    },
+    hideFooter: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 }

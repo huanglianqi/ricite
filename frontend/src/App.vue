@@ -2,13 +2,7 @@
   <div id="app">
     <div aria-label="nav-bar"
       id="nav-bar">
-      <b-row>
-        <b-col
-          cols="1"><NavMenu/></b-col>
-        <b-col
-          cols="11">
-          <div
-            class="float-right"><AccountProfile/></div></b-col></b-row>
+      <NavMenu/><AccountProfile/>
     </div>
     <router-view/>
     <div aria-label="nav-top"
@@ -115,6 +109,9 @@ export default {
       currentYear: new Date().getFullYear(),
       menuShow: false
     }
+  },
+  methods: {
+
   }
 }
 </script>
@@ -127,6 +124,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 0px;
+  padding: 1rem;
 }
 
 #nav {
@@ -156,9 +154,18 @@ export default {
   color: #42b983;
 }
 
-#nav-bar > * {
-  display: fixed;
+#nav-bar {
+  display: block;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  height: 10%;
   padding: 10px 10px 0px 10px;
+  z-index: 2000;
+}
+
+#nav-bar > * {
+  display: block;
 }
 
 </style>

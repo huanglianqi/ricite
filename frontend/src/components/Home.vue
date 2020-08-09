@@ -3,16 +3,28 @@
     id="home">
     <three-blocks>
       <b-button
-        class="mt-5 p-5"
+        block
+        class="p-4 shadow-lg border-0 text-left"
         v-on:click="skip(item.path)"
         v-for="item in list"
         :key="item.id"
         :variant="item.variant">
-        <b-icon
-          :icon="item.icon"
-          font-scale="10"></b-icon>
-        <h3>
-          {{item.header}}</h3></b-button>
+        <div
+          class="font-weight-bold">
+          <b-icon
+            font-scale="1.5"
+            :icon="item.icon"></b-icon>
+          {{item.header}}</div>
+        <hr>
+        <div
+          class="my-2"
+          v-for="i in item.content"
+          :key="i">
+          <b-icon
+            font-scale="0.9"
+            shift-v="5"
+            icon="star-fill"></b-icon>
+          {{i}}</div></b-button>
     </three-blocks>
   </div>
 </template>
@@ -33,21 +45,27 @@ export default {
           header: '图片管理',
           variant: 'outline-success',
           icon: 'images',
-          path: '/pictureManage'
+          path: '/pictureManage',
+          content: ['课程反馈图片', '群组动态图文']
         },
         {
           id: 2,
           header: '课程反馈',
           variant: 'outline-info',
           icon: 'book',
-          path: '/feedbackCheck'
+          path: '/feedbackCheck',
+          content: ['每节课后课程反馈', '结课反馈']
         },
         {
           id: 3,
           header: '社群运营',
           variant: 'outline-secondary',
           icon: 'people-fill',
-          path: '/feedbackCheck'
+          path: '/volunteerManagement',
+          content: [
+            '申请课程进度',
+            '课程反馈进度'
+          ]
         }
       ]
     }

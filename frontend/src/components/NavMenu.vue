@@ -2,47 +2,29 @@
   <div
     id="navMenu">
     <b-button
-      class="shadow-sm border-white border-0"
-      v-b-toggle.navMenu_sidebar
-      variant="outline-info">
+      block
+      v-on:click="showMenu"
+      v-on:blur="showMenu"
+      pill
+      class="shadow-sm border-white border-0 mb-1"
+      variant="outline-success">
       <b-icon
-        icon="list"></b-icon></b-button>
-    <b-sidebar
-      title="导航菜单"
-      id="navMenu_sidebar"
-      shadow
-      backdrop
-      v-model="show">
-      <b-jumbotron
-        bg-variant="light">
-        <div
-          v-for="navMenu_item in navMenu_list"
-          :key="navMenu_item.id">
-          <b-button
-            :variant="navMenu_item.variant"
-            v-on:click="navMenu_skip(navMenu_item.path)"
-            class="mt-3 shadow-sm border-0 border-white"
-            block>
-            <b-icon
-              :icon="navMenu_item.icon"
-              class="float-left">
-            </b-icon>
-            {{navMenu_item.name}}
-          </b-button>
-        </div>
-        <b-button
-          variant="outline-danger"
-          block
-          class="mt-3 shadow-sm border-white border-0"
-          v-b-toggle.navMenu_sidebar>
-          <b-icon
-            icon="power"
-            class="float-left">
-          </b-icon>
-          关闭导航菜单
-        </b-button>
-      </b-jumbotron>
-    </b-sidebar>
+        font-scale="0.9"
+        shift-v="5"
+        :icon="icon"></b-icon></b-button>
+    <b-button
+      v-for="item in list"
+      :key="item.id"
+      block
+      pill
+      v-on:click="$router.push(item.path)"
+      :variant="item.variant"
+      class="shadow-sm border-0 mb-1"
+      v-show="menuShow">
+      <b-icon
+        font-scale="0.9"
+        shift-v="5"
+        :icon="item.icon"></b-icon></b-button>
   </div>
 </template>
 
@@ -51,13 +33,14 @@ export default {
   name: 'navMenu',
   data () {
     return {
+      menuShow: false,
       show: false,
-      navMenu_list: [
+      list: [
         {
           id: 'navMenu_item_1',
           variant: 'outline-dark',
           path: '/',
-          icon: 'house-fill',
+          icon: 'house',
           name: '网站首页'
         },
         {
@@ -98,13 +81,18 @@ export default {
       ]
     }
   },
-  methods: {
-    navMenu_skip (path) {
-      if (this.$router.currentRoute.path !== path) {
-        this.$router.push(path)
+  computed: {
+    icon () {
+      if (this.menuShow) {
+        return 'three-dots-vertical'
       } else {
-        this.show = false
+        return 'menu-app'
       }
+    }
+  },
+  methods: {
+    showMenu () {
+      this.menuShow = !this.menuShow
     }
   }
 }

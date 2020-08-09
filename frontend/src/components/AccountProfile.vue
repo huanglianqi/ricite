@@ -161,7 +161,8 @@
             账号未登入</div></div></b-jumbotron></b-sidebar>
     <modal-model
       id="modifyEmail"
-      size="md">
+      size="md"
+      :hide-footer="true">
       <div
         class="shadow-sm p-3 rounded mb-3 bg-info text-white font-weight-bold text-center">
         日慈信息管理平台 ｜ 修改绑定邮箱</div>
@@ -214,6 +215,7 @@
               icon="arrow-left"></b-icon>
             返回</b-button></b-col></b-row></modal-model>
     <modal-model
+      :hide-footer="true"
       id="modifyName"
       size="md">
       <div
@@ -289,6 +291,8 @@ export default {
   data () {
     return {
       newEmail: '',
+      newFirstName: '',
+      newLastName: '',
       accountProfile_btn_clr: 'outline-secondary',
       username: '登入账号',
       lastname: '',
@@ -333,7 +337,7 @@ export default {
     isLogin (val) {
       if (val) {
         this.getAccount()
-        this.accountProfile_btn_clr = 'outline-success'
+        this.accountProfile_btn_clr = 'outline-info'
       } else {
         this.strechAccount()
         this.accountProfile_btn_clr = 'outline-secondary'
