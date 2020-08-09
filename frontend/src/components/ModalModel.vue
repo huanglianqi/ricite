@@ -40,3 +40,9 @@ export default {
   }
 }
 </script>
+
+<style>
+#modalModel {
+  z-index: inherit;
+}
+</style>

@@ -2,7 +2,7 @@
   <div id="app">
     <div aria-label="nav-bar"
       id="nav-bar">
-      <NavMenu/><AccountProfile/>
+      <AccountProfile/><NavMenu/>
     </div>
     <router-view/>
     <div aria-label="nav-top"
@@ -161,7 +161,7 @@ export default {
   left: 0%;
   height: 10%;
   padding: 10px 10px 0px 10px;
-  z-index: 2000;
+  z-index: 100;
 }
 
 #nav-bar > * {
