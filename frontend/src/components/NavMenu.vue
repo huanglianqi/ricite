@@ -3,8 +3,8 @@
     id="navMenu">
     <b-button
       block
-      v-on:click="showMenu"
-      v-on:blur="showMenu"
+      v-on:focus="menuShow=true"
+      v-on:blur="menuShow=false"
       pill
       class="shadow-sm border-white border-0 mb-1"
       variant="outline-success">
