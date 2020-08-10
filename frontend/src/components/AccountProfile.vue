@@ -212,7 +212,9 @@
             block
             class="shadow-sm border-0">
             <b-icon
-              icon="arrow-left"></b-icon>
+              class="float-left"
+              shift-v="-1.25"
+              icon="arrows-angle-contract"></b-icon>
             返回</b-button></b-col></b-row></modal-model>
     <modal-model
       :hide-footer="true"
@@ -274,7 +276,9 @@
             block
             class="shadow-sm border-0">
             <b-icon
-              icon="arrow-left"></b-icon>
+              class="float-left"
+              shift-v="-1.25"
+              icon="arrows-angle-contract"></b-icon>
             返回</b-button></b-col></b-row></modal-model>
   </div>
 </template>

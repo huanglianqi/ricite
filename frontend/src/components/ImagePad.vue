@@ -33,7 +33,7 @@
                 class="shadow border-white border-0"
                 block
                 variant="outline-danger"
-                v-on:click="update(item.id, item.like)">
+                v-on:click="update(item)">
                 <b-icon
                   :icon="updateIcon(item.like)"></b-icon></b-button></b-col>
             <b-col>
@@ -46,7 +46,8 @@
                   icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
     <modal-model aria-label="picture detail"
       id='detail'
-      body-bg-variant="light">
+      body-bg-variant="light"
+      :hide-footer="true">
       <b-img
         class="shadow-lg"
         rounded
@@ -123,7 +124,15 @@
                 variant="outline-success"
                 v-on:click="download(detail)">
                 <b-icon
-                  icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></modal-model>
+                  icon="cloud-download"></b-icon></b-button></b-col>
+            <b-col>
+              <b-button
+                block
+                variant="outline-info"
+                v-on:click="$bvModal.hide('detail')"
+                class="shadow border-white border-0">
+                <b-icon
+                  icon="arrows-angle-contract"></b-icon></b-button></b-col></b-row></b-container></modal-model>
   </div>
 </template>
 
@@ -165,6 +174,16 @@ export default {
     }
   },
   methods: {
+    showToast (title, content, variant) {
+      this.$bvToast.toast(
+        content,
+        {
+          title: title,
+          solid: true,
+          variant: variant
+        }
+      )
+    },
     getDetail (item) {
       this.detail = item
     },
@@ -209,6 +228,11 @@ export default {
       }
     },
     downloadPic (pic) {
+      this.showToast(
+        '图片等待下载',
+        `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}`,
+        'success'
+      )
       // Translate pic_url into 'download/' format for proxy request.
       let image = new Image()
       let src = pic.pic_url.replace('https://www.rici.org.cn/', 'download/')
@@ -226,6 +250,11 @@ export default {
           this.onDownloadPic(url, pic)
           URL.revokeObjectURL(url)
         })
+        this.showToast(
+          '图片下载成功',
+          `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}`,
+          'success'
+        )
       }
     },
     onDownloadPic (url, pic) {

@@ -8,14 +8,13 @@
       size="2em"
       :button="button"
       rounded
-      v-b-modal.detail
+      v-b-modal.personInfo
       :src="src"></b-avatar>
     <span
       class="align-bottom"
       v-show="showName">{{info.name}}</span>
     <person-info
-      :info="info"
-      :id="'detail'"></person-info></div>
+      :info="info"></person-info></div>
 </template>
 
 <script>

@@ -2,7 +2,8 @@
   <div
     id="personInfo">
     <modal-model
-      :id="id"
+      :hide-footer="true"
+      id="personInfo"
       :size="'lg'">
       <b-card
         border-variant="white">
@@ -20,7 +21,13 @@
               <small
                 class="text-muted pl-1">{{i.field_name}}</small></b-row>
             <b-row
-              class="font-weight-bold pl-2">{{i.field_value}}</b-row></b-list-group-item></b-list-group></b-card></modal-model></div>
+              class="font-weight-bold pl-2">{{i.field_value}}</b-row></b-list-group-item>
+          <b-button
+            @click="$bvModal.hide('personInfo')"
+            class="shadow border-0"
+            variant="outline-info">
+            <b-icon
+              icon="arrows-angle-contract"></b-icon></b-button></b-list-group></b-card></modal-model></div>
 </template>
 
 <script>
@@ -32,10 +39,6 @@ export default {
     'modal-model': ModalModelVue
   },
   props: {
-    id: {
-      type: String,
-      required: true
-    },
     info: {
       type: Object,
       required: false
