@@ -482,6 +482,11 @@ export default {
       this.getAccount()
     },
     resetPassword_submit () {
+      this.showToast(
+        '正在发送重置密码邮件',
+        `重置密码的邮件正在发送往${this.email}，请稍后`,
+        'info'
+      )
       axios
         .post(
           'password_reset/',

@@ -25,7 +25,7 @@
           <b-icon
             class="float-right ml-1"
             shift-v="-1"
-            icon="three-dots"
+            icon="three-dots-vertical"
             v-show="!toolDropdownDown"></b-icon>
           <b-icon
             class="float-right ml-1"

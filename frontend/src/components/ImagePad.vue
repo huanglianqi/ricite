@@ -21,15 +21,6 @@
           <b-row>
             <b-col>
               <b-button
-                v-b-modal.detail
-                class="shadow border-white border-0"
-                block
-                variant="outline-info"
-                v-on:click="getDetail(item)">
-                <b-icon
-                  icon="arrows-angle-expand"></b-icon></b-button></b-col>
-            <b-col>
-              <b-button
                 class="shadow border-white border-0"
                 block
                 variant="outline-danger"
@@ -43,7 +34,16 @@
                 variant="outline-success"
                 v-on:click="download(item)">
                 <b-icon
-                  icon="cloud-download"></b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
+                  icon="cloud-download"></b-icon></b-button></b-col>
+             <b-col>
+              <b-button
+                v-b-modal.detail
+                class="shadow border-white border-0"
+                block
+                variant="outline-info"
+                v-on:click="getDetail(item)">
+                <b-icon
+                  icon="arrows-angle-expand"></b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
     <modal-model aria-label="picture detail"
       id='detail'
       body-bg-variant="light"
@@ -105,7 +105,7 @@
               class="text-muted">所属学校</small></div>
             <b-icon
               icon="geo"></b-icon>
-            {{detail.user_course.tag_name}}</div>
+            {{searchSchool(detail.teacher.infoForms)}}</div>
         <b-container
           class="mt-3">
           <b-row>
@@ -230,7 +230,7 @@ export default {
     downloadPic (pic) {
       this.showToast(
         '图片等待下载',
-        `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}`,
+        `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}，${this.searchSchool(pic.teacher.infoForms)}`,
         'success'
       )
       // Translate pic_url into 'download/' format for proxy request.
@@ -252,7 +252,7 @@ export default {
         })
         this.showToast(
           '图片下载成功',
-          `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}`,
+          `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}，${this.searchSchool(pic.teacher.infoForms)}`,
           'success'
         )
       }
@@ -271,10 +271,14 @@ export default {
     },
     // school form id is 9
     searchSchool (forms) {
-      for (let i = 0; i < forms.length; i++) {
-        if (forms[i].field_id === '9') {
-          return forms[i].field_value
+      if (typeof forms === 'object') {
+        for (let i = 0; i < forms.length; i++) {
+          if (forms[i].field_id === '9') {
+            return forms[i].field_value
+          }
         }
+      } else {
+        return ''
       }
     },
     autoLogin () {

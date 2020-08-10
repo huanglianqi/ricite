@@ -30,11 +30,10 @@
           iconDown="images"
           :title="type.title"
           :value="type.value"
-          firstItemTitle="全部图片"
+          firstItemTitle="图片 | 课程反馈"
           firstItemValue="feedback_pic_collect"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
-
     <b-container aria-label="share list"
       class="mt-3"
       v-show="isGraph"
@@ -101,15 +100,15 @@ export default {
       },
       typeList: [
         {
-          title: '图片精选',
+          title: '图片 | 课程反馈 | 精选',
           value: 'feedback_pic_like'
         },
         {
-          title: '全部图文',
+          title: '图文 | 群组动态',
           value: 'share_list'
         },
         {
-          title: '图文精选',
+          title: '图文 | 群组动态图文 | 精选',
           value: 'share_like_list'
         }
       ],
@@ -148,6 +147,16 @@ export default {
     }
   },
   methods: {
+    showToast (title, content, variant) {
+      this.$bvToast.toast(
+        content,
+        {
+          title: title,
+          solid: true,
+          variant: variant
+        }
+      )
+    },
     checkDateFormat (date) {
       if (date.length === 10) {
         this.collectList()
@@ -168,6 +177,11 @@ export default {
       }
     },
     getCollect (start, end) {
+      this.showToast(
+        '正在搜索',
+        `搜索从 ${start} 至 ${end} 的 ${this.type.title}`,
+        'info'
+      )
       if (this.type.value === 'share_list' || this.type.value === 'share_like_list') {
         Axios
           .get(
@@ -176,11 +190,21 @@ export default {
           .then(
             res => {
               this.shareList = res.data.results
+              this.showToast(
+                '搜索成功',
+                `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}`,
+                'success'
+              )
             }
           )
           .catch(
             err => {
               if (String(err).indexOf('401')) {
+                this.showToast(
+                  '搜索失败，正在尝试重新获取验证，或者选择手动刷新',
+                  `尝试搜索 ${start} 至 ${end} 的 ${this.type.title}`,
+                  'warning'
+                )
                 this.autoLogin()
                 this.getCollect(start, end)
               }
@@ -194,11 +218,22 @@ export default {
           .then(
             res => {
               this.picList = res.data.results
+              this.shareList = res.data.results
+              this.showToast(
+                '搜索成功',
+                `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}`,
+                'success'
+              )
             }
           )
           .catch(
             err => {
               if (String(err).indexOf('401')) {
+                this.showToast(
+                  '搜索失败，正在尝试重新获取验证，或者选择手动刷新',
+                  `尝试搜索 ${start} 至 ${end} 的 ${this.type.title}`,
+                  'warning'
+                )
                 this.autoLogin()
                 this.getCollect(start, end)
               }
