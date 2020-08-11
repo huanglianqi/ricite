@@ -9,9 +9,12 @@
         bg-variant="light"
         rounded>
         <div
-          v-on:click="getDetail(item)">
+          v-on:click="getDetail(item)"
+          class="rounded"
+          style="max-width: 450px; overflow-x: hidden">
           <b-img-lazy
-            class="shadow"
+            class=" align-self-center"
+            style="overflow-x: hidden;"
             rounded
             v-b-modal.detail
             :src="item.pic_url"
@@ -60,12 +63,20 @@
           <div>
             <small
               class="text-muted">图片提供者</small></div>
-          <head-img
-            class="d-inline"
-            :src="detail.teacher.head_img"
-            :button="true"
-            :show-name="true"
-            :info="detail.teacher"></head-img></div>
+            <head-img-kits
+              :tow-line="false">
+              <template
+                v-slot:button>
+                <head-img-btn
+                  v-b-modal.imagePadHeadImgInfoModal
+                  :src="detail.teacher.head_img"
+                  :size="'1.5rem'"></head-img-btn></template>
+              <template
+                v-slot:centerText>
+                {{detail.teacher.name}}</template></head-img-kits>
+            <head-img-info
+              :id="'imagePadHeadImgInfoModal'"
+              :info="detail.teacher.infoForms"></head-img-info></div>
         <div
           class="shadow p-3 rounded bg-white mt-3">
           <div>
@@ -140,14 +151,18 @@
 import ModalModelVue from './ModalModel.vue'
 import ThreeBlocksVue from './ThreeBlocks.vue'
 import Axios from 'axios'
-import HeadImgVue from './HeadImg.vue'
+import HeadImgKitsVue from './headImg/HeadImgKits.vue'
+import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
+import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
 
 export default {
   name: 'imagePad',
   components: {
     'modal-model': ModalModelVue,
     'three-blocks': ThreeBlocksVue,
-    'head-img': HeadImgVue
+    'head-img-kits': HeadImgKitsVue,
+    'head-img-btn': HeadImgBtnVue,
+    'head-img-info': HeadImgInfoVue
   },
   data () {
     return {
@@ -231,7 +246,7 @@ export default {
       this.showToast(
         '图片等待下载',
         `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}，${this.searchSchool(pic.teacher.infoForms)}`,
-        'success'
+        'info'
       )
       // Translate pic_url into 'download/' format for proxy request.
       let image = new Image()

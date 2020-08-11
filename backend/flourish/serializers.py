@@ -281,9 +281,10 @@ class ShareLikeSerializer(serializers.ModelSerializer):
 
 
 class ShareSrializer(serializers.ModelSerializer):
-    sharePics = SharePicSerializer(
+    sharePics = serializers.SlugRelatedField(
         many=True,
-        read_only=True
+        read_only=True,
+        slug_field='url'
     )
     shareComments = ShareCommentSerializer(
         many=True,

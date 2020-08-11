@@ -34,33 +34,12 @@
           firstItemValue="feedback_pic_collect"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
-    <b-container aria-label="share list"
-      class="mt-3"
-      v-show="isGraph"
-      v-for="item in shareList"
-      :key="item.id">
-      <b-row>
-        <head-img
-          class="mr-2"
-          :src="item.teacher.head_img"
-          :button="true"
-          v-b-modal.personDetail></head-img>
-          <b-col><b-row><p>{{item.teacher.real_name}}</p></b-row>
-          <b-row><p>{{item.content}}</p></b-row></b-col></b-row>
-        <b-row>
-          <div
-            class="overflow-auto d-inline-block">
-            <b-img-lazy
-              v-for="pic in item.sharePics"
-              :key="pic.url"
-              class="m-2"
-              height="200"
-              left
-              rounded
-              :src="pic.url"></b-img-lazy></div></b-row></b-container>
     <image-pad
       v-show="!isGraph"
       :list="picList"></image-pad>
+    <graphic-pad
+      v-show="isGraph"
+      :list="shareList"></graphic-pad>
   </div>
 </template>
 
@@ -68,20 +47,20 @@
 import ThreeColumnsVue from './ThreeColumns.vue'
 import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
-import ThreeBlocksVue from './ThreeBlocks.vue'
-import HeadImgVue from './HeadImg.vue'
+import HeadImgVue from './headImgKits/HeadImg.vue'
 import updateLikeButtonVue from './updateLikeButton.vue'
 import ImagePadVue from './ImagePad.vue'
+import GraphicSetVue from './GraphicSet.vue'
 
 export default {
   name: 'pictureManage',
   components: {
     'three-columns': ThreeColumnsVue,
     'tool-dropdown': ToolDropdownVue,
-    'three-blocks': ThreeBlocksVue,
     'head-img': HeadImgVue,
     'update-like-button': updateLikeButtonVue,
-    'image-pad': ImagePadVue
+    'image-pad': ImagePadVue,
+    'graphic-pad': GraphicSetVue
   },
   data () {
     return {

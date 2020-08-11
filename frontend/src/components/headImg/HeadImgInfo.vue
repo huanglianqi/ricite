@@ -3,7 +3,7 @@
     id="personInfo">
     <modal-model
       :hide-footer="true"
-      id="personInfo"
+      :id="id"
       :size="'lg'">
       <b-card
         border-variant="white">
@@ -15,7 +15,7 @@
             教师基础信息表</b-list-group-item>
           <b-list-group-item
             class="shadow-lg mb-2 rounded"
-            v-for="i in info.infoForms"
+            v-for="i in info"
             :key="i.field_id">
             <b-row>
               <small
@@ -23,7 +23,7 @@
             <b-row
               class="font-weight-bold pl-2">{{i.field_value}}</b-row></b-list-group-item>
           <b-button
-            @click="$bvModal.hide('personInfo')"
+            @click="$bvModal.hide(`${id}`)"
             class="shadow border-0"
             variant="outline-info">
             <b-icon
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import ModalModelVue from './ModalModel.vue'
+import ModalModelVue from '../ModalModel.vue'
 
 export default {
   name: 'personInfo',
@@ -39,8 +39,12 @@ export default {
     'modal-model': ModalModelVue
   },
   props: {
+    id: {
+      type: String,
+      required: false
+    },
     info: {
-      type: Object,
+      type: Array,
       required: false
     }
   }

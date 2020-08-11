@@ -585,6 +585,3 @@ class ShareListAPIView(ListAPIView):
                 Share.objects.order_by('-create_time')
             )
         )
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)

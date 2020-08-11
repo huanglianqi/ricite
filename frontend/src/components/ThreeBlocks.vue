@@ -4,7 +4,7 @@
     <b-card-group
       id="three-cards"
       columns
-      class="m-5">
+      class="mx-0 my-5">
       <slot></slot>
     </b-card-group>
   </div>

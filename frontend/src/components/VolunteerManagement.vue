@@ -411,28 +411,19 @@
           :key="item.id"
           class="shadow-sm bg-light mb-3 p-3"
           v-show="tagFilter(item.tag_name)">
-          <b-row
-            class="font-weight-bolder">
-            <b-col
-              cols="3">
-              <head-img
+          <head-img-kits
+            :tow-line="true">
+            <template
+              v-slot:button>
+              <head-img-btn
                 :src="item.teacher.head_img"
-                :button="true"
-                :info="item.teacher"
-                :show-name="true"></head-img>
-            </b-col>
-            <b-col
-              cols="9">
-              <b-row
-                class="mt-1">
-                {{item.teacher.real_name}} | {{item.teacher.name}}
-              </b-row>
-              <b-row
-                class="mb-1">
-                {{item.teacher.phone}}
-              </b-row>
-            </b-col>
-          </b-row>
+                :size="'2rem'"></head-img-btn></template>
+              <template
+                v-slot:topText>
+                {{item.teacher.name}}</template>
+              <template
+                v-slot:bottomText>
+                {{item.teacher.phone}}</template></head-img-kits>
           <b-row
             class="font-weight-bolder">
             <b-col>
@@ -477,21 +468,19 @@
           v-show="tagFilter(item.tag_name)">
           <b-row
             class="font-weight-bolder shadow-sm bg-light mb-3 p-3">
-            <b-col
-              cols="3">
-              <head-img
-                :src="item.teacher.head_img"
-                :button="true"
-                :info="item.teacher"
-                :show-name="true"></head-img>
-              <b-row
-                class="mt-1 mb-1">
-                {{item.teacher.real_name}} | {{item.teacher.name}}
-              </b-row>
-              <b-row>
-                {{item.teacher.phone}}
-              </b-row>
-            </b-col>
+            <head-img-kits
+              :tow-line="true">
+              <template
+                v-slot:button>
+                <head-img-btn
+                  :src="item.teacher.head_img"
+                  :size="'2rem'"></head-img-btn></template>
+                <template
+                  v-slot:topText>
+                  {{item.teacher.name}}</template>
+                <template
+                  v-slot:bottomText>
+                  {{item.teacher.phone}}</template></head-img-kits>
             <b-col
               cols="8">
               <b-row
@@ -533,14 +522,18 @@
 import Axios from 'axios'
 import ToolDropdownVue from './ToolDropdown.vue'
 import ThreeColumnsVue from './ThreeColumns.vue'
-import HeadImgVue from './HeadImg.vue'
+import HeadImgKitsVue from './headImg/HeadImgKits.vue'
+import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
+import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
 
 export default {
   name: 'volunteerManagement',
   components: {
     't-dropdown': ToolDropdownVue,
     'three-columns': ThreeColumnsVue,
-    'head-img': HeadImgVue
+    'head-img-kits': HeadImgKitsVue,
+    'head-img-info': HeadImgInfoVue,
+    'head-img-btn': HeadImgBtnVue
   },
   data () {
     return {
