@@ -1,16 +1,14 @@
 <template>
   <div
     id="graphicPad">
+    <three-blocks>
       <b-card
-        class="my-5 mx-0"
         v-for="item in list"
         :key="item.id"
         border-variant="white"
         bg-variant="light"
         rounded>
-        <b-row>
-        <b-col
-          cols="3">
+        <div>
           <head-img-kits
             :two-line="true">
             <template
@@ -28,23 +26,64 @@
               v-slot:bottomText>
               {{item.create_time}}</template></head-img-kits>
           <p
+            class="text-left ml-5">
+            <b-badge
+              class="mr-1 px-2"
+              href="#"
+              variant="danger">
+              <b-icon
+                icon="hand-thumbs-up"></b-icon>
+                {{item.shareLikes.length}}</b-badge>
+            <b-badge
+              class="mr-1 px-2"
+              href="#"
+              variant="warning">
+              <b-icon
+                icon="chat"></b-icon>
+                {{item.shareComments.length}}</b-badge>
+            <b-badge
+              class="mr-1 px-2"
+              variant="info">
+              <b-icon
+                icon="image"></b-icon>
+                {{item.sharePics.length}}</b-badge></p>
+          <p
             id="textarea"
-            class="ml-5 text-justify text-black-75 text-left"
-            style="max-width: 300px;">
-            {{item.content}}</p></b-col>
-        <b-col
-          cols="9">
+            class="ml-5 text-justify text-black-75 text-left w-75"
+            style="height: 100px;">
+            {{item.content}}</p></div>
           <div
+            v-if="item.sharePics.length>=0"
+            style="height: 250px;"
             id="image"
-            class="d-inline-flex"
-            style="width: 900px">
+            class="d-inline-flex rounded w-100 shadow-sm p-2 bg-white">
             <b-img-lazy
               v-for="pic in item.sharePics"
               :key="pic"
-              class="mx-1"
-              style="max-width: 300px; max-height: 300px;"
+              class="m-1"
+              style="max-height: 250px;"
               :src="pic"
-              rounded></b-img-lazy></div></b-col></b-row></b-card>
+              rounded></b-img-lazy></div>
+          <b-container
+            class="mt-2">
+            <b-row>
+              <b-col>
+                <b-button
+                  block
+                  variant="outline-danger"
+                  size="sm"
+                  class="border-0 shadow">
+                  <b-icon
+                    icon="heart"></b-icon></b-button></b-col>
+              <b-col>
+                <b-button
+                  block
+                  variant="outline-success"
+                  size="sm"
+                  class="border-0 shadow">
+                  <b-icon
+                    icon="cloud-download">
+                    {{item.shareComments.length}}</b-icon></b-button></b-col></b-row></b-container></b-card></three-blocks>
     <head-img-info
       :id="'graphicPadPersonInfoModal'"
       :info="graphicPadPersonInfoData"></head-img-info>
