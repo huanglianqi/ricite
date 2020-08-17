@@ -136,7 +136,7 @@ def Update_share_list(page=0):
                 )
                 share.save()
             except Teacher.DoesNotExist:
-                print('teacher does not exits!')
+                continue
         try:
             for pic_item in item['pics']:
                 try:
@@ -155,7 +155,7 @@ def Update_share_list(page=0):
                     )
                     pic.save()
         except KeyError:
-            print('teacher does not exits!')
+            continue
         try:
             for comment in item['comments']:
                 try:
@@ -176,9 +176,9 @@ def Update_share_list(page=0):
                         )
                         c.save()
                     except Teacher.DoesNotExist:
-                        print('teacher does not exits!')
+                        continue
         except KeyError:
-            print('teacher does not exits!')
+            continue
         try:
             for like in item['likes']:
                 try:
@@ -189,7 +189,8 @@ def Update_share_list(page=0):
                     try:
                         l = ShareLike(
                             teacher=Teacher.objects.get(
-                                user_id=like['user_id']
+                                user_id=like['user_id'],
+                                moment_id=item['moment_id']
                             ),
                             share=share,
                             user_id=like['user_id'],
@@ -199,7 +200,7 @@ def Update_share_list(page=0):
                         )
                         l.save()
                     except Teacher.DoesNotExist:
-                        print('teacher does not exits!')
+                        continue
         except KeyError:
             print('teacher does not exits!')
     if len(data) == 100:
