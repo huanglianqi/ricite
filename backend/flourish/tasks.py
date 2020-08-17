@@ -191,8 +191,7 @@ def Update_share_list(page=0):
                     try:
                         l = ShareLike(
                             teacher=Teacher.objects.get(
-                                user_id=like['user_id'],
-                                moment_id=item['moment_id']
+                                user_id=like['user_id']
                             ),
                             share=share,
                             user_id=like['user_id'],
