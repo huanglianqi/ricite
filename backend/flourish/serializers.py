@@ -301,6 +301,7 @@ class ShareSrializer(serializers.ModelSerializer):
     class Meta:
         model = Share
         fields = [
+            'id',
             'like',
             'user_id',
             'moment_id',
@@ -312,4 +313,13 @@ class ShareSrializer(serializers.ModelSerializer):
             'teacher',
             'user_real_name',
             'user_name'
+        ]
+
+
+class ShareUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Share
+        fields = [
+            'like',
+            'moment_id'
         ]

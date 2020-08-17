@@ -26,6 +26,7 @@ from .views import (
     FeedbackPicRetrieveAPIView,
     CountApplyDataListAPIView,
     ShareListAPIView,
+    ShareUpdateAPIView,
 )
 
 urlpatterns = [
@@ -128,5 +129,9 @@ urlpatterns = [
     re_path(
         r'share_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
         ShareListAPIView.as_view()
+    ),
+    path(
+        'share_update/<int:pk>',
+        ShareUpdateAPIView.as_view()
     ),
 ]

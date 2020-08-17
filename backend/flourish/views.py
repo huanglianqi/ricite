@@ -24,6 +24,7 @@ from .serializers import (
     FeedbackPicCollectSerializer,
     UserCourseSerializerApplyCount,
     ShareSrializer,
+    ShareUpdateSerializer,
 )
 
 from rest_framework.generics import(
@@ -585,3 +586,15 @@ class ShareListAPIView(ListAPIView):
                 Share.objects.order_by('-create_time')
             )
         )
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class ShareUpdateAPIView(UpdateAPIView):
+    serializer_class = ShareUpdateSerializer
+    permission_classes = [AllowAny]
+    queryset = Share.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
