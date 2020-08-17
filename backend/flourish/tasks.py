@@ -141,7 +141,8 @@ def Update_share_list(page=0):
             for pic_item in item['pics']:
                 try:
                     pic = SharePic.objects.get(
-                        url=pic_item
+                        url=pic_item,
+                        moment_id=item['moment_id']
                     )
                 except SharePic.DoesNotExist:
                     pic = SharePic(
@@ -183,7 +184,8 @@ def Update_share_list(page=0):
             for like in item['likes']:
                 try:
                     l = ShareLike.objects.get(
-                        user_id=like['user_id']
+                        user_id=like['user_id'],
+                        moment_id=comment['moment_id']
                     )
                 except ShareLike.DoesNotExist:
                     try:
