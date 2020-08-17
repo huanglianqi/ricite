@@ -162,7 +162,7 @@ def Update_share_list(page=0):
                 try:
                     c = ShareComment.objects.get(
                         teacher__user_id=comment['user_id'],
-                        moment_id=comment['moment_id']
+                        moment_id=item['moment_id']
                     )
                 except ShareComment.DoesNotExist:
                     try:
@@ -185,7 +185,7 @@ def Update_share_list(page=0):
                 try:
                     l = ShareLike.objects.get(
                         user_id=like['user_id'],
-                        moment_id=comment['moment_id']
+                        moment_id=item['moment_id']
                     )
                 except ShareLike.DoesNotExist:
                     try:
