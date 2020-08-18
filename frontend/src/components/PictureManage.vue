@@ -1,7 +1,7 @@
 <template>
   <div
     id="pictureManage">
-    <three-columns aria-label="head toolbar"
+    <three-columns aria-label="toolbar"
       firstColumnTitle="起于"
       secondColumnTitle="止于"
       thirdColumnTitle="类型">
@@ -30,16 +30,16 @@
           iconDown="images"
           :title="type.title"
           :value="type.value"
-          firstItemTitle="图片 | 课程反馈"
-          firstItemValue="feedback_pic_collect"
+          firstItemTitle="课堂图片 ｜ 全部"
+          firstItemValue="feedback_image_all_list"
           :itemList="typeList"
           :selectItemFunc="selectType"></tool-dropdown></template></three-columns>
     <image-pad
       v-show="!isGraph"
-      :list="picList"></image-pad>
+      :list="feedbackImgList"></image-pad>
     <graphic-pad
       v-show="isGraph"
-      :list="shareList"></graphic-pad>
+      :list="shareGraphicList"></graphic-pad>
   </div>
 </template>
 
@@ -47,8 +47,6 @@
 import ThreeColumnsVue from './ThreeColumns.vue'
 import ToolDropdownVue from './ToolDropdown.vue'
 import Axios from 'axios'
-import HeadImgVue from './headImg/HeadImg.vue'
-import updateLikeButtonVue from './updateLikeButton.vue'
 import ImagePadVue from './ImagePad.vue'
 import GraphicSetVue from './GraphicSet.vue'
 
@@ -57,20 +55,11 @@ export default {
   components: {
     'three-columns': ThreeColumnsVue,
     'tool-dropdown': ToolDropdownVue,
-    'head-img': HeadImgVue,
-    'update-like-button': updateLikeButtonVue,
     'image-pad': ImagePadVue,
     'graphic-pad': GraphicSetVue
   },
   data () {
     return {
-      headImgFormat: {
-        width: 25,
-        height: 25,
-        class: 'ml-0 mr-2 mb-1 mt-0',
-        rounded: 'circle',
-        left: true
-      },
       startDate: '',
       endDate: '',
       type: {
@@ -79,33 +68,20 @@ export default {
       },
       typeList: [
         {
-          title: '图片 | 课程反馈 | 精选',
-          value: 'feedback_pic_like'
+          title: '课堂图片 | 精选',
+          value: 'feedback_image_like_list'
         },
         {
-          title: '图文 | 群组动态',
-          value: 'share_list'
+          title: '群组动态 | 全部',
+          value: 'share_graphic_all_list'
         },
         {
-          title: '图文 | 群组动态图文 | 精选',
-          value: 'share_like_list'
+          title: '群组动态 | 精选',
+          value: 'share_graphic_like_list'
         }
       ],
-      picList: [],
-      shareList: [],
-      detail: {
-        teacher: {
-          real_name: '',
-          name: ''
-        },
-        user_course: {
-          tag_name: ''
-        },
-        feedback_form: {
-          create_time: ''
-        },
-        pic_url: ''
-      }
+      feedbackImgList: [],
+      shareGraphicList: []
     }
   },
   watch: {
@@ -117,8 +93,9 @@ export default {
     }
   },
   computed: {
+    // show or hide feedback img list or share graphic list
     isGraph () {
-      if (this.type.value === 'share_list' || this.type.value === 'share_like_list') {
+      if (this.type.value === 'share_graphic_all_list' || this.type.value === 'share_graphic_like_list') {
         return true
       } else {
         return false
@@ -161,64 +138,36 @@ export default {
         `搜索从 ${start} 至 ${end} 的 ${this.type.title}`,
         'info'
       )
-      if (this.type.value === 'share_list' || this.type.value === 'share_like_list') {
-        Axios
-          .get(
-            `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
-          )
-          .then(
-            res => {
-              this.shareList = res.data.results
+      Axios
+        .get(
+          `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
+        )
+        .then(
+          res => {
+            if (this.type.value === 'feedback_image_all_list' || this.type.value === 'feedback_image_like_list') {
+              this.feedbackImgList = res.data.results
+            } else {
+              this.shareGraphicList = res.data.results
+            }
+            this.showToast(
+              '搜索成功',
+              `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}, 共搜索到${res.data.results.length}条结果`,
+              'success'
+            )
+          }
+        )
+        .catch(
+          err => {
+            if (String(err).indexOf('401')) {
               this.showToast(
-                '搜索成功',
-                `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}`,
-                'success'
-              )
+                '搜索失败，正在尝试重新获取验证，或者选择手动刷新',
+                `尝试搜索 ${start} 至 ${end} 的 ${this.type.title}`,
+                'warning')
+              this.autoLogin()
+              this.getCollect(start, end)
             }
-          )
-          .catch(
-            err => {
-              if (String(err).indexOf('401')) {
-                this.showToast(
-                  '搜索失败，正在尝试重新获取验证，或者选择手动刷新',
-                  `尝试搜索 ${start} 至 ${end} 的 ${this.type.title}`,
-                  'warning'
-                )
-                this.autoLogin()
-                this.getCollect(start, end)
-              }
-            }
-          )
-      } else {
-        Axios
-          .get(
-            `flourish/${this.type.value}/${end}T23:59:59/${start}T00:00:00/`
-          )
-          .then(
-            res => {
-              this.picList = res.data.results
-              this.shareList = res.data.results
-              this.showToast(
-                '搜索成功',
-                `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}`,
-                'success'
-              )
-            }
-          )
-          .catch(
-            err => {
-              if (String(err).indexOf('401')) {
-                this.showToast(
-                  '搜索失败，正在尝试重新获取验证，或者选择手动刷新',
-                  `尝试搜索 ${start} 至 ${end} 的 ${this.type.title}`,
-                  'warning'
-                )
-                this.autoLogin()
-                this.getCollect(start, end)
-              }
-            }
-          )
-      }
+          }
+        )
     },
     autoLogin () {
       this.$store

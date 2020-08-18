@@ -20,13 +20,12 @@ from .views import (
     FinishCourseListAPIView,
     SearchUserCourseListAPIView,
     UserCourseUpdateAPIView,
-    FeedbackPicCollectListAPIView,
-    FeedbackPicLikeListAPIView,
-    FeedbackPicLikeUpdateAPIView,
-    FeedbackPicRetrieveAPIView,
-    CountApplyDataListAPIView,
-    ShareListAPIView,
-    ShareUpdateAPIView,
+    FeedbackImageAllListAPIView,
+    FeedbackImageLikeListAPIView,
+    FeedbackImageLikeUpdateAPIView,
+    ShareGraphicAllListAPIView,
+    ShareGraphicLikeListAPIView,
+    ShareGraphicLikeUpdateAPIView,
 )
 
 urlpatterns = [
@@ -107,31 +106,27 @@ urlpatterns = [
         UserCourseUpdateAPIView.as_view()
     ),
     re_path(
-        r'feedback_pic_collect/(?P<endDate>.+)/(?P<startDate>.+)/$',
-        FeedbackPicCollectListAPIView.as_view()
+        r'feedback_image_all_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
+        FeedbackImageAllListAPIView.as_view()
     ),
     re_path(
-        r'feedback_pic_like/(?P<endDate>.+)/(?P<startDate>.+)/$',
-        FeedbackPicLikeListAPIView.as_view()
-    ),
-    path(
-        'get_feedback_pic/<int:pk>',
-        FeedbackPicRetrieveAPIView.as_view()
+        r'feedback_image_like_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
+        FeedbackImageLikeListAPIView.as_view()
     ),
     path(
         'feedback_pic_like_update/<int:pk>',
-        FeedbackPicLikeUpdateAPIView.as_view()
+        FeedbackImageLikeUpdateAPIView.as_view()
     ),
     re_path(
-        r'count_apply_data/(?P<term>.+)/(?P<tag>.+)/$',
-        CountApplyDataListAPIView.as_view()
+        r'share_graphic_all_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
+        ShareGraphicAllListAPIView.as_view()
     ),
     re_path(
-        r'share_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
-        ShareListAPIView.as_view()
+        r'share_graphic_like_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
+        ShareGraphicLikeListAPIView.as_view()
     ),
     path(
-        'share_update/<int:pk>',
-        ShareUpdateAPIView.as_view()
+        'share_graphic_like_update/<int:pk>',
+        ShareGraphicLikeUpdateAPIView.as_view()
     ),
 ]

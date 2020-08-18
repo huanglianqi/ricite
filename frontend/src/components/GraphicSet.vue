@@ -1,6 +1,9 @@
 <template>
   <div
     id="graphicPad">
+    <no-result
+      :show="list.length===0"
+      :icon="'images'"></no-result>
     <three-blocks>
       <b-card
         v-for="item in list"
@@ -147,8 +150,8 @@ import HeadImgKitsVue from './headImg/HeadImgKits.vue'
 import ThreeBlocksVue from './ThreeBlocks.vue'
 import ModalModelVue from './ModalModel.vue'
 import Axios from 'axios'
-// import JSZip from 'jszip'
 import {saveAs} from 'file-saver'
+import noResultVue from './noResult.vue'
 
 export default {
   name: 'graphicPad',
@@ -157,7 +160,8 @@ export default {
     'head-img-info': HeadImgInfoVue,
     'head-img-kits': HeadImgKitsVue,
     'three-blocks': ThreeBlocksVue,
-    'modal-model': ModalModelVue
+    'modal-model': ModalModelVue,
+    'no-result': noResultVue
   },
   props: {
     list: {
@@ -188,7 +192,7 @@ export default {
     },
     downloadPic (url, info) {
       this.showToast(
-        '图片准备下载',
+        '准备图片资源',
         `${info.teacher.real_name}，${info.create_time.split('T')[0]}，${this.searchSchool(info.teacher.infoForms)}`,
         'info'
       )
@@ -210,7 +214,7 @@ export default {
           URL.revokeObjectURL(url)
         })
         this.showToast(
-          '图片下载成功',
+          '图片准备下载',
           `${info.teacher.real_name}，${info.create_time.split('T')[0]}，${this.searchSchool(info.teacher.infoForms)}`,
           'success'
         )
@@ -253,7 +257,7 @@ export default {
       this.graphicSetShareDetail = detail
       Axios
         .patch(
-          `flourish/share_update/${detail.id}`,
+          `flourish/share_graphic_like_update/${detail.id}`,
           {
             like: !state
           }
@@ -275,17 +279,13 @@ export default {
     downloadShare (detail) {
       var filename = `${this.searchSchool(detail.teacher.infoForms)}-心灵魔法学院-${detail.teacher.real_name}-${detail.create_time.split('T')[0]}`
       this.showToast(
-        '正在收集群组动态压缩包资源',
+        '正在收集群组动态图文资源',
         filename,
         'info')
 
       if (detail.like === false) {
         this.updateShareLike(detail, detail.like)
       }
-
-      // var zip = new JSZip()
-      // zip.file(`${filename}-content.txt`, `${detail.content}`)
-      // var imageFolder = zip.folder('images')
 
       saveAs(
         new Blob(
@@ -294,19 +294,6 @@ export default {
         `${filename}.txt`)
 
       for (let i = 0; i < detail.sharePics.length; i++) {
-        // this.downloadPic(detail.sharePics[i], detail)
-        // let src = detail.sharePics[i].replace('https://www.rici.org.cn/', 'download/')
-        // Axios
-        //   .get(src, {responseType: 'blob'})
-        //   .then(res => {
-        //     console.log(res)
-        //     imageFolder.file(
-        //       `${filename}-${i + 1}.jpg`,
-        //       res.data)
-        //   })
-        //   .catch(err => {
-        //     console.log(err)
-        //   })
         let image = new Image()
         let src = detail.sharePics[i].replace('https//:www.rici.org.cn/', 'download/')
         image.setAttribute('crossOrigin', 'anonymous')
@@ -320,54 +307,11 @@ export default {
           canvas.toBlob(function (blob) {
             saveAs(blob, `${filename}-${i + 1}.jpg`)
           })
-          // let blob = canvas.toDataURL()
-          // let blobArr = blob.split(',')
-          // imageFolder.file(`${filename}-${i + 1}.txt`, blobArr[1])
-          // zip.file(`${filename}-content-${i + 1}.txt`, `${detail.content}`)
         }
       }
-      // zip
-      //   .generateAsync({type: 'blob'})
-      //   .then(content => {
-      //     saveAs(content, `${filename}.zip`)
-      //   })
-
-      // saveAs(`${detail.content}`, `${filename}-content.txt`)
-      // for (let i = 0; i< detail.sharePics.length; i++) {
-      //   this.downloadPic(detail.sharePics[i], detail)
-      // }
-
-      // var zip = new JSZip()
-      // zip.file('群组动态分享文字.docx', `${detail.content}`)
-      // var imageFolder = zip.folder('群组动态分享图片')
-      // for (let i = 0; i < detail.sharePics.length; i++) {
-      //   let image = new Image()
-      //   var src = detail.sharePics[i].replace('https://www.rici.org.cn/', 'download/')
-      //   image.setAttribute('crossOrgin', 'anonymous')
-      //   image.src = src
-      //   image.onload = () => {
-      //     let canvas = document.createElement('canvas')
-      //     canvas.width = image.width
-      //     canvas.height = image.height
-      //     let ctx = canvas.getContext('2d')
-      //     ctx.drawImage(image, 0, 0, image.width, image.height)
-      //     canvas.toBlob((blob) => {
-      //       imageFolder.file(
-      //         `${filename}-${i + 1}.jpg`,
-      //         blob,
-      //         {type: 'blob'})
-      //     })
-      //   }
-      // }
-      // zip
-      //   .generateAsync({type: 'blob'})
-      //   .then(
-      //     content => {
-      //       saveAs(content, `${filename}.zip`)
-      //     })
 
       this.showToast(
-        '群组动态压缩包准备下载',
+        '群组动态图文准备下载',
         filename,
         'success')
     },

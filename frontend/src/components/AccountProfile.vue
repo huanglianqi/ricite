@@ -2,6 +2,8 @@
   <div
     id="accountProfile">
     <b-button
+      v-b-tooltip.hover
+      title="账号管理"
       class="shadow-sm border-0 border-white"
       pill
       v-b-toggle.accountProfile_sidebar
@@ -34,7 +36,6 @@
                 variant="outline-danger"
                 class="float-right shadow-sm border-0 border-white">
                 <b-icon
-
                   icon="box-arrow-left"
                   font-scale="0.9"
                   shift-v="3"></b-icon></b-button></div>

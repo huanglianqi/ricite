@@ -1,6 +1,6 @@
 <template>
   <div
-    id="volunteerManagement">
+    id="processControl">
     <div aria-label="list"
       v-show="!showDetail">
       <three-columns aria-label="list toolbar"
@@ -527,7 +527,7 @@ import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
 import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
 
 export default {
-  name: 'volunteerManagement',
+  name: 'processControl',
   components: {
     't-dropdown': ToolDropdownVue,
     'three-columns': ThreeColumnsVue,

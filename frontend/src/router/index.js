@@ -8,7 +8,7 @@ import Login from '@/components/Login'
 import About from '@/components/About'
 import ResetPassword from '@/components/ResetPassword'
 import FeedbackCheck from '@/components/FeedbackCheck'
-import VolunteerManagement from '@/components/VolunteerManagement'
+import processControl from '@/components/processControl'
 import PictureManage from '@/components/PictureManage'
 import DataStatistics from '@/components/DataStatistics'
 
@@ -62,9 +62,9 @@ export default new Router({
       }
     },
     {
-      path: '/volunteerManagement',
-      name: 'VolunteerManagement',
-      component: VolunteerManagement,
+      path: '/processControl',
+      name: 'processControl',
+      component: processControl,
       beforeEnter: (to, from, next) => {
         if (
           to.name !== 'Login' && store.state.auth.status !== 'success'

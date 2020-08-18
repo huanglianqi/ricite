@@ -458,7 +458,9 @@ class UserCourseUpdateAPIView(UpdateAPIView):
         return self.partial_update(request, *args, **kwargs)
 
 
-class FeedbackPicCollectListAPIView(ListAPIView):
+# ---Feedback Image--- #
+
+class FeedbackImageAllListAPIView(ListAPIView):
     serializer_class = FeedbackPicCollectSerializer
     permission_classes = [AllowAny]
 
@@ -485,7 +487,7 @@ class FeedbackPicCollectListAPIView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class FeedbackPicLikeListAPIView(ListAPIView):
+class FeedbackImageLikeListAPIView(ListAPIView):
     serializer_class = FeedbackPicCollectSerializer
     permission_classes = [AllowAny]
 
@@ -517,16 +519,7 @@ class FeedbackPicLikeListAPIView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class FeedbackPicRetrieveAPIView(RetrieveAPIView):
-    serializer_class = FeedbackPicCollectSerializer
-    permission_classes = [AllowAny]
-    queryset = FeedbackPic.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args,**kwargs)
-
-
-class FeedbackPicLikeUpdateAPIView(RetrieveUpdateAPIView):
+class FeedbackImageLikeUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = FeedbackPicCollectSerializer
     permission_classes = [AllowAny]
     queryset = FeedbackPic.objects.all()
@@ -538,44 +531,12 @@ class FeedbackPicLikeUpdateAPIView(RetrieveUpdateAPIView):
         return self.retrieve(request, *args, **kwargs)
 
 
-# Outputs' applycourse may be null, need FILTER in frontend
-class CountApplyDataListAPIView(ListAPIView):
-    serializer_class = UserCourseSerializerApplyCount
-    permission_classes = [AllowAny]
+# ---Share Graphic--- #
 
-    def get_queryset(self):
-        term = self.kwargs['term']
-        tag = self.kwargs['tag']
-
-        if tag == 'all':
-            return list(
-                filter(
-                    lambda item: item.is_fake == False and item.teacher.is_fake == False,
-                    UserCourse.objects.filter(
-                        term_num=term
-                    )
-                )
-            )
-        else:
-            return list(
-                filter(
-                    lambda item: item.is_fake == False and item.teacher.is_fake == False,
-                    UserCourse.objects.filter(
-                        term_num=term,
-                        tag_name=tag
-                    )
-                )
-            )
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-# newest share in the front
-# enDate >= startDate
-class ShareListAPIView(ListAPIView):
+class ShareGraphicAllListAPIView(ListAPIView):
     serializer_class = ShareSrializer
     permission_classes = [AllowAny]
+
     def get_queryset(self):
         startDate = datetime.strptime(self.kwargs['startDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
         endDate = datetime.strptime(self.kwargs['endDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
@@ -591,7 +552,26 @@ class ShareListAPIView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class ShareUpdateAPIView(UpdateAPIView):
+class ShareGraphicLikeListAPIView(ListAPIView):
+   serializer_class = ShareSrializer
+   permission_classes = [AllowAny]
+
+   def get_queryset(self):
+       startDate = datetime.strptime(self.kwargs['startDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+       endDate = datetime.strptime(self.kwargs['endDate'], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=pytz.utc)
+
+       return list(
+           filter(
+               lambda item: item.create_time >= startDate and item.create_time <= endDate and item.like,
+               Share.objects.order_by('-create_time')
+           )
+       )
+
+   def get(self, request, *args, **kwargs):
+       return self.list(request, *args, **kwargs)
+
+
+class ShareGraphicLikeUpdateAPIView(UpdateAPIView):
     serializer_class = ShareUpdateSerializer
     permission_classes = [AllowAny]
     queryset = Share.objects.all()

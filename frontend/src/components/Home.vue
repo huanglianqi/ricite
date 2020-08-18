@@ -46,25 +46,35 @@ export default {
           variant: 'outline-success',
           icon: 'images',
           path: '/pictureManage',
-          content: ['课程反馈图片', '群组动态图文']
+          content: [
+            '课堂图片',
+            '课堂图片精选',
+            '群组动态',
+            '群组动态精选'
+          ]
         },
         {
           id: 2,
           header: '课程反馈',
           variant: 'outline-info',
-          icon: 'book',
+          icon: 'card-checklist',
           path: '/feedbackCheck',
-          content: ['每节课后课程反馈', '结课反馈']
+          content: [
+            '每节课后课程反馈',
+            '结课反馈'
+          ]
         },
         {
           id: 3,
-          header: '社群运营',
+          header: '流程把控',
           variant: 'outline-secondary',
-          icon: 'people-fill',
-          path: '/volunteerManagement',
+          icon: 'bezier2',
+          path: '/processControl',
           content: [
-            '申请课程进度',
-            '课程反馈进度'
+            '通过审核',
+            '签署协议',
+            '课程反馈',
+            '寄回问卷'
           ]
         }
       ]

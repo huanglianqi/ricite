@@ -1,8 +1,11 @@
 <template>
   <div id="app">
     <div aria-label="nav-bar"
-      id="nav-bar">
-      <AccountProfile/><NavMenu/>
+      id="nav-bar"
+      class="ml-1 mt-1">
+      <AccountProfile/>
+      <br>
+      <NavMenu/>
     </div>
     <router-view/>
     <div aria-label="nav-top"
@@ -38,23 +41,23 @@
       </router-link>
       |
       <router-link
-        to='/volunteerManagement'>
+        to='/processControl'>
         <b-icon
-          icon="people-fill"
+          icon="bezier2"
           scale="1.25"
           aria-hidden="true">
         </b-icon>
-        社群
+        流程
       </router-link>
       |
       <router-link
         to='/feedbackCheck'>
         <b-icon
-          icon="book"
+          icon="card-checklist"
           scale="1.25"
           aria-hidden="true">
         </b-icon>
-        课程
+        反馈
       </router-link>
       |
       <router-link

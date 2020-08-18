@@ -1,6 +1,9 @@
 <template>
   <div
     id="imagePad">
+    <no-result
+      :show="list.length===0"
+      :icon="'images'"></no-result>
     <three-blocks aria-label="picture set">
       <b-card
         v-for="item in list"
@@ -154,6 +157,7 @@ import Axios from 'axios'
 import HeadImgKitsVue from './headImg/HeadImgKits.vue'
 import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
 import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
+import noResultVue from './noResult.vue'
 
 export default {
   name: 'imagePad',
@@ -162,7 +166,8 @@ export default {
     'three-blocks': ThreeBlocksVue,
     'head-img-kits': HeadImgKitsVue,
     'head-img-btn': HeadImgBtnVue,
-    'head-img-info': HeadImgInfoVue
+    'head-img-info': HeadImgInfoVue,
+    'no-result': noResultVue
   },
   data () {
     return {
@@ -243,9 +248,10 @@ export default {
       }
     },
     downloadPic (pic) {
+      var fileName = `${pic.feedback_form.create_time.split('T')[0]}-${this.searchSchool(pic.teacher.infoForms)}-心灵魔法学院-${pic.teacher.real_name}-${pic.user_course.tag_name}`
       this.showToast(
-        '图片等待下载',
-        `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}，${this.searchSchool(pic.teacher.infoForms)}`,
+        '收集图片资源',
+        `${fileName}`,
         'info'
       )
       // Translate pic_url into 'download/' format for proxy request.
@@ -262,24 +268,20 @@ export default {
         canvas.toBlob((blob) => {
           let url = URL.createObjectURL(blob)
           // Click on simulate download link
-          this.onDownloadPic(url, pic)
+          this.onDownloadPic(url, fileName)
           URL.revokeObjectURL(url)
         })
         this.showToast(
-          '图片下载成功',
-          `${pic.teacher.real_name}，${pic.user_course.tag_name}，${pic.feedback_form.create_time.split('T')[0]}，${this.searchSchool(pic.teacher.infoForms)}`,
+          '图片准备下载',
+          `${fileName}`,
           'success'
         )
       }
     },
-    onDownloadPic (url, pic) {
-      // human readable time format is 'yyyy-mm--dd'
-      let time = pic.feedback_form.create_time.split('T')[0]
-      // Data 'school' exist in info forms
-      let school = this.searchSchool(pic.teacher.infoForms)
+    onDownloadPic (url, fileName) {
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `${time}-${school}-心灵魔法学院-${pic.teacher.real_name}-${pic.user_course.tag_name}.jpg`)
+      link.setAttribute('download', `${fileName}.jpg`)
       document.body.append(link)
       link.click()
       document.body.removeChild(link)
