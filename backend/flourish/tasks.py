@@ -351,8 +351,10 @@ def update_teacher_info():
 
                 if apply_item == None:
                     course.has_protocal = False
+                    course.save()
                 else:
                     course.has_protocal = True
+                    course.save()
                     try:
                         apply = course.applycourse
                         apply.stu_num = apply_item['stu_num']
@@ -396,8 +398,10 @@ def update_teacher_info():
                     ):
                         course.finish_final = True
                         course.feedback_num = len(feedback_list) - 1
+                        course.save()
                     else:
                         course.feedback_num = len(feedback_list)
+                        course.save()
                     for feedback_item in feedback_list:
                         try:
                             feedback = FeedbackForm.objects.get(
