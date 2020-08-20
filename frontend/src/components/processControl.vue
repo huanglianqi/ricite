@@ -6,15 +6,15 @@
       <template
         v-slot:thirdColumn>
         <t-dropdown
-            variant="outline-info"
-            icon-up="calendar3-fill"
-            icon-down="calendar"
-            :title="term.title"
-            :value="term.value"
-            :first-item-title="thisTerm.title"
-            :first-item-value="thisTerm.value"
-            :item-list="termList"
-            :select-item-func="selectTerm"></t-dropdown></template></three-columns>
+          variant="outline-info"
+          icon-up="calendar3-fill"
+          icon-down="calendar"
+          :title="term.title"
+          :value="term.value"
+          :first-item-title="thisTerm.title"
+          :first-item-value="thisTerm.value"
+          :item-list="termList"
+          :select-item-func="selectTerm"></t-dropdown></template></three-columns>
     <b-jumbotron
       fluid
       bg-variant="white">
@@ -573,7 +573,7 @@ import ThreeColumnsVue from './structure/ThreeColumns.vue'
 import HeadImgKitsVue from './headImg/HeadImgKits.vue'
 import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
 import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
-import NumberBoardVue from './parts/numberBoard.vue'
+import NumberBoardVue from './parts/NumberBoard.vue'
 import TianZiGeVue from './structure/TianZiGe.vue'
 import TwoColumnsVue from './structure/TwoColumns.vue'
 
