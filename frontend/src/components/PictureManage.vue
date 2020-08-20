@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import ThreeColumnsVue from './ThreeColumns.vue'
-import ToolDropdownVue from './ToolDropdown.vue'
+import ThreeColumnsVue from './structure/ThreeColumns.vue'
+import ToolDropdownVue from './parts/ToolDropdown.vue'
 import Axios from 'axios'
 import ImagePadVue from './ImagePad.vue'
 import GraphicSetVue from './GraphicSet.vue'

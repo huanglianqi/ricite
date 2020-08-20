@@ -1,6 +1,54 @@
 <template>
   <div
     id="processControl">
+    <three-columns
+      thirdColumnTitle="学期">
+      <template
+        v-slot:thirdColumn>
+        <t-dropdown
+            variant="outline-info"
+            icon-up="calendar3-fill"
+            icon-down="calendar"
+            :title="term.title"
+            :value="term.value"
+            :first-item-title="thisTerm.title"
+            :first-item-value="thisTerm.value"
+            :item-list="termList"
+            :select-item-func="selectTerm"></t-dropdown></template></three-columns>
+    <b-jumbotron
+      fluid
+      bg-variant="white">
+      <two-columns>
+        <template v-slot:right>
+          <tian-zi-ge>
+            <template v-slot:rightTop>
+              <number-board
+                titleFront="未签署协议"
+                titleBack="lalal"
+                :numberFront="0"
+                :numberBack="1"
+                :numberFrontClass="'text-warning'"
+                :numberBackClass="'text-danger'"></number-board></template>
+            <template v-slot:leftTop>
+              <number-board
+                titleFront="未进行课程反馈"
+                titleBack="lalal"
+                :numberFront="10"
+                :numberBack="100"></number-board></template>
+            <template v-slot:rightBottom>
+              <number-board
+                titleFront="未完成课程反馈"
+                titleBack="lalal"
+                :numberFront="10"
+                :numberBack="1"></number-board></template>
+            <template v-slot:leftBottom>
+              <number-board
+                titleFront="未寄回问卷"
+                titleBack="lalal"
+                :numberFront="10"
+                :numberBack="1"></number-board></template></tian-zi-ge></template>
+        <template v-slot:left>
+          lalal</template></two-columns></b-jumbotron>
     <div aria-label="list"
       v-show="!showDetail">
       <three-columns aria-label="list toolbar"
@@ -520,11 +568,14 @@
 
 <script>
 import Axios from 'axios'
-import ToolDropdownVue from './ToolDropdown.vue'
-import ThreeColumnsVue from './ThreeColumns.vue'
+import ToolDropdownVue from './parts/ToolDropdown.vue'
+import ThreeColumnsVue from './structure/ThreeColumns.vue'
 import HeadImgKitsVue from './headImg/HeadImgKits.vue'
 import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
 import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
+import NumberBoardVue from './parts/numberBoard.vue'
+import TianZiGeVue from './structure/TianZiGe.vue'
+import TwoColumnsVue from './structure/TwoColumns.vue'
 
 export default {
   name: 'processControl',
@@ -533,7 +584,10 @@ export default {
     'three-columns': ThreeColumnsVue,
     'head-img-kits': HeadImgKitsVue,
     'head-img-info': HeadImgInfoVue,
-    'head-img-btn': HeadImgBtnVue
+    'head-img-btn': HeadImgBtnVue,
+    'number-board': NumberBoardVue,
+    'tian-zi-ge': TianZiGeVue,
+    'two-columns': TwoColumnsVue
   },
   data () {
     return {

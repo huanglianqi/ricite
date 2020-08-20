@@ -64,15 +64,18 @@ export default {
   props: {
     firstColumnTitle: {
       type: String,
-      required: true
+      required: false,
+      default: ''
     },
     secondColumnTitle: {
       type: String,
-      required: true
+      required: false,
+      default: ''
     },
     thirdColumnTitle: {
       type: String,
-      required: true
+      required: false,
+      default: ''
     }
   }
 }

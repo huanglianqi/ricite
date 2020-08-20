@@ -286,7 +286,7 @@
 
 <script>
 import axios from 'axios'
-import ModalModelVue from './ModalModel.vue'
+import ModalModelVue from './parts/ModalModel.vue'
 
 export default {
   name: 'app-account',

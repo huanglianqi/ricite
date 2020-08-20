@@ -7,7 +7,7 @@ class Teacher(models.Model):
         max_length=100
     )
 
-    # wechat name
+    # wechat nikename
     name = models.CharField(
         max_length=100,
         null=True,

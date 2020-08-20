@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import ToolDropdownVue from './ToolDropdown.vue'
+import ToolDropdownVue from './parts/ToolDropdown.vue'
 
 export default {
   name: 'toolMenu',

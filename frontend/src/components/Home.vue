@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import ThreeBlocksVue from './ThreeBlocks.vue'
+import ThreeBlocksVue from './structure/ThreeBlocks.vue'
 
 export default {
   name: 'home',

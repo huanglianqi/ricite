@@ -47,13 +47,6 @@ export default {
           name: '网站首页'
         },
         {
-          id: 'navMenu_item_2',
-          variant: 'outline-success',
-          path: '/statistics',
-          icon: 'clipboard-data',
-          name: '数据统计'
-        },
-        {
           id: 'navMenu_item_3',
           variant: 'outline-success',
           path: '/pictureManage',
@@ -73,13 +66,6 @@ export default {
           path: '/feedbackCheck',
           icon: 'card-checklist',
           name: '课程反馈'
-        },
-        {
-          id: 'navMenu_item_6',
-          variant: 'outline-dark',
-          path: '/about',
-          icon: 'info-circle-fill',
-          name: '关于网站'
         }
       ]
     }

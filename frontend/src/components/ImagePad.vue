@@ -151,8 +151,8 @@
 </template>
 
 <script>
-import ModalModelVue from './ModalModel.vue'
-import ThreeBlocksVue from './ThreeBlocks.vue'
+import ModalModelVue from './parts/ModalModel.vue'
+import ThreeBlocksVue from './structure/ThreeBlocks.vue'
 import Axios from 'axios'
 import HeadImgKitsVue from './headImg/HeadImgKits.vue'
 import HeadImgBtnVue from './headImg/HeadImgBtn.vue'

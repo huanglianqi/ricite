@@ -21,16 +21,6 @@
       </router-link>
       |
       <router-link
-        to='/statistics'>
-        <b-icon
-          icon="clipboard-data"
-          scale="1.25"
-          aria-hidden="true">
-        </b-icon>
-        数据
-      </router-link>
-      |
-      <router-link
         to='/pictureManage'>
         <b-icon
           icon="images"
@@ -58,16 +48,6 @@
           aria-hidden="true">
         </b-icon>
         反馈
-      </router-link>
-      |
-      <router-link
-        to='/about'>
-        <b-icon
-          icon="info-circle-fill"
-          scale="1.25"
-          aria-hidden="true">
-        </b-icon>
-        关于
       </router-link></div>
     <div aria-label="nac-bottom"
       id="nav">
