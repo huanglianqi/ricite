@@ -26,6 +26,7 @@ from .views import (
     ShareGraphicAllListAPIView,
     ShareGraphicLikeListAPIView,
     ShareGraphicLikeUpdateAPIView,
+    UserCourseListAPIView,
 )
 
 urlpatterns = [
@@ -129,4 +130,8 @@ urlpatterns = [
         'share_graphic_like_update/<int:pk>',
         ShareGraphicLikeUpdateAPIView.as_view()
     ),
+    re_path(
+        r'user_course_all_list/(?P<term>.+)/$',
+        UserCourseListAPIView.as_view()
+    )
 ]

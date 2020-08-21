@@ -77,6 +77,7 @@ class InfoForm(models.Model):
             self.field_value
         )
 
+
 # user course
 class UserCourse(models.Model):
     user_course_id = models.CharField(
@@ -105,6 +106,9 @@ class UserCourse(models.Model):
     )
     feedback_num = models.IntegerField()
     finish_final = models.BooleanField()
+    mail_back = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
         return '{0} | {1} | 学期：{2}'.format(
@@ -165,6 +169,7 @@ class ApplyCourse(models.Model):
             self.user_course
         )
 
+
 # class form info
 class FeedbackForm(models.Model):
     feedback_id = models.CharField(
@@ -195,7 +200,6 @@ class FeedbackForm(models.Model):
 
     def __str__(self):
         return self.feedback_id
-
 
 
 class FeedbackUnit(models.Model):

@@ -216,19 +216,21 @@ def applycourseNotExist(instance):
         return instance
 
 
-def applycourseExist(instance):
-    try:
-        instance.applycourse
-        return instance
-    except ApplyCourse.DoesNotExist:
-        return None
+# ---User Course--- #
+
+class UserCourseListAPIView(ListAPIView):
+    serializer_class = UserCourseSerializerTeacherInfo
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        term = self.kwargs['term']
+        return UserCourse.objects.filter(
+            term_num=term,
+            is_fake=False
+        )
 
 
-# get the list of teachers
-# who have course
-# but not sign protocal
-# in certain term
-# Each item in list is UserCourseSerializer instance
+
 class NoProtocalListAPIView(ListAPIView):
     serializer_class = UserCourseSerializerTeacherInfo
     permission_classes = [AllowAny]
@@ -236,15 +238,10 @@ class NoProtocalListAPIView(ListAPIView):
     def get_queryset(self):
         term = self.kwargs['term']
 
-        # item filter by term and applycourse exist
-        # sign protocal will create one ApplyCourse instance related to item
         return list(
             filter(
-                lambda item: applycourseNotExist(item),
-                UserCourse.objects.filter(
-                    term_num=term,
-                    is_fake=False
-                )
+                lambda item: item.term_num == term and item.is_fake == False and item.has_protocal,
+                UserCourse.objects.all()
             )
         )
 
