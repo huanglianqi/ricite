@@ -18,60 +18,28 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
-class TeacherSerializer(serializers.ModelSerializer):
-    userCourses = serializers.StringRelatedField(
-        many=True
-    )
-    applyCourses = serializers.StringRelatedField(
-        many=True
-    )
-    infoForms = serializers.StringRelatedField(
-        many=True
-    )
-    class Meta:
-        model = Teacher
-        fields = '__all__'
-
-
-class InfoFormSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InfoForm
-        fields = '__all__'
-
-
-class UserCourseSerializer(serializers.ModelSerializer):
-    feedback_forms = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='id'
-    )
+class UserCourseSerializerForPic(serializers.ModelSerializer):
     class Meta:
         model = UserCourse
-        fields = '__all__'
+        fields = [
+            'tag_name'
+        ]
 
 
-class ApplyCourseSerializer(serializers.ModelSerializer):
+# ---User--- #
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ApplyCourse
-        fields = '__all__'
+        model = User
+        fields = [
+            'first_name',
+            'last_name'
+        ]
 
 
-class FeedbackFormSerializer(serializers.ModelSerializer):
-    feedback_units = serializers.StringRelatedField(
-        many=True
-    )
-    feedback_pics = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='pic_url'
-    )
-    class Meta:
-        model = FeedbackForm
-        fields = '__all__'
+# ---Teacher & Information Form--- #
 
-
-# return data noly contains question and answer
-class BaseInfoFormSerializer(serializers.ModelSerializer):
+class InfoFormRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoForm
         fields = [
@@ -80,41 +48,20 @@ class BaseInfoFormSerializer(serializers.ModelSerializer):
         ]
 
 
-# return data contains
-# full Teacher data and InfoForm which related to
-class TeacherSerializerInfo(serializers.ModelSerializer):
-    infoForms = BaseInfoFormSerializer(many=True,read_only=True)
-    class Meta:
-        model = Teacher
-        fields = '__all__'
-
-
-# return data contains
-# full ApplyCourse data and TeacherInfo which related to
-class ApplyCourseSerializerTeacherInfo(serializers.ModelSerializer):
-    teacher = TeacherSerializerInfo(read_only=True)
-    class Meta:
-        model = ApplyCourse
-        fields = '__all__'
-
-
-class UserCourseSerializerFeedbackForm(serializers.ModelSerializer):
-    feedback_forms = FeedbackFormSerializer(
+class TeacherInfoFormRetrieveSerializer(serializers.ModelSerializer):
+    infoForms = InfoFormRetrieveSerializer(
         many=True,
         read_only=True
     )
 
     class Meta:
-        model = UserCourse
-        fields = '__all__'
+        model = Teacher
+        fields = [
+            'infoForms'
+        ]
 
 
-class TeacherSerializerUserCourse(serializers.ModelSerializer):
-    userCourses = UserCourseSerializer(
-        read_only=True,
-        many=True
-    )
-
+class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
@@ -128,6 +75,7 @@ class infoFormSerializerForPic(serializers.ModelSerializer):
             'field_id',
             'field_name'
         ]
+
 
 class TeacherSerializerForPic(serializers.ModelSerializer):
     infoForms = infoFormSerializerForPic(
@@ -147,65 +95,6 @@ class TeacherSerializerForPic(serializers.ModelSerializer):
         ]
 
 
-class UserCourseSerializerForPic(serializers.ModelSerializer):
-    class Meta:
-        model = UserCourse
-        fields = [
-            'tag_name'
-        ]
-
-
-
-class FeedbackFormSerializerForPic(serializers.ModelSerializer):
-    class Meta:
-        model = FeedbackForm
-        fields = [
-            'create_time'
-        ]
-
-
-class FeedbackPicCollectSerializer(serializers.ModelSerializer):
-    feedback_form = FeedbackFormSerializerForPic(
-        read_only=True
-    )
-    teacher = TeacherSerializerForPic(read_only=True)
-    user_course = UserCourseSerializerForPic(read_only=True)
-
-    class Meta:
-        model = FeedbackPic
-        fields = [
-            'pic_url',
-            'feedback_form',
-            'teacher',
-            'user_course',
-            'id',
-            'like'
-        ]
-
-
-# Count applycourse instance teacher num, student num and school name
-class ApplyCourseSerializerCount(serializers.ModelSerializer):
-    class Meta:
-        model = ApplyCourse
-        fields = [
-            'teacher_num',
-            'stu_num',
-            'school_name'
-        ]
-
-
-class UserCourseSerializerApplyCount(serializers.ModelSerializer):
-    applycourse = ApplyCourseSerializerCount(read_only=True)
-
-    class Meta:
-        model = UserCourse
-        fields = [
-            'applycourse',
-            'term_num',
-            'course_num'
-        ]
-
-
 class TeacherSerializerForShareLikeAndComment(serializers.ModelSerializer):
     class Meta:
         model = Teacher
@@ -214,17 +103,6 @@ class TeacherSerializerForShareLikeAndComment(serializers.ModelSerializer):
             'phone',
             'real_name',
             'name'
-        ]
-
-
-# ---User--- #
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            'first_name',
-            'last_name'
         ]
 
 
@@ -275,34 +153,31 @@ class FeedbackFormRetrieveSerializer(serializers.ModelSerializer):
         ]
 
 
-# ---Teacher & Information Form--- #
-
-class InfoFormRetrieveSerializer(serializers.ModelSerializer):
+class FeedbackFormSerializerForPic(serializers.ModelSerializer):
     class Meta:
-        model = InfoForm
+        model = FeedbackForm
         fields = [
-            'field_name',
-            'field_value'
+            'create_time'
         ]
 
 
-class TeacherInfoFormRetrieveSerializer(serializers.ModelSerializer):
-    infoForms = InfoFormRetrieveSerializer(
-        many=True,
+class FeedbackPicCollectSerializer(serializers.ModelSerializer):
+    feedback_form = FeedbackFormSerializerForPic(
         read_only=True
     )
+    teacher = TeacherSerializerForPic(read_only=True)
+    user_course = UserCourseSerializerForPic(read_only=True)
 
     class Meta:
-        model = Teacher
+        model = FeedbackPic
         fields = [
-            'infoForms'
+            'pic_url',
+            'feedback_form',
+            'teacher',
+            'user_course',
+            'id',
+            'like'
         ]
-
-
-class TeacherSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Teacher
-        fields = '__all__'
 
 
 # ---User Course--- #

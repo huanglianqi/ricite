@@ -3,7 +3,7 @@
     id="processControl">
     <three-columns aria-label="List Toolbar Menu"
       thirdColumnTitle="学期"
-      firstColumnTitle="刷新"
+      firstColumnTitle="更新数据"
       v-show="!showDetail">
       <template v-slot:firstColumn>
         <b-button
@@ -12,7 +12,12 @@
           variant="outline-success"
           class="border-0 shadow-sm">
           <b-icon
-            icon="arrow-counterclockwise"></b-icon></b-button></template>
+            v-show="refreshDown"
+            icon="arrow-counterclockwise"></b-icon>
+          <b-icon
+            v-show="!refreshDown"
+            icon="arrow-counterclockwise"
+            animation="spin-reverse"></b-icon></b-button></template>
       <template v-slot:thirdColumn>
         <tool-dropdown
           variant="outline-info"
@@ -339,7 +344,35 @@
       id="feedbackFormDetailModal"
       :size="'lg'"
       :hideFooter="true">
-      {{feedbackFormDetail}}</modal-model>
+      <b-list-group>
+        <b-list-group-item
+          class="border-0 shadow-sm my-2"
+          v-for="item in feedbackFormDetail.feedback_units"
+          :key="item.field_name">
+          <small
+            class="text-muted">
+            {{item.field_name}}</small>
+          <p>
+            {{item.field_value}}</p></b-list-group-item>
+        <b-list-group-item
+          class="border-0 shadow-sm my-2">
+          <small
+            class="text-muted">
+            表单填写时间</small>
+          <p>
+            {{feedbackFormDetail.create_time}}</p></b-list-group-item></b-list-group>
+      <div
+        style="height: 275px;"
+        id="image"
+        class="d-inline-flex rounded w-100 shadow-sm p-2 bg-white">
+        <div
+          v-for="pic in feedbackFormDetail.feedback_pics"
+          :key="pic.pic_url">
+          <b-img-lazy
+            class="m-1"
+            style="max-height: 250px;"
+            :src="pic.pic_url"
+            rounded></b-img-lazy></div></div></modal-model>
     <modal-model aria-label="User Course Remarks Detail Modal"
       id="remarksDetailModal"
       :size="'md'"
@@ -426,7 +459,6 @@ import HeadImgKitsVue from './headImg/HeadImgKits.vue'
 import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
 import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
 import ModalModelVue from './parts/ModalModel.vue'
-import ListPagerVue from './parts/ListPager.vue'
 
 export default {
   name: 'processControl',
@@ -439,8 +471,7 @@ export default {
     'head-img-kit': HeadImgKitsVue,
     'head-img-btn': HeadImgBtnVue,
     'head-img-info': HeadImgInfoVue,
-    'modal-model': ModalModelVue,
-    'list-pager': ListPagerVue
+    'modal-model': ModalModelVue
   },
   computed: {
     termList () {
@@ -615,16 +646,28 @@ export default {
       mailBackDetail: false,
       remarksDetail: [],
       remarksPage: 1,
-      remarksDetailContent: ''
+      remarksDetailContent: '',
+      refreshDown: true
     }
   },
   methods: {
+    showToast (title, content, variant) {
+      this.$bvToast.toast(
+        content,
+        {
+          title: title,
+          solid: true,
+          variant: variant
+        }
+      )
+    },
     selectTerm (title, value) {
       this.term.title = title
       this.term.value = value
       this.getList(this.term.value)
     },
     getList (term) {
+      this.refreshDown = false
       Axios
         .get(
           `flourish/user_course_all_list/${term}`
@@ -632,11 +675,17 @@ export default {
         .then(
           res => {
             this.list = res.data
+            this.refreshDown = true
           }
         )
         .catch(
           error => {
             if (error) {
+              this.showToast(
+                '搜索失败',
+                '可能由于网络问题，正在重试；或者由于身份认证失败，可尝试重新登入',
+                'warning'
+              )
               this.autoLogin()
               this.getList(term)
             }
@@ -644,7 +693,15 @@ export default {
         )
     },
     refreshList () {
-      this.getList(this.term.value)
+      if (this.term.value === '') {
+        this.showToast(
+          '缺少学期字段',
+          '请选择学期字段',
+          'warning'
+        )
+      } else {
+        this.getList(this.term.value)
+      }
     },
     getDetail (detail) {
       this.result = detail
@@ -855,3 +912,9 @@ export default {
   }
 }
 </script>
+
+<style>
+#image {
+  overflow-x: scroll;
+}
+</style>

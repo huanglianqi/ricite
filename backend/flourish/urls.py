@@ -1,16 +1,6 @@
 from django.urls import path, include, re_path
 
 from .views import (
-    TeacherListAPIView,
-    TeacherRetrieveUpdateAPIView,
-    InfoFormListAPIView,
-    UserCourseListAPIView,
-    ApplyCourseListAPIView,
-    FeedbackFormListAPIView,
-    FeedbackUnitListAPIView,
-    FeedbackUnitRetrieveAPIView,
-    FeedbackPicAPIListView,
-    FeedbackPicRetrieveAPIView,
     FeedbackImageAllListAPIView,
     FeedbackImageLikeListAPIView,
     FeedbackImageLikeUpdateAPIView,
@@ -28,46 +18,6 @@ from .views import (
 )
 
 urlpatterns = [
-    path(
-        'list/',
-        TeacherListAPIView.as_view()
-    ),
-    path(
-        'detail/<int:pk>/',
-        TeacherRetrieveUpdateAPIView.as_view()
-    ),
-    path(
-        'info_form/',
-        InfoFormListAPIView.as_view()
-    ),
-    path(
-        'user_course/',
-        UserCourseListAPIView.as_view()
-    ),
-    path(
-        'apply_course/',
-        ApplyCourseListAPIView.as_view()
-    ),
-    path(
-        'feedback_form/',
-        FeedbackFormListAPIView.as_view()
-    ),
-    path(
-        'feedback_unit/',
-        FeedbackUnitListAPIView.as_view()
-    ),
-    path(
-        'feedback_unit_detail/<int:pk>',
-        FeedbackUnitRetrieveAPIView.as_view()
-    ),
-    path(
-        'feedback_pic/',
-        FeedbackPicAPIListView.as_view()
-    ),
-    path(
-        'feedback_pic_detail/<int:pk>',
-        FeedbackPicRetrieveAPIView.as_view()
-    ),
     re_path(
         r'feedback_image_all_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
         FeedbackImageAllListAPIView.as_view()
