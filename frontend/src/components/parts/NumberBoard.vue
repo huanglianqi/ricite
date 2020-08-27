@@ -4,6 +4,7 @@
     <div
       v-b-hover="handleHover">
       <b-button
+        @click="buttonClick(detail)"
         class="p-5 shadow-sm"
         block
         variant="light">
@@ -20,7 +21,15 @@
         <p
           class="font-weight-bold"
           v-show="isHover">
-          {{titleBack}}</p></b-button></div></div>
+          {{titleBack}}</p>
+        <small
+          class="muted"
+          v-show="!isHover">
+          {{subTitleFront}}</small>
+        <small
+          class="muted"
+          v-show="isHover">
+          {{subTitleBack}}</small></b-button></div></div>
 </template>
 
 <script>
@@ -50,6 +59,22 @@ export default {
     numberBackClass: {
       type: String,
       required: false
+    },
+    subTitleFront: {
+      type: String,
+      required: false
+    },
+    subTitleBack: {
+      type: String,
+      required: false
+    },
+    detail: {
+      type: Array,
+      required: false
+    },
+    buttonClick: {
+      type: Function,
+      required: false
     }
   },
   data () {
@@ -60,6 +85,9 @@ export default {
   methods: {
     handleHover (hovered) {
       this.isHover = hovered
+    },
+    click (detail) {
+      this.buttonClick(detail)
     }
   }
 }

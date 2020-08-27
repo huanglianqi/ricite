@@ -2,6 +2,7 @@ from .models import (
     Teacher,
     InfoForm,
     UserCourse,
+    UserCourseRemarks,
     ApplyCourse,
     FeedbackForm,
     FeedbackUnit,
@@ -11,6 +12,8 @@ from .models import (
     Share,
     SharePic
 )
+
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
@@ -67,18 +70,6 @@ class FeedbackFormSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FeedbackUnitSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FeedbackUnit
-        fields = '__all__'
-
-
-class FeedbackPicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FeedbackPic
-        fields = '__all__'
-
-
 # return data noly contains question and answer
 class BaseInfoFormSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,19 +86,6 @@ class TeacherSerializerInfo(serializers.ModelSerializer):
     infoForms = BaseInfoFormSerializer(many=True,read_only=True)
     class Meta:
         model = Teacher
-        fields = '__all__'
-
-
-# return data contains
-# full UserCourse data and TeacherInfo which related to
-class UserCourseSerializerTeacherInfo(serializers.ModelSerializer):
-    teacher = TeacherSerializerInfo(read_only=True)
-    feedback_forms = FeedbackFormSerializer(
-        many=True,
-        read_only=True
-    )
-    class Meta:
-        model = UserCourse
         fields = '__all__'
 
 
@@ -142,11 +120,6 @@ class TeacherSerializerUserCourse(serializers.ModelSerializer):
         fields = '__all__'
 
 
-'''
- FeedbackPicSerializer needs picture url(FeedbackPic),
- create time(FeedbackForm), tag name(user course),
- real name(teacher), school(info form).
-'''
 class infoFormSerializerForPic(serializers.ModelSerializer):
     class Meta:
         model = InfoForm
@@ -243,6 +216,168 @@ class TeacherSerializerForShareLikeAndComment(serializers.ModelSerializer):
             'name'
         ]
 
+
+# ---User--- #
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name'
+        ]
+
+
+# ---Feedback--- #
+
+class FeedbackFormKeySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedbackForm
+        fields = [
+            'id',
+            'class_num'
+        ]
+
+
+class FeedbackUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedbackUnit
+        fields = [
+            'field_name',
+            'field_value'
+        ]
+
+
+class FeedbackPicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedbackPic
+        fields = [
+            'pic_url'
+        ]
+
+
+class FeedbackFormRetrieveSerializer(serializers.ModelSerializer):
+    feedback_units = FeedbackUnitSerializer(
+        many=True,
+        read_only=True
+    )
+    feedback_pics = FeedbackPicSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = FeedbackForm
+        fields = [
+            'create_time',
+            'feedback_pics',
+            'feedback_units'
+        ]
+
+
+# ---Teacher & Information Form--- #
+
+class InfoFormRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoForm
+        fields = [
+            'field_name',
+            'field_value'
+        ]
+
+
+class TeacherInfoFormRetrieveSerializer(serializers.ModelSerializer):
+    infoForms = InfoFormRetrieveSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = Teacher
+        fields = [
+            'infoForms'
+        ]
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = '__all__'
+
+
+# ---User Course--- #
+
+class UserCourseAllListSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer(read_only=True)
+    feedback_forms = FeedbackFormKeySerializer(
+        many=True,
+        read_only=True
+    )
+    applycourse = serializers.PrimaryKeyRelatedField(read_only=True)
+    class Meta:
+        model = UserCourse
+        fields = '__all__'
+
+
+class UserCourseUpdateItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCourse
+        fields = [
+            'id',
+            'is_fake',
+            'mail_back'
+        ]
+
+
+class UserCourseRemarksCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCourseRemarks
+        fields = '__all__'
+
+
+class UserCourseRemarksDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCourseRemarks
+        fields = '__all__'
+
+
+class UserCourseRemarksDetailSerializer(serializers.ModelSerializer):
+    fromPerson = UserSerializer()
+    class Meta:
+        model = UserCourseRemarks
+        fields = [
+            'fromPerson',
+            'create_time',
+            'content'
+        ]
+
+
+class UserCourseRemarksRetrieveSerializer(serializers.ModelSerializer):
+    user_course_remarks = UserCourseRemarksDetailSerializer(many=True)
+
+    class Meta:
+        model = UserCourse
+        fields = [
+            'user_course_remarks'
+        ]
+
+
+# ---Apply Course--- #
+
+class ApplyCourseRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplyCourse
+        fields = [
+            'stu_num',
+            'teacher_num',
+            'front_img',
+            'back_img',
+            'school_name',
+            'school_address'
+        ]
+
+
+# ---Share--- #
 
 class SharePicSerializer(serializers.ModelSerializer):
     class Meta:

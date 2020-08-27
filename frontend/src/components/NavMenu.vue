@@ -28,12 +28,19 @@
         font-scale="0.9"
         shift-v="5"
         :icon="item.icon"></b-icon></b-button>
+    <account-profile
+      v-show="menuShow"></account-profile>
   </div>
 </template>
 
 <script>
+import AccountProfileVue from './AccountProfile.vue'
+
 export default {
   name: 'navMenu',
+  components: {
+    'account-profile': AccountProfileVue
+  },
   data () {
     return {
       menuShow: false,

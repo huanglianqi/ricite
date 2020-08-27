@@ -7,7 +7,7 @@
       variant="white"
       :size="size"
       :button="true"
-      rounded
+      :rounded="rounded"
       :src="src"></b-avatar></div>
 </template>
 
@@ -22,6 +22,11 @@ export default {
     size: {
       type: String,
       required: false
+    },
+    rounded: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   }
 }

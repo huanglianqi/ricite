@@ -17,7 +17,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
-@media screen and (max-width: 850){
+@media screen and (max-width: 850px){
   #twoColumns {
     display: block;
   }

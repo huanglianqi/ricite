@@ -7,19 +7,10 @@ from .views import (
     UserCourseListAPIView,
     ApplyCourseListAPIView,
     FeedbackFormListAPIView,
-    FeedbackFormRetrieveAPIView,
     FeedbackUnitListAPIView,
     FeedbackUnitRetrieveAPIView,
     FeedbackPicAPIListView,
     FeedbackPicRetrieveAPIView,
-    NoProtocalListAPIView,
-    NoFeedbackListAPIView,
-    NoAllFeedbackListAPIView,
-    IsAllFeedbackListAPIView,
-    NoFinishCourseListAPIView,
-    FinishCourseListAPIView,
-    SearchUserCourseListAPIView,
-    UserCourseUpdateAPIView,
     FeedbackImageAllListAPIView,
     FeedbackImageLikeListAPIView,
     FeedbackImageLikeUpdateAPIView,
@@ -27,6 +18,13 @@ from .views import (
     ShareGraphicLikeListAPIView,
     ShareGraphicLikeUpdateAPIView,
     UserCourseListAPIView,
+    UserCourseItemUpdateAPIView,
+    UserCourseRemarksCreateAPIView,
+    UserCourseRemarksDestroyAPIView,
+    UserCourseRemarksRetrieveAPIView,
+    ApplyCourseRetrieveAPIView,
+    FeedbackFormRetrieveAPIView,
+    TeacherInfoFormRetrieveAPIView,
 )
 
 urlpatterns = [
@@ -55,10 +53,6 @@ urlpatterns = [
         FeedbackFormListAPIView.as_view()
     ),
     path(
-        'feedback_form_detail/<int:pk>',
-        FeedbackFormRetrieveAPIView.as_view()
-    ),
-    path(
         'feedback_unit/',
         FeedbackUnitListAPIView.as_view()
     ),
@@ -73,38 +67,6 @@ urlpatterns = [
     path(
         'feedback_pic_detail/<int:pk>',
         FeedbackPicRetrieveAPIView.as_view()
-    ),
-    re_path(
-        r'^no_protocal_list/(?P<term>.+)/$',
-        NoProtocalListAPIView.as_view()
-    ),
-    re_path(
-        r'^no_feedback_list/(?P<term>.+)/$',
-        NoFeedbackListAPIView.as_view()
-    ),
-    re_path(
-        r'^no_all_feedback_list/(?P<term>.+)/$',
-        NoAllFeedbackListAPIView.as_view()
-    ),
-    re_path(
-        r'is_all_feedback_list/(?P<term>.+)/$',
-        IsAllFeedbackListAPIView.as_view()
-    ),
-    re_path(
-        r'no_finish_course_list/(?P<term>.+)/$',
-        NoFinishCourseListAPIView.as_view()
-    ),
-    re_path(
-        r'finish_course_list/(?P<term>.+)/$',
-        FinishCourseListAPIView.as_view()
-    ),
-    re_path(
-        r'search_usercourse/(?P<keyword>.+)/(?P<term>.+)/(?P<tag>.+)/$',
-        SearchUserCourseListAPIView.as_view()
-    ),
-    path(
-        'update_usercourse/<int:pk>',
-        UserCourseUpdateAPIView.as_view()
     ),
     re_path(
         r'feedback_image_all_list/(?P<endDate>.+)/(?P<startDate>.+)/$',
@@ -133,5 +95,33 @@ urlpatterns = [
     re_path(
         r'user_course_all_list/(?P<term>.+)/$',
         UserCourseListAPIView.as_view()
+    ),
+    path(
+        'user_course_item_update/<int:pk>',
+        UserCourseItemUpdateAPIView.as_view()
+    ),
+    path(
+        'create_user_course_remarks_item/',
+        UserCourseRemarksCreateAPIView.as_view()
+    ),
+    path(
+        'delete_user_course_remarks_item/<int:pk>',
+        UserCourseRemarksDestroyAPIView.as_view()
+    ),
+    path(
+        'get_user_course_remarks_item/<int:pk>',
+        UserCourseRemarksRetrieveAPIView.as_view()
+    ),
+    path(
+        'get_apply_course_item/<int:pk>',
+        ApplyCourseRetrieveAPIView.as_view()
+    ),
+    path(
+        'get_feedback_form_item/<int:pk>',
+        FeedbackFormRetrieveAPIView.as_view()
+    ),
+    path(
+        'get_teacher_item_info_form/<int:pk>',
+        TeacherInfoFormRetrieveAPIView.as_view()
     )
 ]

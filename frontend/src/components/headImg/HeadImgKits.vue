@@ -11,17 +11,20 @@
           <span
             class="font-weight-bold">
             <slot
-              name="topText"></slot></span></b-row>
+              name="topText">
+              {{topText}}</slot></span></b-row>
         <b-row>
           <small
             class="text-truncate">
             <slot
-              name="bottomText"></slot></small></b-row></b-col>
+              name="bottomText">
+              {{bottomText}}</slot></small></b-row></b-col>
       <b-col
         v-else
         class="font-weight-bold pl-1">
         <slot
-          name="centerText"></slot></b-col></b-row></div>
+          name="centerText">
+          {{centerText}}</slot></b-col></b-row></div>
 </template>
 
 <script>
@@ -30,6 +33,18 @@ export default {
   props: {
     twoLine: {
       type: Boolean,
+      required: false
+    },
+    topText: {
+      type: String,
+      required: false
+    },
+    bottomText: {
+      type: String,
+      required: false
+    },
+    centerText: {
+      type: String,
       required: false
     }
   }

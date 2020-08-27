@@ -1,11 +1,20 @@
 <template>
   <div
     id="processControl">
-    <three-columns
-      thirdColumnTitle="学期">
-      <template
-        v-slot:thirdColumn>
-        <t-dropdown
+    <three-columns aria-label="List Toolbar Menu"
+      thirdColumnTitle="学期"
+      firstColumnTitle="刷新"
+      v-show="!showDetail">
+      <template v-slot:firstColumn>
+        <b-button
+          block
+          @click="refreshList"
+          variant="outline-success"
+          class="border-0 shadow-sm">
+          <b-icon
+            icon="arrow-counterclockwise"></b-icon></b-button></template>
+      <template v-slot:thirdColumn>
+        <tool-dropdown
           variant="outline-info"
           icon-up="calendar3-fill"
           icon-down="calendar"
@@ -14,647 +23,424 @@
           :first-item-title="thisTerm.title"
           :first-item-value="thisTerm.value"
           :item-list="termList"
-          :select-item-func="selectTerm"></t-dropdown></template></three-columns>
-    <b-jumbotron
+          :select-item-func="selectTerm"></tool-dropdown></template>
+      <template v-slot:secondColumn>
+        <p
+          class="badge badge-info text-warp p-2 m-1 d-block">
+          Total - {{list.length}}</p></template></three-columns>
+    <three-columns aria-label="Detail Toolbar Menu"
+      thirdColumnTitle="搜索"
+      v-show="showDetail">
+      <template v-slot:thirdColumn>
+        <b-input-group
+          class="shadow-sm rounded">
+          <b-input-group-prepend>
+            <b-button
+              variant="white"
+              disabled>
+              <b-icon
+                icon="search"
+                variant="dark"></b-icon></b-button></b-input-group-prepend>
+        <b-form-input
+          v-model="searchKeyword"
+          type="text"
+          placeholder="姓名、微信名、手机号或课程包"
+          class="bg-white border-0"></b-form-input></b-input-group></template>
+      <template v-slot:firstColumn>
+        <b-button
+          block
+          class="shadow-sm border-white border-0"
+          variant="outline-success"
+          @click="backPage">
+          Back</b-button></template>
+      <template v-slot:secondColumn>
+        <p
+          class="badge badge-info text-warp p-2 m-1 d-block">
+          Total - {{result.length}}</p></template></three-columns>
+    <b-jumbotron aria-label="Main Content"
       fluid
       bg-variant="white">
-      <two-columns>
-        <template v-slot:right>
-          <tian-zi-ge>
-            <template v-slot:rightTop>
-              <number-board
-                titleFront="未签署协议"
-                titleBack="lalal"
-                :numberFront="0"
-                :numberBack="1"
-                :numberFrontClass="'text-warning'"
-                :numberBackClass="'text-danger'"></number-board></template>
-            <template v-slot:leftTop>
-              <number-board
-                titleFront="未进行课程反馈"
-                titleBack="lalal"
-                :numberFront="10"
-                :numberBack="100"></number-board></template>
-            <template v-slot:rightBottom>
-              <number-board
-                titleFront="未完成课程反馈"
-                titleBack="lalal"
-                :numberFront="10"
-                :numberBack="1"></number-board></template>
-            <template v-slot:leftBottom>
-              <number-board
-                titleFront="未寄回问卷"
-                titleBack="lalal"
-                :numberFront="10"
-                :numberBack="1"></number-board></template></tian-zi-ge></template>
-        <template v-slot:left>
-          lalal</template></two-columns></b-jumbotron>
-    <div aria-label="list"
-      v-show="!showDetail">
-      <three-columns aria-label="list toolbar"
-        firstColumnTitle="教师"
-        secondColumnTitle="社群"
-        thirdColumnTitle="学期">
-        <template v-slot:firstColumn>
-          <b-form
-            @submit="search">
-            <b-input-group>
-              <b-input-group-prepend>
-                <b-button
-                  type="submit"
-                  variant="light">
-                  <b-icon
-                    icon="search">
-                  </b-icon>
-                </b-button>
-              </b-input-group-prepend>
-              <b-form-input
-                class="bg-light border-0"
-                v-model="keyword">
-              </b-form-input>
-              <b-input-group-append>
-                <b-button
-                  variant="light">
-                  <b-icon
-                    icon="X">
-                  </b-icon>
-                </b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </b-form>
-        </template>
-        <template v-slot:secondColumn>
-          <t-dropdown
-            variant="outline-success"
-            icon-up="folder-check"
-            icon-down="folder-plus"
-            :title="group.title"
-            :value="group.value"
-            first-item-title="个人"
-            first-item-value="个人"
-            :item-list="groupList"
-            :select-item-func="selectGroup">
-          </t-dropdown>
-        </template>
-        <template v-slot:thirdColumn>
-          <t-dropdown
-            variant="outline-info"
-            icon-up="calendar-check-fill"
-            icon-down="calendar-plus-fill"
-            :title="term.title"
-            :value="term.value"
-            :first-item-title="thisTerm.title"
-            :first-item-value="thisTerm.value"
-            :item-list="termList"
-            :select-item-func="selectTerm">
-          </t-dropdown>
-        </template></three-columns>
-      <div
-        id="desktop-container"
-        class="my-5">
-        <b-container
-          class="bv-example-row my-3">
-          <b-row>
-            <b-col>
-              <div
-                v-for="item in processList"
-                :key="item.title"
-                class="shadow-sm bg-light mb-3 p-3"
-                v-on:click="getProcessDetail(item.content)">
-                <b-overlay
-                  :show="!getListCompletely">
-                  <b-row
-                    class="mb-3 mt-1">
-                    <b-col
-                      class="text-left font-weight-bolder">
-                      <b-icon
-                        icon="circle-fill"
-                        :variant="item.variant">
-                      </b-icon>
-                      {{item.title}}
-                      <b-badge
-                        class="float-right"
-                        :variant="item.variant">
-                        <b-icon
-                          icon="people-fill">
-                        </b-icon>
-                        {{item.value}} | {{(item.value / allPeerNum * 100).toFixed(2)}}%
-                      </b-badge>
-                    </b-col>
-                  </b-row>
-                  <b-row
-                    class="mb-1">
-                    <b-col>
-                      <b-progress
-                        class="align-middle"
-                        :max="allPeerNum"
-                        :value="item.value"
-                        :variant="item.variant">
-                      </b-progress>
-                    </b-col>
-                  </b-row>
-                </b-overlay>
-              </div>
-            </b-col>
-            <b-col
-              class="font-weight-bolder mt-4">
-              <b-row
-                class="mb-3">
-                <b-col
-                  class="shadow-sm bg-light p-5 mx-3"
-                  v-on:click="getGetCourseDetail">
-                  <b-overlay
-                    :show="!getListCompletely">
-                    <b-row>
-                      <b-col
-                        class="text-warning">
-                        <h1>
-                          {{getCoursePeerNum}}
-                        </h1>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        已签署协议
-                      </b-col>
-                    </b-row>
-                  </b-overlay>
-                </b-col>
-                <b-col
-                  class="shadow-sm bg-light p-5 mx-3"
-                  v-on:click="getAllDetail">
-                  <b-overlay
-                    :show="!getListCompletely">
-                    <b-row>
-                      <b-col
-                        class="text-danger">
-                        <h1>
-                          {{allPeerNum}}
-                        </h1>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        已审核通过
-                      </b-col>
-                    </b-row>
-                  </b-overlay>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col
-                  class="shadow-sm bg-light p-5 mx-3"
-                  v-on:click="gethasFeedbackDetail">
-                  <b-overlay
-                    :show="!getListCompletely">
-                    <b-row>
-                      <b-col
-                        class="text-info">
-                        <h1>
-                          {{hasFeedbackPeerNum}}
-                        </h1>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        参与课程反馈
-                      </b-col>
-                    </b-row>
-                  </b-overlay>
-                </b-col>
-                <b-col
-                  class="shadow-sm bg-light p-5 mx-3"
-                  v-on:click="getFinishCourseDetail">
-                  <b-overlay
-                    :show="!getListCompletely">
-                    <b-row>
-                      <b-col
-                        class="text-success">
-                        <h1>
-                          {{finishCourseRate}}%
-                        </h1>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        预计结课率
-                      </b-col>
-                    </b-row>
-                  </b-overlay>
-                </b-col>
-              </b-row>
-            </b-col>
-          </b-row>
-        </b-container>
-      </div>
-      <div
-        id="moble-container"
-        class="my-5">
-        <b-container
-          class="bv-example-row my-3">
-          <b-row
-            class="font-weight-bolder my-3">
-            <b-col
-              class="shadow-sm bg-light p-5 mx-3"
-              v-on:click="getGetCourseDetail">
-              <b-overlay
-                :show="!getListCompletely">
-                <b-row>
-                  <b-col
-                    class="text-warning">
-                    <h1>
-                      {{getCoursePeerNum}}
-                    </h1>
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    已签署协议
-                  </b-col>
-                </b-row>
-              </b-overlay>
-            </b-col>
-          </b-row>
-          <b-row
-            class="font-weight-bolder my-3">
-            <b-col
-              class="shadow-sm bg-light p-5 mx-3"
-              v-on:click="getAllDetail">
-              <b-overlay
-                :show="!getListCompletely">
-                <b-row>
-                  <b-col
-                    class="text-danger">
-                    <h1>
-                      {{allPeerNum}}
-                    </h1>
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    已审核通过
-                  </b-col>
-                </b-row>
-              </b-overlay>
-            </b-col>
-          </b-row>
-          <b-row
-            class="font-weight-bolder my-3">
-            <b-col
-              class="shadow-sm bg-light p-5 mx-3"
-              v-on:click="gethasFeedbackDetail">
-              <b-overlay
-                :show="!getListCompletely">
-                <b-row>
-                  <b-col
-                    class="text-info">
-                    <h1>
-                      {{hasFeedbackPeerNum}}
-                    </h1>
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    参与课程反馈
-                  </b-col>
-                </b-row>
-              </b-overlay>
-            </b-col>
-          </b-row>
-          <b-row
-            class="font-weight-bolder my-3">
-            <b-col
-              class="shadow-sm bg-light p-5 mx-3 mb-4"
-              v-on:click="getFinishCourseDetail">
-              <b-overlay
-                :show="!getListCompletely">
-                <b-row>
-                  <b-col
-                    class="text-success">
-                    <h1>
-                      {{finishCourseRate}}%
-                    </h1>
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    预计结课率
-                  </b-col>
-                </b-row>
-              </b-overlay>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <div
-                v-for="item in processList"
-                :key="item.title"
-                class="shadow-sm bg-light mb-3 p-3"
-                v-on:click="getProcessDetail(item.content)">
-                <b-overlay
-                  :show="!getListCompletely">
-                  <b-row
-                    class="mb-3 mt-1">
-                    <b-col
-                      class="text-left font-weight-bolder">
-                      <b-icon
-                        icon="circle-fill"
-                        :variant="item.variant">
-                      </b-icon>
-                      {{item.title}}
-                      <b-badge
-                        class="float-right"
-                        :variant="item.variant">
-                        <b-icon
-                          icon="people-fill">
-                        </b-icon>
-                        {{item.value}} | {{(item.value / allPeerNum * 100).toFixed(2)}}%
-                      </b-badge>
-                    </b-col>
-                  </b-row>
-                  <b-row
-                    class="mb-1">
-                    <b-col>
-                      <b-progress
-                        class="align-middle"
-                        :max="allPeerNum"
-                        :value="item.value"
-                        :variant="item.variant">
-                      </b-progress>
-                    </b-col>
-                  </b-row>
-                </b-overlay>
-              </div>
-            </b-col>
-          </b-row>
-        </b-container>
-      </div>
-    </div>
-    <div aria-label="detail"
-      v-show="showDetail">
-      <three-columns aria-label="detail toolbar"
-        firstColumnTitle="返回"
-        secondColumnTitle="教师"
-        thirdColumnTitle="课程">
-        <template
-          v-slot:firstColumn>
-          <b-button
-            block
-            variant="outline-dark"
-            class="float-left mb-2"
-            v-on:click="backToList">
-            <b-icon
-              icon="arrow-left-short">
-            </b-icon>
-          </b-button>
-        </template>
-        <template
-          v-slot:secondColumn>
-          <b-form
-            @submit="search">
-            <b-input-group>
-              <b-input-group-prepend>
-                <b-button
-                  type="submit"
-                  variant="light">
-                  <b-icon
-                    icon="search">
-                  </b-icon>
-                </b-button>
-              </b-input-group-prepend>
-              <b-form-input
-                class="bg-light border-0"
-                v-model="keyword">
-              </b-form-input>
-              <b-input-group-append>
-                <b-button
-                  variant="light">
-                  <b-icon
-                    icon="X">
-                  </b-icon>
-                </b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </b-form>
-        </template>
-        <template
-          v-slot:thirdColumn>
-          <t-dropdown
-            variant="outline-success"
-            icon-up="folder-check"
-            icon-down="folder-plus"
-            :title="tag.title"
-            :value="tag.value"
-            first-item-title="全部"
-            first-item-value="all"
-            :item-list="tagList"
-            :select-item-func="tagSelect">
-          </t-dropdown>
-        </template></three-columns>
-      <b-container
-        id="mobile-detail"
-        class="bv-example-row my-3">
-        <div
-          v-for="item in processDetail"
-          :key="item.id"
-          class="shadow-sm bg-light mb-3 p-3"
-          v-show="tagFilter(item.tag_name)">
-          <head-img-kits
-            :tow-line="true">
-            <template
-              v-slot:button>
-              <head-img-btn
-                :src="item.teacher.head_img"
-                :size="'2rem'"></head-img-btn></template>
-              <template
-                v-slot:topText>
-                {{item.teacher.name}}</template>
-              <template
-                v-slot:bottomText>
-                {{item.teacher.phone}}</template></head-img-kits>
-          <b-row
-            class="font-weight-bolder">
-            <b-col>
-              <b-progress
-                :value="item.feedback_forms.length"
-                :max="item.course_num + 1"
-                variant="success">
-              </b-progress>
-            </b-col>
-          </b-row>
-          <b-row
-            class="ml-1 mt-1 mb-1 font-weight-bolder">
-            <div
-              class="overflow-auto">
-              {{item.tag_name}}
-            </div>
-          </b-row>
-          <b-row
-            class="ml-1 mt-1 mb-1 font-weight-bolder">
-            已完成：{{item.feedback_forms.length}}
-          </b-row>
-          <b-row
-            class="ml-1 mt-1 mb-1 font-weight-bolder">
-            总课时：{{item.course_num}} + 1
-          </b-row>
-          <b-row>
-            <b-button
-              variant="outlint-danger"
-              v-on:click="delDetailItem(item.id)">
+      <tian-zi-ge aria-label="List Type"
+        v-show="!showDetail">
+        <template v-slot:leftTop>
+          <number-board
+            :detail="noProtocalList"
+            :buttonClick="getDetail"
+            titleFront="未签署协议人数"
+            titleBack="未签署协议占比"
+            subTitleFront="---"
+            subTitleBack="相比于通过申请总人数"
+            :numberFront="noProtocalListNumber"
+            :numberBack="noProtocalListPercent"
+            :numberFrontClass="'text-danger'"
+            :numberBackClass="'text-warning'"></number-board></template>
+        <template v-slot:rightTop>
+          <number-board
+            :detail="noFeedbackList"
+            :buttonClick="getDetail"
+            titleFront="未进行课程反馈人数"
+            titleBack="未进行课程反馈占比"
+            subTitleFront="---"
+            subTitleBack="相比于签署协议总人数"
+            :numberFront="noFeedbackListNumber"
+            :numberBack="noFeedbackListPercent"
+            :numberFrontClass="'text-info'"
+            :numberBackClass="'text-warning'"></number-board></template>
+        <template v-slot:leftBottom>
+          <number-board
+            :detail="noAllFeedbackList"
+            :buttonClick="getDetail"
+            titleFront="未完成课程反馈人数"
+            titleBack="未完成课程反馈占比"
+            subTitleFront="---"
+            subTitleBack="相比于签署协议总人数"
+            :numberFront="noAllFeedbackListNumber"
+            :numberBack="noAllFeedbackListPercent"
+            :numberFrontClass="'text-primary'"
+            :numberBackClass="'text-warning'"></number-board></template>
+        <template v-slot:rightBottom>
+          <number-board
+            :detail="noMailBackList"
+            :buttonClick="getDetail"
+            titleFront="未寄回问卷人数"
+            titleBack="未寄回问卷占比"
+            subTitleFront="---"
+            subTitleBack="相比于签署协议总人数"
+            :numberFront="noMailBackListNumber"
+            :numberBack="noMailBackListPercent"
+            :numberFrontClass="'text-success'"
+            :numberBackClass="'text-warning'"></number-board></template></tian-zi-ge>
+      <b-list-group aria-label="User Course List"
+        v-show="showDetail"
+        class="my-2">
+        <b-list-group-item aria-label="User Course List Item"
+          class="shadow-sm mb-2 rounded flex-column border-0 align-items-start"
+          v-for="item in resultPageList"
+          :key="item.id">
+          <b-overlay aria-label="Person Information Button"
+            class="float-left"
+            :show="item.is_fake"
+            rounded>
+            <head-img-kit
+              :twoLine="true"
+              :topText="item.teacher.real_name"
+              :bottomText="item.tag_name">
+              <template v-slot:button>
+                <div
+                  @click="catPersonInfoDetail(item.teacher.id)">
+                  <head-img-btn
+                    v-b-modal.personInfoDetailModal
+                    :rounded="false"
+                    :src="item.teacher.head_img"
+                    :size="'2.5rem'"></head-img-btn></div></template></head-img-kit>
+            <template v-slot:overlay>
               <b-icon
-                icon="trash"></b-icon>
-            </b-button>
-          </b-row>
-        </div>
-      </b-container>
+                icon="trash"></b-icon></template></b-overlay>
+          <b-button aria-label="Delete User Course Button"
+            pill
+            @click="deleteItem(item)"
+            class="shadow-sm border-0 float-right m-2"
+            variant="outline-danger">
+            <b-icon
+              v-b-tooltip.hover
+              title="删除"
+              v-show="!item.is_fake"
+              font-scale="0.9"
+              shift-v="4"
+              icon="trash"></b-icon>
+            <b-iconstack
+              v-b-tooltip
+              title="取消删除"
+              v-show="item.is_fake"
+              font-scale="0.9"
+              shift-v="4">
+              <b-icon
+                stacked
+                icon="x-circle-fill"
+                shift-v="-6"
+                shift-h="4"
+                scale="0.5"></b-icon>
+              <b-icon
+                icon="trash"
+                stacked
+                scale="1"></b-icon></b-iconstack></b-button>
+          <div aria-label="Apply Course Form Button"
+            @click="catApplyForm(item.applycourse)"
+            v-show="item.applycourse!==null">
+            <b-button
+              v-b-modal.applyFormDetailModal
+              pill
+              variant="outline-success"
+              class="shadow-sm border-0 float-right m-2">
+              <b-icon
+                font-scale="0.9"
+                shift-v="4"
+                icon="arrows-angle-expand"></b-icon></b-button></div>
+          <div aria-label="Feedback Button"
+            v-show="item.feedback_forms.length!==0"
+            @click="catDetailItem(item)">
+            <b-button
+              v-b-modal.feedbackListDetailModal
+              pill
+              variant="outline-info"
+              class="shadow-sm border-0 float-right m-2">
+              {{item.feedback_forms.length}}</b-button></div>
+          <b-button aria-label="Confirm Mail Back Button"
+            @click="confirmMailBack(item)"
+            pill
+            :variant="mailBackBtnVariantUpdate(item.mail_back)"
+            class="shadow-sm border-0 float-right m-2">
+            <b-iconstack
+              v-show="item.mail_back"
+              font-scale="0.9"
+              shift-v="5"
+              v-b-tooltip.hover
+              title="已寄回">
+              <b-icon
+                stacked
+                scale="0.6"
+                shift-v="-6"
+                shift-h="10"
+                icon="check-circle-fill"></b-icon>
+              <b-icon
+                icon="envelope"></b-icon></b-iconstack>
+            <b-iconstack
+              v-show="!item.mail_back"
+              font-scale="0.9"
+              shift-v="5"
+              v-b-tooltip.hover
+              title="未寄回">
+              <b-icon
+                stacked
+                scale="0.6"
+                shift-v="-6"
+                shift-h="10"
+                icon="x-circle-fill"></b-icon>
+              <b-icon
+                icon="envelope"></b-icon></b-iconstack></b-button>
+          <div aria-label="Submit Remarks Detail Button"
+            @click="catRemarksDetail(item.id); catDetailItem(item)">
+            <b-button
+              v-b-modal.remarksDetailModal
+              pill
+              variant="outline-dark"
+              class="shadow-sm border-0 float-right m-2">
+              <b-icon
+                icon="chat-text"
+                font-scale="0.9"
+                shift-v="5"></b-icon></b-button></div></b-list-group-item></b-list-group></b-jumbotron>
+    <b-container
+        v-show="showDetail">
+        <b-row>
+          <b-col>
+            <b-button
+              :disabled="resultPage === 1"
+              @click="resultPage -= 1"
+              variant="outline-success"
+              class="shadow-sm border-0"
+              block>
+              Pre</b-button></b-col>
+          <b-col>
+            <small
+              class="badge badge-info text-warp p-2 mt-1 d-block">
+              {{resultPage}} / {{resultPageSum}}</small></b-col>
+          <b-col>
+            <b-button
+              :disabled="result.length <= resultPage * 8 + 1"
+              @click="resultPage += 1"
+              variant="outline-success"
+              class="shadow-sm border-0"
+              block>
+              Next</b-button></b-col></b-row></b-container>
+    <head-img-info aria-label="Person Information Detail Modal"
+      id="personInfoDetailModal"
+      :info="personInfoDetail"></head-img-info>
+    <modal-model aria-label="Feedback List Modal"
+      id="feedbackListDetailModal"
+      :size="'lg'"
+      :hideFooter="true">
+      <div
+        v-for="btn in detailItem.feedback_forms"
+        :key="btn.id"
+        @click="catFeedbackForm(btn.id)"
+        class="d-inline-block">
+        <b-button
+          v-b-modal.feedbackFormDetailModal
+          pill
+          variant="outline-info"
+          class="shadow-sm border-0 m-2">
+          {{btn.class_num}}</b-button></div>
+      <b-button
+        variant="outline-success"
+        class="border-0 shadow-sm"
+        pill
+        @click="$bvModal.hide('feedbackListDetailModal')">
+        <b-icon
+          font-scale="0.9"
+          shift-v="2"
+          icon="arrows-angle-contract"></b-icon></b-button></modal-model>
+    <modal-model aria-label="Apply Course Form Detail Modal"
+      id="applyFormDetailModal"
+      :size="'lg'"
+      :hideFooter="true">
+      <b-card
+        border-variant="white">
+        <b-list-group
+          class="p-2"
+          flush>
+          <b-list-group-item
+            class="font-weight-bold p-3 shadow-lg mb-2 bg-success text-light text-center rounded w-100 align-self-center">
+            课程申请信息表</b-list-group-item>
+          <b-list-group-item
+            class="shadow-lg mb-2 rounded">
+            <b-row>
+              <small
+                class="text-muted pl-1">申请学生手册数量</small></b-row>
+            <b-row
+              class="font-weight-bold pl-2">{{applyFormDetail.stu_num}}</b-row></b-list-group-item>
+          <b-list-group-item
+            class="shadow-lg mb-2 rounded">
+            <b-row>
+              <small
+                class="text-muted pl-1">申请教师手册数量</small></b-row>
+            <b-row
+              class="font-weight-bold pl-2">{{applyFormDetail.teacher_num}}</b-row></b-list-group-item>
+          <b-list-group-item
+            class="shadow-lg mb-2 rounded">
+            <b-row>
+              <small
+                class="text-muted pl-1">授课学校名称</small></b-row>
+            <b-row
+              class="font-weight-bold pl-2">{{applyFormDetail.school_name}}</b-row></b-list-group-item>
+          <b-list-group-item
+            class="shadow-lg mb-2 rounded">
+            <b-row>
+              <small
+                class="text-muted pl-1">授课学校地址</small></b-row>
+            <b-row
+              class="font-weight-bold pl-2">{{applyFormDetail.school_address}}</b-row></b-list-group-item>
+          <b-list-group-item
+            class="shadow-lg mb-2 rounded">
+            <b-row>
+              <small
+                class="text-muted pl-1">身份证照片</small></b-row>
+            <b-row
+              class="font-weight-bold pl-2">
+              <b-img-lazy
+                :src="applyFormDetail.front_img"
+                fluid></b-img-lazy></b-row></b-list-group-item>
+          <b-button
+            @click="$bvModal.hide('applyFormDetailModal')"
+            class="shadow border-0"
+            variant="outline-info">
+            <b-icon
+              icon="arrows-angle-contract"></b-icon></b-button></b-list-group></b-card></modal-model>
+    <modal-model aria-label="Feedback Detail Modal"
+      id="feedbackFormDetailModal"
+      :size="'lg'"
+      :hideFooter="true">
+      {{feedbackFormDetail}}</modal-model>
+    <modal-model aria-label="User Course Remarks Detail Modal"
+      id="remarksDetailModal"
+      :size="'md'"
+      :hideFooter="true">
+      <b-form-textarea aria-label="User Course Remarks Detail Create"
+        class="border-0 shadow-sm"
+        v-model="remarksDetailContent"
+        rows="3"></b-form-textarea>
+      <three-columns>
+        <template v-slot:firstColumn>
+          <b-button
+            @click="submitRemarksDetail"
+            variant="outline-success"
+            class="shadow-sm border-0"
+            block>
+            <b-icon
+              icon="check"></b-icon></b-button></template>
+        <template v-slot:secondColumn>
+          <b-button
+            @click="$bvModal.hide('remarksDetailModal'); remarksDetailContent=''"
+            variant="outline-warning"
+            class="shadow-sm border-0"
+            block>
+            <b-icon
+              icon="x"></b-icon></b-button></template>
+        <template v-slot:thirdColumn>
+          <b-button
+            @click="$bvModal.hide('remarksDetailModal'); remarksDetailContent='';"
+            variant="outline-warning"
+            class="shadow-sm border-0"
+            block>
+            <b-icon
+              icon="x"></b-icon></b-button></template></three-columns>
+      <b-list-group aria-label="User Course Remarks Detail Item"
+        class="text-left">
+        <b-list-group-item
+          class="shadow-sm my-2 rounded flex-column border-0 align-items-start"
+          v-for="item in remarksPageList"
+          :key="item.id">
+          <div>
+            {{item.content}}</div>
+          <div>
+            <small
+              class="text-muted float-right">
+              {{item.fromPerson.last_name}}{{item.fromPerson.first_name}}</small></div>
+          <div>
+            <small
+              class="text-muted">
+              {{item.create_time.split('.')[0]}}</small></div></b-list-group-item></b-list-group>
       <b-container
-        id="desktop-detail"
-        class="bv-example-row my-3">
-        <div
-          v-for="item in processDetail"
-          :key="item.id"
-          v-show="tagFilter(item.tag_name)">
-          <b-row
-            class="font-weight-bolder shadow-sm bg-light mb-3 p-3">
-            <head-img-kits
-              :tow-line="true">
-              <template
-                v-slot:button>
-                <head-img-btn
-                  :src="item.teacher.head_img"
-                  :size="'2rem'"></head-img-btn></template>
-                <template
-                  v-slot:topText>
-                  {{item.teacher.name}}</template>
-                <template
-                  v-slot:bottomText>
-                  {{item.teacher.phone}}</template></head-img-kits>
-            <b-col
-              cols="8">
-              <b-row
-                class="mb-1 ml-1">
-                {{item.tag_name}}
-                {{item.feedback_forms.length}} / ({{item.course_num}} + 1)
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-progress
-                    :value="item.feedback_forms.length"
-                    :max="item.course_num + 1"
-                    variant="success">
-                  </b-progress>
-                </b-col>
-              </b-row>
-            </b-col>
-            <b-col
-              cols="1">
-              <b-row>
-                <b-col>
-                  <b-button
-                    variant="outline-danger"
-                    v-on:click="delDetailItem(item.id)">
-                    <b-icon
-                      icon="trash"></b-icon>
-                  </b-button>
-                </b-col>
-              </b-row>
-            </b-col>
-          </b-row>
-        </div>
-      </b-container>
-    </div>
+        v-show="remarksDetail.length>0">
+        <b-row>
+          <b-col>
+            <b-button
+              variant="outline-success"
+              class="shadow-sm border-0"
+              block
+              @click="remarksPage -= 1"
+              :disabled="remarksPage === 1">
+              Pre</b-button></b-col>
+          <b-col>
+            <small
+              class="badge badge-info text-warp p-1 m-1 d-block">
+              {{remarksPage}} / {{remarksPageSum}}</small></b-col>
+          <b-col>
+            <b-button
+              variant="outline-success"
+              class="shadow-sm border-0"
+              block
+              @click="remarksPage += 1"
+              :disabled="remarksDetail.length <= remarksPage * 3">
+              Next</b-button></b-col></b-row></b-container></modal-model>
   </div>
 </template>
 
 <script>
-import Axios from 'axios'
-import ToolDropdownVue from './parts/ToolDropdown.vue'
 import ThreeColumnsVue from './structure/ThreeColumns.vue'
-import HeadImgKitsVue from './headImg/HeadImgKits.vue'
-import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
-import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
+import ToolDropdownVue from './parts/ToolDropdown.vue'
+import TwoColumnsVue from './structure/TwoColumns.vue'
 import NumberBoardVue from './parts/NumberBoard.vue'
 import TianZiGeVue from './structure/TianZiGe.vue'
-import TwoColumnsVue from './structure/TwoColumns.vue'
+import Axios from 'axios'
+import HeadImgKitsVue from './headImg/HeadImgKits.vue'
+import HeadImgBtnVue from './headImg/HeadImgBtn.vue'
+import HeadImgInfoVue from './headImg/HeadImgInfo.vue'
+import ModalModelVue from './parts/ModalModel.vue'
+import ListPagerVue from './parts/ListPager.vue'
 
 export default {
   name: 'processControl',
   components: {
-    't-dropdown': ToolDropdownVue,
     'three-columns': ThreeColumnsVue,
-    'head-img-kits': HeadImgKitsVue,
-    'head-img-info': HeadImgInfoVue,
-    'head-img-btn': HeadImgBtnVue,
+    'tool-dropdown': ToolDropdownVue,
+    'two-columns': TwoColumnsVue,
     'number-board': NumberBoardVue,
     'tian-zi-ge': TianZiGeVue,
-    'two-columns': TwoColumnsVue
-  },
-  data () {
-    return {
-      showDetail: false,
-      headImgFormat: {
-        width: 45,
-        height: 45,
-        class: 'm-1 mr-2',
-        rounded: true,
-        left: true
-      },
-      processList: [
-        {
-          title: '未签署协议',
-          value: 0,
-          variant: 'danger',
-          content: []
-        },
-        {
-          title: '已签署协议未反馈',
-          value: 0,
-          variant: 'warning',
-          content: []
-        },
-        {
-          title: '已反馈未结课',
-          value: 0,
-          variant: 'info',
-          content: []
-        },
-        {
-          title: '已结课',
-          value: 0,
-          variant: 'success',
-          content: []
-        }
-      ],
-      term: {
-        title: '',
-        value: ''
-      },
-      group: {
-        title: '个人',
-        value: '个人'
-      },
-      groupList: [
-        {
-          title: '机构',
-          value: '机构'
-        }
-      ],
-      processDetail: [],
-      tag: {
-        title: '全部',
-        value: 'all'
-      },
-      tagList: [],
-      getNoprotocalListCompletely: false,
-      getNoFeedbackListCompletely: false,
-      getNoAllFeedbackListCompletely: false,
-      getIsAllFeedbackListCompletely: false,
-      keyword: '',
-      searchList: []
-    }
-  },
-  created () {
-    this.term = this.thisTerm
+    'head-img-kit': HeadImgKitsVue,
+    'head-img-btn': HeadImgBtnVue,
+    'head-img-info': HeadImgInfoVue,
+    'modal-model': ModalModelVue,
+    'list-pager': ListPagerVue
   },
   computed: {
     termList () {
@@ -672,26 +458,7 @@ export default {
           }
         )
       }
-      return ls
-    },
-    getListCompletely () {
-      return this.getNoprotocalListCompletely && this.getNoFeedbackListCompletely && this.getNoAllFeedbackListCompletely && this.getIsAllFeedbackListCompletely
-    },
-    allPeerNum () {
-      return this.processList[0].value + this.processList[1].value + this.processList[2].value + this.processList[3].value
-    },
-    getCoursePeerNum () {
-      let num = 0
-      for (let i = 1; i < this.processList.length; i++) {
-        num += this.processList[i].value
-      }
-      return num
-    },
-    hasFeedbackPeerNum () {
-      return this.processList[2].value + this.processList[3].value
-    },
-    finishCourseRate () {
-      return (this.processList[3].value / this.getCoursePeerNum * 100).toFixed(2)
+      return ls.reverse()
     },
     thisTerm () {
       let thisMonth = new Date().getMonth()
@@ -707,229 +474,291 @@ export default {
           value: `${(thisYear - 2019) * 2 + 1}`
         }
       }
+    },
+    noProtocalListNumber () {
+      if (this.list.length !== 0) {
+        return `${this.noProtocalList.length}`
+      } else {
+        return '0'
+      }
+    },
+    noProtocalListPercent () {
+      if (this.list.length !== 0) {
+        return `${((this.noProtocalList.length / this.list.length) * 100).toFixed(2)}%`
+      } else {
+        return '0%'
+      }
+    },
+    noFeedbackListNumber () {
+      if (this.list.length !== 0) {
+        return `${this.noFeedbackList.length}`
+      } else {
+        return '0'
+      }
+    },
+    noFeedbackListPercent () {
+      if (this.list.length !== 0) {
+        return `${((this.noFeedbackList.length / this.list.length) * 100).toFixed(2)}%`
+      } else {
+        return '0%'
+      }
+    },
+    noAllFeedbackListNumber () {
+      if (this.list.length !== 0) {
+        return `${this.noAllFeedbackList.length}`
+      } else {
+        return '0'
+      }
+    },
+    noAllFeedbackListPercent () {
+      if (this.list.length !== 0) {
+        return `${((this.noAllFeedbackList.length / this.list.length) * 100).toFixed(2)}%`
+      } else {
+        return '0%'
+      }
+    },
+    noMailBackListNumber () {
+      if (this.list.length !== 0) {
+        return `${this.noMailBackList.length}`
+      } else {
+        return '0'
+      }
+    },
+    noMailBackListPercent () {
+      if (this.list.length !== 0) {
+        return `${((this.noMailBackList.length / this.list.length) * 100).toFixed(2)}%`
+      } else {
+        return '0%'
+      }
+    },
+    resultPageList () {
+      return this.result.slice((this.resultPage - 1) * 8, 7 + (this.resultPage - 1) * 8)
+    },
+    resultPageSum () {
+      if (this.result.length < 4) {
+        return 1
+      } else {
+        return (this.result.length / 8).toFixed(0)
+      }
+    },
+    remarksPageList () {
+      return this.remarksDetail.slice((this.remarksPage - 1) * 3, this.remarksPage * 3)
+    },
+    remarksPageSum () {
+      if (this.remarksDetail.length <= 2) {
+        return 1
+      } else {
+        return (this.remarksDetail.length / 3).toFixed(0)
+      }
     }
   },
   watch: {
-    group (val) {
-      console.log(val)
-    },
-    term (val) {
-      this.getProgressData(val.value)
-    },
-    processDetail (val) {
-      let ls = []
-      this.tagList = []
-      for (let i = 0; i < val.length; i++) {
-        if (ls.indexOf(val[i].tag_name) === -1) {
-          ls.push(val[i].tag_name)
-        }
+    list (val) {
+      if (val.length !== 0) {
+        this.noProtocalList = this.list.filter(
+          item => item.has_protocal === false
+        )
+        this.noFeedbackList = this.list.filter(
+          item => item.has_protocal === true && item.feedback_num === 0
+        )
+        this.noAllFeedbackList = this.list.filter(
+          item => item.has_protocal === true && item.finish_final === false && item.feedback_num > 0
+        )
+        this.noMailBackList = this.list.filter(
+          item => item.mail_back === false
+        )
       }
-      for (let i = 0; i < ls.length; i++) {
-        this.tagList.push(
-          {
-            title: ls[i],
-            value: ls[i]
+    },
+    searchKeyword (val) {
+      this.resultPage = 1
+      if (val !== '' || val !== null) {
+        this.result = this.detail.filter(
+          item => {
+            if (item.teacher.real_name.indexOf(val) !== -1) {
+              return true
+            } else if (item.teacher.phone === val) {
+              return true
+            } else if (item.tag_name.indexOf(val) !== -1) {
+              return true
+            } else if (item.name === val) {
+              return true
+            } else {
+              return false
+            }
           }
         )
+      } else {
+        this.result = this.detail
       }
     }
   },
+  data () {
+    return {
+      term: {
+        title: '选择学期',
+        value: ''
+      },
+      list: [],
+      detail: [],
+      result: [],
+      resultPage: 1,
+      detailItem: {},
+      noProtocalList: [],
+      noFeedbackList: [],
+      noAllFeedbackList: [],
+      noMailBackList: [],
+      showDetail: false,
+      searchKeyword: '',
+      personInfoDetail: [],
+      applyFormDetail: {},
+      feedbackFormDetail: {},
+      mailBackDetail: false,
+      remarksDetail: [],
+      remarksPage: 1,
+      remarksDetailContent: ''
+    }
+  },
   methods: {
-    delDetailItem (id) {
+    selectTerm (title, value) {
+      this.term.title = title
+      this.term.value = value
+      this.getList(this.term.value)
+    },
+    getList (term) {
+      Axios
+        .get(
+          `flourish/user_course_all_list/${term}`
+        )
+        .then(
+          res => {
+            this.list = res.data
+          }
+        )
+        .catch(
+          error => {
+            if (error) {
+              this.autoLogin()
+              this.getList(term)
+            }
+          }
+        )
+    },
+    refreshList () {
+      this.getList(this.term.value)
+    },
+    getDetail (detail) {
+      this.result = detail
+      this.detail = detail
+      this.showDetail = true
+    },
+    getDetailTitle (title) {
+      this.listTitle = title
+    },
+    deleteItem (item) {
+      this.catDetailItem(item)
+      this.delete(item.id, item.is_fake)
+    },
+    delete (id, state) {
       Axios
         .patch(
-          `flourish/update_usercourse/${id}`,
+          `flourish/user_course_item_update/${id}`,
           {
-            is_fake: true
+            'is_fake': !state
           }
-        )
-        .catch(
-          err => {
-            if (String(err).indexOf('401')) {
-              this.autoLogin()
-              this.delDetailItem(id)
-            }
-          }
-        )
-    },
-    search () {
-      Axios
-        .get(
-          `flourish/search_usercourse/${this.keyword}/${this.term.value}/${this.tag.value}/`
         )
         .then(
           res => {
-            this.processDetail = res.data.results
-            this.showDetail = true
+            this.detailItem.is_fake = res.data.is_fake
           }
         )
         .catch(
           err => {
-            if (String(err).indexOf('401')) {
+            if (err) {
               this.autoLogin()
-              this.search()
+              this.delete(id, state)
             }
           }
         )
     },
-    reset () {
-      this.keyword = ''
-    },
-    tagFilter (tag) {
-      if (this.tag.value === 'all' || tag === this.tag.value) {
-        return true
+    deleteIconUpdate (state) {
+      if (state) {
+        return 'arrow-counterclockwise'
       } else {
-        return false
+        return 'trash'
       }
     },
-    backToList () {
-      this.showDetail = false
-      this.tag.title = '全部'
-      this.tag.value = 'all'
+    confirmMailBack (item) {
+      this.catDetailItem(item)
+      this.confirm(item.id, item.mail_back)
     },
-    tagSelect (title, value) {
-      this.tag.title = title
-      this.tag.value = value
+    confirm (id, state) {
+      Axios
+        .patch(
+          `flourish/user_course_item_update/${id}`,
+          {
+            'mail_back': !state
+          }
+        )
+        .then(
+          res => {
+            this.detailItem.mail_back = res.data.mail_back
+          }
+        )
+        .catch(
+          err => {
+            if (err) {
+              this.autoLogin()
+              this.confirm(id, state)
+            }
+          }
+        )
     },
-    getAllDetail () {
-      this.processDetail = this.processList[0].content.concat(
-        this.processList[1].content.concat(
-          this.processList[2].content.concat(
-            this.processList[3].content
+    mailBackBtnVariantUpdate (state) {
+      if (state === true) {
+        return 'outline-success'
+      } else if (state === false) {
+        return 'outline-danger'
+      } else {
+        return 'dark'
+      }
+    },
+    submitRemarksDetail () {
+      if (this.remarksDetailContent === '') {
+
+      } else {
+        Axios
+          .post(
+            `flourish/create_user_course_remarks_item/`,
+            {
+              'content': this.remarksDetailContent,
+              'fromPerson': this.$store.state.auth.id,
+              'toPerson': this.detailItem.teacher.id,
+              'forUserCourse': this.detailItem.id
+            }
           )
-        )
-      )
-      this.showDetail = true
-    },
-    getGetCourseDetail () {
-      this.processDetail = this.processList[1].content.concat(
-        this.processList[2].content.concat(
-          this.processList[3].content
-        )
-      )
-      this.showDetail = true
-    },
-    gethasFeedbackDetail () {
-      this.processDetail = this.processList[2].content.concat(
-        this.processList[3].content
-      )
-      this.showDetail = true
-    },
-    getFinishCourseDetail () {
-      this.processDetail = this.processList[3].content
-      this.showDetail = true
-    },
-    getProcessDetail (content) {
-      this.processDetail = content
-      this.showDetail = true
-    },
-    selectTerm (title, value) {
-      this.term = {title: title, value: value}
-    },
-    selectGroup (title, value) {
-      this.group = {title: title, value: value}
-    },
-    getProgressData (term) {
-      this.getNoProtocalList(term)
-      this.getNoFeedbackList(term)
-      this.getNoAllFeedbackList(term)
-      this.getIsAllFeedbackList(term)
-    },
-    getNoProtocalList (term) {
-      this.getNoprotocalListCompletely = false
-      Axios
-        .get(
-          `flourish/no_protocal_list/${term}/`
-        )
-        .then(
-          res => {
-            this.processList[0].value = res.data.count
-            this.processList[0].content = res.data.results
-            this.getNoprotocalListCompletely = true
-          }
-        )
-        .catch(
-          err => {
-            if (String(err).indexOf('401')) {
-              this.autoLogin()
-              this.getNoProtocalList(term)
-            } else {
-              console.log(err)
+          .then(
+            res => {
+              this.remarksDetail.unshift(res.data)
+              this.remarksDetailContent = ''
             }
-          }
-        )
-    },
-    getNoFeedbackList (term) {
-      this.getNoFeedbackListCompletely = false
-      Axios
-        .get(
-          `flourish/no_feedback_list/${term}/`
-        )
-        .then(
-          res => {
-            this.processList[1].value = res.data.count
-            this.processList[1].content = res.data.results
-            this.getNoFeedbackListCompletely = true
-          }
-        )
-        .catch(
-          err => {
-            if (String(err).indexOf('401')) {
-              this.autoLogin()
-              this.getNoFeedbackList(term)
-            } else {
-              console.log(err)
+          )
+          .catch(
+            err => {
+              if (err) {
+                this.autoLogin()
+                this.submitRemarksDetail()
+              }
             }
-          }
-        )
+          )
+      }
     },
-    getNoAllFeedbackList (term) {
-      this.getNoAllFeedbackListCompletely = false
-      Axios
-        .get(
-          `flourish/no_finish_course_list/${term}/`
-        )
-        .then(
-          res => {
-            this.processList[2].value = res.data.count
-            this.processList[2].content = res.data.results
-            this.getNoAllFeedbackListCompletely = true
-          }
-        )
-        .catch(
-          err => {
-            if (String(err).indexOf('401')) {
-              this.autoLogin()
-              this.getNoAllFeedbackList(term)
-            } else {
-              console.log(err)
-            }
-          }
-        )
-    },
-    getIsAllFeedbackList (term) {
-      this.getIsAllFeedbackListCompletely = false
-      Axios
-        .get(
-          `flourish/finish_course_list/${term}/`
-        )
-        .then(
-          res => {
-            this.processList[3].value = res.data.count
-            this.processList[3].content = res.data.results
-            this.getIsAllFeedbackListCompletely = true
-          }
-        )
-        .catch(
-          err => {
-            if (String(err).indexOf('401')) {
-              this.autoLogin()
-              this.getIsAllFeedbackList(term)
-            } else {
-              console.log(err)
-            }
-          }
-        )
+    backPage () {
+      if (this.searchKeyword !== '') {
+        this.searchKeyword = ''
+      } else {
+        this.showDetail = false
+      }
+      this.resultPage = 1
     },
     autoLogin () {
       this.$store
@@ -940,31 +769,89 @@ export default {
             password: sessionStorage.password
           }
         )
+    },
+    catPersonInfoDetail (id) {
+      Axios
+        .get(
+          `flourish/get_teacher_item_info_form/${id}`
+        )
+        .then(
+          res => {
+            this.personInfoDetail = res.data.infoForms
+          }
+        )
+        .catch(
+          err => {
+            if (err) {
+              this.autoLogin()
+              this.catPersonInfoDetail()
+            }
+          }
+        )
+    },
+    catApplyForm (id) {
+      if (id !== null) {
+        Axios
+          .get(
+            `flourish/get_apply_course_item/${id}`
+          )
+          .then(
+            res => {
+              this.applyFormDetail = res.data
+            }
+          )
+          .catch(
+            err => {
+              if (err) {
+                this.autoLogin()
+                this.catApplyForm(id)
+              }
+            }
+          )
+      }
+    },
+    catFeedbackForm (id) {
+      Axios
+        .get(
+          `flourish/get_feedback_form_item/${id}`
+        )
+        .then(
+          res => {
+            this.feedbackFormDetail = res.data
+          }
+        )
+        .catch(
+          err => {
+            if (err) {
+              this.autoLogin()
+              this.catFeedbackForm(id)
+            }
+          }
+        )
+    },
+    catDetailItem (item) {
+      this.detailItem = item
+    },
+    catRemarksDetail (id) {
+      Axios
+        .get(
+          `flourish/get_user_course_remarks_item/${id}`
+        )
+        .then(
+          res => {
+            this.remarksDetail = res.data.user_course_remarks.reverse()
+            this.remarksPage = 1
+          }
+        )
+        .catch(
+          err => {
+            if (err) {
+              this.autoLogin()
+              this.catRemarksDetail(id)
+            }
+          }
+        )
     }
   }
 }
 </script>
-
-<style>
-#moble-container,
-#mobile-detail {
-  display: none;
-}
-@media screen and (max-width: 1000px) {
-  #desktop-container,
-  #desktop-detail {
-    display: none;
-  }
-  #moble-container,
-  #mobile-detail {
-    display: block;
-  }
-  #moble-container > *,
-  #mobile-detail> * {
-    display: block;
-  }
-  #mobile-detail {
-    padding: 0 10px 0 10px;
-  }
-}
-</style>

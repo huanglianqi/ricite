@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-# user list
+# ---Teacher & Information Form--- #
+
 class Teacher(models.Model):
     user_id = models.CharField(
         max_length=100
@@ -45,7 +47,6 @@ class Teacher(models.Model):
         )
 
 
-# user info form
 class InfoForm(models.Model):
     field_id = models.CharField(
         max_length=100
@@ -78,7 +79,8 @@ class InfoForm(models.Model):
         )
 
 
-# user course
+# ---User Course--- #
+
 class UserCourse(models.Model):
     user_course_id = models.CharField(
         max_length=100
@@ -110,15 +112,31 @@ class UserCourse(models.Model):
         default=False
     )
 
-    def __str__(self):
-        return '{0} | {1} | 学期：{2}'.format(
-            self.teacher,
-            self.tag_name,
-            self.term_num
-        )
+
+class UserCourseRemarks(models.Model):
+    content = models.TextField()
+    fromPerson = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='user_course_remarks'
+    )
+    toPerson = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        related_name='user_course_remarks'
+    )
+    forUserCourse = models.ForeignKey(
+        UserCourse,
+        on_delete=models.CASCADE,
+        related_name='user_course_remarks'
+    )
+    create_time = models.DateTimeField(
+        auto_now_add=True
+    )
 
 
-# user protocal
+# ---Apply Course--- #
+
 class ApplyCourse(models.Model):
     stu_num = models.IntegerField(
         null=True,
@@ -170,7 +188,8 @@ class ApplyCourse(models.Model):
         )
 
 
-# class form info
+# ---Feedback---- #
+
 class FeedbackForm(models.Model):
     feedback_id = models.CharField(
         max_length=100
@@ -284,6 +303,8 @@ class FeedbackPic(models.Model):
         blank=True
     )
 
+
+# ---Share--- #
 
 class Share(models.Model):
     like = models.BooleanField(

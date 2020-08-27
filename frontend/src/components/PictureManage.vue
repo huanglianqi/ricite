@@ -145,13 +145,13 @@ export default {
         .then(
           res => {
             if (this.type.value === 'feedback_image_all_list' || this.type.value === 'feedback_image_like_list') {
-              this.feedbackImgList = res.data.results
+              this.feedbackImgList = res.data
             } else {
-              this.shareGraphicList = res.data.results
+              this.shareGraphicList = res.data
             }
             this.showToast(
               '搜索成功',
-              `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}, 共搜索到${res.data.results.length}条结果`,
+              `搜索结果为 ${start} 至 ${end} 的 ${this.type.title}, 共搜索到${res.data.length}条结果`,
               'success'
             )
           }

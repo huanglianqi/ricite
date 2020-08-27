@@ -4,13 +4,10 @@
     <b-modal
       :id="id"
       :size="size"
-      hide-header
-      centered
-      ok-variant="outline-success"
-      ok-only
-      ok-title="关闭"
-      :hide-footer="hideFooter"
-      :body-bg-variant="bodyBgVariant">
+      :centered="true"
+      :hide-header="true"
+      :hide-header-close="true"
+      :hide-footer="hideFooter">
       <slot></slot></b-modal></div>
 </template>
 
@@ -20,29 +17,18 @@ export default {
   props: {
     id: {
       type: String,
-      required: true
+      required: false
     },
     size: {
       type: String,
       required: false,
       default: 'xl'
     },
-    bodyBgVariant: {
-      type: String,
-      required: false,
-      default: 'white'
-    },
     hideFooter: {
       type: Boolean,
       required: false,
-      default: false
+      defalut: true
     }
   }
 }
 </script>
-
-<style>
-#modalModel {
-  z-index: inherit;
-}
-</style>

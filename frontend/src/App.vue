@@ -3,8 +3,6 @@
     <div aria-label="nav-bar"
       id="nav-bar"
       class="ml-1 mt-1">
-      <AccountProfile/>
-      <br>
       <NavMenu/>
     </div>
     <router-view/>
